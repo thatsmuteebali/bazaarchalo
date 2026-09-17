@@ -11,6 +11,43 @@
     };
     spinner(0);
 
+    // Wishlist buttons on product cards
+    var addWishlistButton = function (card) {
+        if (!card || card.querySelector('.wishlist-button')) {
+            return;
+        }
+
+        var button = $('<button>', {
+            type: 'button',
+            class: 'wishlist-button',
+            title: 'Add to wishlist',
+            'aria-label': 'Add to wishlist'
+        }).append('<i class="far fa-heart" aria-hidden="true"></i>');
+
+        button.on('click', function () {
+            var active = button.toggleClass('active').hasClass('active');
+            button.attr('title', active ? 'Remove from wishlist' : 'Add to wishlist');
+            button.attr('aria-label', active ? 'Remove from wishlist' : 'Add to wishlist');
+            button.find('i').toggleClass('far fas');
+        });
+
+        $(card).append(button);
+    };
+
+    $('.fruite-item, .vesitable-item').each(function () {
+        addWishlistButton(this);
+    });
+
+    $('img[src*="best-product-"]').each(function () {
+        addWishlistButton($(this).closest('.p-4.rounded.bg-light')[0]);
+    });
+
+    $('img[src*="fruite-item-"]').filter(function () {
+        return !$(this).closest('.fruite-item, .vesitable-item').length;
+    }).each(function () {
+        addWishlistButton($(this).closest('.text-center')[0]);
+    });
+
 
     // Fixed Navbar
     $(window).scroll(function () {
