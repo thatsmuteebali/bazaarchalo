@@ -32,6 +32,83 @@
         });
     }
 
+    // Keep the shared template pages consistent with the Bazaar Chalo brand.
+    var pageCopy = {
+        'Fruitables': 'Bazaar Chalo',
+        'Your Site Name': 'Bazaar Chalo',
+        'Fresh products': 'Shop local. Live fresh.',
+        '123 Street, New York': 'Fresh delivery in your area',
+        'Email@Example.com': 'hello@bazaar-chalo.com',
+        'info@example.com': 'hello@bazaar-chalo.com',
+        'Example@gmail.com': 'hello@bazaar-chalo.com',
+        'Why People Like us!': 'Why shoppers choose us',
+        'Shop Detail': 'Product Details',
+        'Chackout': 'Checkout',
+        'Fresh fruits shop': 'Fresh products from local shops',
+        'Big Banana': 'Farm-fresh bananas',
+        'Awesome Brocoli': 'Fresh broccoli',
+        'Organic Tomato': 'Local organic tomatoes',
+        'Client Name': 'Bazaar Chalo customer',
+        'Profession': 'Local customer',
+        'Our Client Saying!': 'What our customers say',
+        'Our Testimonial': 'Customer stories',
+        'Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt': 'Fresh quality products from trusted local sellers.',
+        "Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,": 'Bazaar Chalo makes it easy to discover fresh products and support local shops.',
+        'The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.': 'Enjoy fresh quality produce from a trusted local seller, carefully selected for your everyday needs.',
+        'typesetting, remaining essentially unchanged. It was popularised in the 1960s with the like Aldus PageMaker including of Lorem Ipsum.': 'Fresh products, friendly service, and quality you can trust from sellers near you.'
+    };
+
+    var textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    var textNode;
+    while (textNode = textWalker.nextNode()) {
+        Object.keys(pageCopy).sort(function (first, second) {
+            return second.length - first.length;
+        }).forEach(function (source) {
+            if (textNode.nodeValue.indexOf(source) !== -1) {
+                textNode.nodeValue = textNode.nodeValue.split(source).join(pageCopy[source]);
+            }
+        });
+    }
+
+    var titleMap = {
+        'shop.html': 'Shop Fresh Products - Bazaar Chalo',
+        'shop-detail.html': 'Product Details - Bazaar Chalo',
+        'testimonial.html': 'Customer Stories - Bazaar Chalo',
+        'contact.html': 'Contact Bazaar Chalo',
+        'cart.html': 'Your Cart - Bazaar Chalo',
+        'chackout.html': 'Checkout - Bazaar Chalo',
+        'offers.html': 'Fresh Offers - Bazaar Chalo',
+        'login.html': 'Login - Bazaar Chalo',
+        'register.html': 'Register Your Shop - Bazaar Chalo',
+        '404.html': 'Page Not Found - Bazaar Chalo'
+    };
+    var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    if (titleMap[currentPage]) {
+        document.title = titleMap[currentPage];
+    }
+
+    var cartLink = document.querySelector('.fa-shopping-bag')?.closest('a');
+    var accountLink = document.querySelector('.fa-user')?.closest('a');
+    if (cartLink) cartLink.href = 'cart.html';
+    if (accountLink) accountLink.href = 'login.html';
+
+    document.querySelectorAll('.dropdown-menu').forEach(function (menu) {
+        var links = [
+            ['offers.html', 'Offers'],
+            ['login.html', 'Login'],
+            ['register.html', 'Register']
+        ];
+        links.forEach(function (link) {
+            if (!menu.querySelector('a[href="' + link[0] + '"]')) {
+                var item = document.createElement('a');
+                item.href = link[0];
+                item.className = 'dropdown-item';
+                item.textContent = link[1];
+                menu.appendChild(item);
+            }
+        });
+    });
+
     // Wishlist buttons on product cards
     var addWishlistButton = function (card) {
         if (!card || card.querySelector('.wishlist-button')) {
@@ -55,8 +132,12 @@
         $(card).append(button);
     };
 
-    $('.fruite-item, .vesitable-item').each(function () {
+    $('.product-card, .fruite-item, .vesitable-item').each(function () {
         addWishlistButton(this);
+    });
+
+    $('.fruite-item a.btn, .vesitable-item a.btn').each(function () {
+        $(this).attr('href', 'cart.html').attr('aria-label', 'Add product to cart');
     });
 
     $('img[src*="best-product-"]').each(function () {

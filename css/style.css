@@ -645,6 +645,72 @@
     box-shadow: 0 12px 28px rgba(0, 0, 0, .08);
 }
 
+/* Use the home product card language throughout every product list. */
+.fruite-item,
+.vesitable-item {
+    overflow: hidden;
+    border: 0 !important;
+    background: var(--bs-light);
+    box-shadow: 0 0 0 1px rgba(129, 196, 8, .08);
+}
+
+.fruite .fruite-item:hover,
+.vesitable .vesitable-item:hover {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .08);
+    transform: translateY(-5px);
+}
+
+.fruite-item .fruite-img,
+.vesitable-item .vesitable-img {
+    border-radius: 0;
+}
+
+.fruite-item .fruite-img img,
+.vesitable-item .vesitable-img img {
+    aspect-ratio: 1.15;
+    object-fit: cover;
+}
+
+.fruite-item > div:last-child,
+.vesitable-item > div:last-child {
+    border: 0 !important;
+    padding: 1.5rem !important;
+}
+
+.fruite-item > div:last-child p,
+.vesitable-item > div:last-child p {
+    color: var(--bs-gray-600);
+    font-size: .9rem;
+}
+
+.fruite-item > div:last-child > div,
+.vesitable-item > div:last-child > div {
+    align-items: center;
+}
+
+.fruite-item > div:last-child .btn,
+.vesitable-item > div:last-child .btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0;
+}
+
+.fruite-item > div:last-child .btn i,
+.vesitable-item > div:last-child .btn i {
+    margin: 0 !important;
+    font-size: 1rem;
+}
+
+.fruite-item .wishlist-button,
+.vesitable-item .wishlist-button {
+    top: 14px;
+    right: 14px;
+}
+
 .shop-avatar {
     width: 68px;
     height: 68px;
