@@ -11,6 +11,27 @@
     };
     spinner(0);
 
+    // Keep the original template pages intact while using the Bazaar Chalo home flow.
+    var bazaarHome = document.getElementById('bazaar-home-content');
+    if (bazaarHome) {
+        var removeLegacy = false;
+        var homeFooter = document.querySelector('.footer')?.closest('.container-fluid');
+        Array.from(document.body.children).forEach(function (child) {
+            if (child === bazaarHome) {
+                removeLegacy = true;
+                return;
+            }
+
+            if (removeLegacy && child !== homeFooter && child.tagName !== 'SCRIPT') {
+                child.remove();
+            }
+
+            if (child === homeFooter) {
+                removeLegacy = false;
+            }
+        });
+    }
+
     // Wishlist buttons on product cards
     var addWishlistButton = function (card) {
         if (!card || card.querySelector('.wishlist-button')) {
