@@ -77,6 +77,16 @@
         'contact.html': 'Contact Bazaar Chalo',
         'cart.html': 'Your Cart - Bazaar Chalo',
         'chackout.html': 'Checkout - Bazaar Chalo',
+        'order-success.html': 'Order Success - Bazaar Chalo',
+        'order-tracking.html': 'Order Tracking - Bazaar Chalo',
+        'account.html': 'My Account - Bazaar Chalo',
+        'profile.html': 'Profile - Bazaar Chalo',
+        'my-orders.html': 'My Orders - Bazaar Chalo',
+        'wishlist.html': 'Wishlist - Bazaar Chalo',
+        'addresses.html': 'Addresses - Bazaar Chalo',
+        'order-detail.html': 'Order Detail - Bazaar Chalo',
+        'about.html': 'About Bazaar Chalo',
+        'faq.html': 'FAQs - Bazaar Chalo',
         'offers.html': 'Fresh Offers - Bazaar Chalo',
         'login.html': 'Login - Bazaar Chalo',
         'register.html': 'Register Your Shop - Bazaar Chalo',
@@ -90,11 +100,20 @@
     var cartLink = document.querySelector('.fa-shopping-bag')?.closest('a');
     var accountLink = document.querySelector('.fa-user')?.closest('a');
     if (cartLink) cartLink.href = 'cart.html';
-    if (accountLink) accountLink.href = 'login.html';
+    if (accountLink) accountLink.href = 'account.html';
 
     document.querySelectorAll('.dropdown-menu').forEach(function (menu) {
         var links = [
             ['offers.html', 'Offers'],
+            ['about.html', 'About Us'],
+            ['faq.html', 'FAQs'],
+            ['order-tracking.html', 'Order Tracking'],
+            ['account.html', 'My Account'],
+            ['profile.html', 'Profile'],
+            ['my-orders.html', 'My Orders'],
+            ['wishlist.html', 'Wishlist'],
+            ['addresses.html', 'Addresses'],
+            ['order-detail.html', 'Order Detail'],
             ['login.html', 'Login'],
             ['register.html', 'Register']
         ];
