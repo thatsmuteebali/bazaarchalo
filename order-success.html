@@ -43,10 +43,10 @@
         <div class="container topbar bg-primary d-none d-lg-block">
             <div class="d-flex justify-content-between">
                 <div class="top-info ps-2">
-                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i><a href="#"
-                            class="text-white">Fresh delivery in your area</a></small>
+                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+                        <a href="#" class="text-white">123 Street, New York</a></small>
                     <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#"
-                            class="text-white">hello@bazaar-chalo.com</a></small>
+                            class="text-white">Email@Example.com</a></small>
                 </div>
                 <div class="top-link pe-2">
                     <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
@@ -61,21 +61,20 @@
                     <h1 class="text-primary display-6">Bazaar Chalo</h1>
                 </a>
                 <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse" aria-label="Toggle navigation">
+                    data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars text-primary"></span>
                 </button>
                 <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                     <div class="navbar-nav mx-auto">
-                        <a href="index.html" class="nav-item nav-link">Home</a>
+                        <a href="index.html" class="nav-item nav-link active">Home</a>
                         <a href="shop.html" class="nav-item nav-link">Shop</a>
-                        <a href="shop-detail.html" class="nav-item nav-link">Product Details</a>
+                        <a href="shop-detail.html" class="nav-item nav-link">Product Detail</a>
                         <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Pages</a>
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                             <div class="dropdown-menu m-0 bg-secondary rounded-0">
                                 <a href="offers.html" class="dropdown-item">Offers</a>
                                 <a href="cart.html" class="dropdown-item">Cart</a>
-                                <a href="chackout.html" class="dropdown-item">Checkout</a>
-                                <a href="order-success.html" class="dropdown-item active">Order Success</a>
+                                <a href="chackout.html" class="dropdown-item">Chackout</a>
                                 <a href="testimonial.html" class="dropdown-item">Testimonial</a>
                                 <a href="login.html" class="dropdown-item">Login</a>
                                 <a href="register.html" class="dropdown-item">Register</a>
@@ -87,16 +86,18 @@
                     <div class="d-flex m-3 me-0">
                         <button
                             class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
-                            data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Search">
+                            data-bs-toggle="modal" data-bs-target="#searchModal">
                             <i class="fas fa-search text-primary"></i>
                         </button>
-                        <a href="cart.html" class="position-relative me-4 my-auto" aria-label="Shopping cart">
+                        <a href="#" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-bag fa-2x"></i>
                             <span
                                 class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
                                 style="top: -5px; left: 15px; height: 20px; min-width: 20px">3</span>
                         </a>
-                        <a href="login.html" class="my-auto" aria-label="Account"><i class="fas fa-user fa-2x"></i></a>
+                        <a href="login.html" class="my-auto" aria-label="Account">
+                            <i class="fas fa-user fa-2x"></i>
+                        </a>
                     </div>
                 </div>
             </nav>
@@ -105,11 +106,13 @@
     <!-- Navbar End -->
 
     <!-- Modal Search Start -->
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content rounded-0">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="searchModalLabel">Search by keyword</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        Search by keyword
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex align-items-center">
@@ -191,15 +194,15 @@
             <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5)">
                 <div class="row g-4">
                     <div class="col-lg-3">
-                        <a href="index.html">
+                        <a href="#">
                             <h1 class="text-primary mb-0">Bazaar Chalo</h1>
                             <p class="text-secondary mb-0">Shop local. Live fresh.</p>
                         </a>
                     </div>
                     <div class="col-lg-6">
                         <div class="position-relative mx-auto">
-                            <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="email"
-                                placeholder="Your Email" aria-label="Your Email" />
+                            <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number"
+                                placeholder="Your Email" />
                             <button type="submit"
                                 class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white"
                                 style="top: 0; right: 0">
@@ -209,54 +212,66 @@
                     </div>
                     <div class="col-lg-3">
                         <div class="d-flex justify-content-end pt-3">
-                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"
-                                aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"
-                                aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"
-                                aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                            <a class="btn btn-outline-secondary btn-md-square rounded-circle" href="#"
-                                aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
+                                    class="fab fa-twitter"></i></a>
+                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
+                                    class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i
+                                    class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="row g-5">
                 <div class="col-lg-3 col-md-6">
-                    <div class="footer-item">
-                        <h4 class="text-light mb-3">Why shoppers choose us</h4>
-                        <p class="mb-4">
-                            Fresh products, friendly service, and quality you can trust from
-                            sellers near you.
-                        </p>
-                        <a href="shop.html" class="btn border-secondary py-2 px-4 rounded-pill text-primary">Shop
-                            now</a>
+                    <div class="d-flex flex-column text-start footer-item">
+                        <h4 class="text-light mb-3">Bazaar Chalo</h4>
+                        <a class="btn-link" href="about.html">About Us</a>
+                        <a class="btn-link" href="contact.html">Contact Us</a>
+                        <a class="btn-link" href="#">Careers</a>
+                        <a class="btn-link" href="#">Become a Seller</a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="d-flex flex-column text-start footer-item">
-                        <h4 class="text-light mb-3">Shop Info</h4>
-                        <a class="btn-link" href="contact.html">Contact Us</a><a class="btn-link" href="#">Privacy
-                            Policy</a><a class="btn-link" href="#">Terms & Condition</a><a class="btn-link"
-                            href="#">FAQs & Help</a>
+                        <h4 class="text-light mb-3">Customer</h4>
+                        <a class="btn-link" href="login.html">Login</a>
+                        <a class="btn-link" href="register.html">Register</a>
+                        <a class="btn-link" href="account.html">My Account</a>
+                        <a class="btn-link" href="my-orders.html">My Orders</a>
+                        <a class="btn-link" href="order-tracking.html">Track Order</a>
+                        <a class="btn-link" href="faq.html">FAQ /Help Center</a>
+                        <a class="btn-link" href="">Return</a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="d-flex flex-column text-start footer-item">
-                        <h4 class="text-light mb-3">Account</h4>
-                        <a class="btn-link" href="login.html">My Account</a><a class="btn-link"
-                            href="shop-detail.html">Product Details</a><a class="btn-link" href="cart.html">Shopping
-                            Cart</a><a class="btn-link" href="chackout.html">Checkout</a>
+                        <h4 class="text-light mb-3">Seller</h4>
+                        <a class="btn-link" href="login.html">Seller Login</a>
+                        <a class="btn-link" href="register.html">Seller Registration</a>
+                        <a class="btn-link" href="faq.html">Seller Guide</a>
+                        <a class="btn-link" href="faq.html">Seller Support</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex flex-column text-start footer-item">
+                        <h4 class="text-light mb-3">Policies</h4>
+                        <a class="btn-link" href="">Privacy Policy</a>
+                        <a class="btn-link" href="">Terms & Conditions</a>
+                        <a class="btn-link" href="">Refund Policy</a>
+                        <a class="btn-link" href="">Delivery Policy</a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <div class="footer-item">
                         <h4 class="text-light mb-3">Contact</h4>
                         <p>Address: 1429 Netus Rd, NY 48247</p>
-                        <p>Email: hello@bazaar-chalo.com</p>
+                        <p>Email: Example@gmail.com</p>
                         <p>Phone: +0123 4567 8910</p>
                         <p>Payment Accepted</p>
-                        <img src="img/payment.png" class="img-fluid" alt="Accepted payment methods" />
+                        <img src="img/payment.png" class="img-fluid" alt="" />
                     </div>
                 </div>
             </div>
@@ -268,13 +283,19 @@
     <div class="container-fluid copyright bg-dark py-4">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    <span class="text-light"><a href="index.html"><i class="fas fa-copyright text-light me-2"></i>Bazaar
+                <div class="col-md-12 text-center mb-3 mb-md-0">
+                    <span class="text-light"><i class="fas fa-copyright text-light me-2"></i>2026: <a href="#"></i>Bazaar
                             Chalo</a>, All rights reserved.</span>
                 </div>
-                <div class="col-md-6 my-auto text-center text-md-end text-white">
-                    Fresh shopping from local sellers.
-                </div>
+                <!-- <div class="col-md-6 my-auto text-center text-md-end text-white"> -->
+                    <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
+                    <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
+                    <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
+                    <!-- Designed By
+                    <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                    Distributed By
+                    <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                </div> -->
             </div>
         </div>
     </div>
