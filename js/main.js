@@ -33,42 +33,42 @@
     }
 
     // Keep the shared template pages consistent with the Bazaar Chalo brand.
-    var pageCopy = {
-        'Fruitables': 'Bazaar Chalo',
-        'Your Site Name': 'Bazaar Chalo',
-        'Fresh products': 'Shop local. Live fresh.',
-        '123 Street, New York': 'Fresh delivery in your area',
-        'Email@Example.com': 'hello@bazaar-chalo.com',
-        'info@example.com': 'hello@bazaar-chalo.com',
-        'Example@gmail.com': 'hello@bazaar-chalo.com',
-        'Why People Like us!': 'Why shoppers choose us',
-        'Shop Detail': 'Product Details',
-        'Chackout': 'Checkout',
-        'Fresh fruits shop': 'Fresh products from local shops',
-        'Big Banana': 'Farm-fresh bananas',
-        'Awesome Brocoli': 'Fresh broccoli',
-        'Organic Tomato': 'Local organic tomatoes',
-        'Client Name': 'Bazaar Chalo customer',
-        'Profession': 'Local customer',
-        'Our Client Saying!': 'What our customers say',
-        'Our Testimonial': 'Customer stories',
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt': 'Fresh quality products from trusted local sellers.',
-        "Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,": 'Bazaar Chalo makes it easy to discover fresh products and support local shops.',
-        'The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.': 'Enjoy fresh quality produce from a trusted local seller, carefully selected for your everyday needs.',
-        'typesetting, remaining essentially unchanged. It was popularised in the 1960s with the like Aldus PageMaker including of Lorem Ipsum.': 'Fresh products, friendly service, and quality you can trust from sellers near you.'
-    };
+    // var pageCopy = {
+    //     'Fruitables': 'Bazaar Chalo',
+    //     'Your Site Name': 'Bazaar Chalo',
+    //     'Fresh products': 'Shop local. Live fresh.',
+    //     '123 Street, New York': 'Fresh delivery in your area',
+    //     'Email@Example.com': 'hello@bazaar-chalo.com',
+    //     'info@example.com': 'hello@bazaar-chalo.com',
+    //     'Example@gmail.com': 'hello@bazaar-chalo.com',
+    //     'Why People Like us!': 'Why shoppers choose us',
+    //     'Shop Detail': 'Product Details',
+    //     'Chackout': 'Checkout',
+    //     'Fresh fruits shop': 'Fresh products from local shops',
+    //     'Big Banana': 'Farm-fresh bananas',
+    //     'Awesome Brocoli': 'Fresh broccoli',
+    //     'Organic Tomato': 'Local organic tomatoes',
+    //     'Client Name': 'Bazaar Chalo customer',
+    //     'Profession': 'Local customer',
+    //     'Our Client Saying!': 'What our customers say',
+    //     'Our Testimonial': 'Customer stories',
+    //     'Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te incididunt': 'Fresh quality products from trusted local sellers.',
+    //     "Lorem Ipsum is simply dummy text of the printing Ipsum has been the industry's standard dummy text ever since the 1500s,": 'Bazaar Chalo makes it easy to discover fresh products and support local shops.',
+    //     'The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.': 'Enjoy fresh quality produce from a trusted local seller, carefully selected for your everyday needs.',
+    //     'typesetting, remaining essentially unchanged. It was popularised in the 1960s with the like Aldus PageMaker including of Lorem Ipsum.': 'Fresh products, friendly service, and quality you can trust from sellers near you.'
+    // };
 
-    var textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    var textNode;
-    while (textNode = textWalker.nextNode()) {
-        Object.keys(pageCopy).sort(function (first, second) {
-            return second.length - first.length;
-        }).forEach(function (source) {
-            if (textNode.nodeValue.indexOf(source) !== -1) {
-                textNode.nodeValue = textNode.nodeValue.split(source).join(pageCopy[source]);
-            }
-        });
-    }
+    // var textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    // var textNode;
+    // while (textNode = textWalker.nextNode()) {
+    //     Object.keys(pageCopy).sort(function (first, second) {
+    //         return second.length - first.length;
+    //     }).forEach(function (source) {
+    //         if (textNode.nodeValue.indexOf(source) !== -1) {
+    //             textNode.nodeValue = textNode.nodeValue.split(source).join(pageCopy[source]);
+    //         }
+    //     });
+    // }
 
     var titleMap = {
         'shop.html': 'Shop Fresh Products - Bazaar Chalo',
@@ -102,31 +102,31 @@
     if (cartLink) cartLink.href = 'cart.html';
     if (accountLink) accountLink.href = 'account.html';
 
-    document.querySelectorAll('.dropdown-menu').forEach(function (menu) {
-        var links = [
-            ['offers.html', 'Offers'],
-            ['about.html', 'About Us'],
-            ['faq.html', 'FAQs'],
-            ['order-tracking.html', 'Order Tracking'],
-            ['account.html', 'My Account'],
-            ['profile.html', 'Profile'],
-            ['my-orders.html', 'My Orders'],
-            ['wishlist.html', 'Wishlist'],
-            ['addresses.html', 'Addresses'],
-            ['order-detail.html', 'Order Detail'],
-            ['login.html', 'Login'],
-            ['register.html', 'Register']
-        ];
-        links.forEach(function (link) {
-            if (!menu.querySelector('a[href="' + link[0] + '"]')) {
-                var item = document.createElement('a');
-                item.href = link[0];
-                item.className = 'dropdown-item';
-                item.textContent = link[1];
-                menu.appendChild(item);
-            }
-        });
-    });
+    // document.querySelectorAll('.dropdown-menu').forEach(function (menu) {
+    //     var links = [
+    //         ['offers.html', 'Offers'],
+    //         ['about.html', 'About Us'],
+    //         ['faq.html', 'FAQs'],
+    //         ['order-tracking.html', 'Order Tracking'],
+    //         ['account.html', 'My Account'],
+    //         ['profile.html', 'Profile'],
+    //         ['my-orders.html', 'My Orders'],
+    //         ['wishlist.html', 'Wishlist'],
+    //         ['addresses.html', 'Addresses'],
+    //         ['order-detail.html', 'Order Detail'],
+    //         ['login.html', 'Login'],
+    //         ['register.html', 'Register']
+    //     ];
+    //     links.forEach(function (link) {
+    //         if (!menu.querySelector('a[href="' + link[0] + '"]')) {
+    //             var item = document.createElement('a');
+    //             item.href = link[0];
+    //             item.className = 'dropdown-item';
+    //             item.textContent = link[1];
+    //             menu.appendChild(item);
+    //         }
+    //     });
+    // });
 
     // Wishlist buttons on product cards
     var addWishlistButton = function (card) {
