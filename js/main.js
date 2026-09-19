@@ -32,37 +32,6 @@
         });
     }
 
-    var titleMap = {
-        'shop.html': 'Shop Fresh Products - Bazaar Chalo',
-        'shop-detail.html': 'Product Details - Bazaar Chalo',
-        'testimonial.html': 'Customer Stories - Bazaar Chalo',
-        'contact.html': 'Contact Bazaar Chalo',
-        'cart.html': 'Your Cart - Bazaar Chalo',
-        'chackout.html': 'Checkout - Bazaar Chalo',
-        'order-success.html': 'Order Success - Bazaar Chalo',
-        'order-tracking.html': 'Order Tracking - Bazaar Chalo',
-        'account.html': 'My Account - Bazaar Chalo',
-        'profile.html': 'Profile - Bazaar Chalo',
-        'my-orders.html': 'My Orders - Bazaar Chalo',
-        'wishlist.html': 'Wishlist - Bazaar Chalo',
-        'addresses.html': 'Addresses - Bazaar Chalo',
-        'order-detail.html': 'Order Detail - Bazaar Chalo',
-        'about.html': 'About Bazaar Chalo',
-        'privacy-policy.html': 'Privacy Policy - Bazaar Chalo',
-        'terms-and-conditions.html': 'Terms and Conditions - Bazaar Chalo',
-        'refund-policy.html': 'Refund Policy - Bazaar Chalo',
-        'delivery-policy.html': 'Delivery Policy - Bazaar Chalo',
-        'faq.html': 'FAQs - Bazaar Chalo',
-        'offers.html': 'Fresh Offers - Bazaar Chalo',
-        'login.html': 'Login - Bazaar Chalo',
-        'register.html': 'Register Your Shop - Bazaar Chalo',
-        '404.html': 'Page Not Found - Bazaar Chalo'
-    };
-    var currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    if (titleMap[currentPage]) {
-        document.title = titleMap[currentPage];
-    }
-
     var cartLink = document.querySelector('.fa-shopping-bag')?.closest('a');
     var accountLink = document.querySelector('.fa-user')?.closest('a');
     if (cartLink) cartLink.href = 'cart.html';
