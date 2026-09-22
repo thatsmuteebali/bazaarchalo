@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Shop by Category - Bazaar Chalo</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="Browse fresh local produce and everyday essentials by category." name="description" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
+    </div>
+
+    <div class="container-fluid fixed-top">
+        <div class="container topbar bg-primary d-none d-lg-block">
+            <div class="d-flex justify-content-between">
+                <div class="top-info ps-2">
+                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i><a href="#" class="text-white">123 Street, New York</a></small>
+                    <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small>
+                </div>
+                <div class="top-link pe-2">
+                    <a href="privacy-policy.html" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
+                    <a href="terms-and-conditions.html" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+                    <a href="refund-policy.html" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+                </div>
+            </div>
+        </div>
+        <div class="container px-0">
+            <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                <a href="index.html" class="navbar-brand"><h1 class="text-primary display-6">Bazaar Chalo</h1></a>
+                <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-label="Toggle navigation"><span class="fa fa-bars text-primary"></span></button>
+                <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto">
+                        <a href="index.html" class="nav-item nav-link">Home</a>
+                        <a href="shop.html" class="nav-item nav-link">Shop</a>
+                        <div class="nav-item dropdown mega-menu-wrapper"><a href="category-listing.html" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" aria-expanded="false">Categories</a><div class="dropdown-menu mega-menu p-4"><div class="row g-3"><div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img src="img/fruite-item-1.jpg" alt="Fresh fruits" /><span>Fresh Fruits</span></a></div><div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img src="img/vegetable-item-1.jpg" alt="Vegetables" /><span>Vegetables</span></a></div><div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img src="img/fruite-item-3.jpg" alt="Bananas" /><span>Bananas</span></a></div><div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img src="img/fruite-item-5.jpg" alt="Grapes" /><span>Grapes</span></a></div><div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img src="img/vegetable-item-4.jpg" alt="Bell peppers" /><span>Bell Peppers</span></a></div><div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img src="img/vegetable-item-5.jpg" alt="Potatoes" /><span>Potatoes</span></a></div><div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img src="img/featur-2.jpg" alt="Bakery and pantry" /><span>Bakery &amp; Pantry</span></a></div><div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img src="img/featur-3.jpg" alt="Seasonal offers" /><span>Seasonal Offers</span></a></div></div><a href="category-listing.html" class="mega-menu-link">View all categories <i class="fas fa-arrow-right ms-2"></i></a></div></div>
+                        <a href="shop-listing.html" class="nav-item nav-link">Shops</a>
+                        <a href="shop.html" class="nav-item nav-link">Products</a>
+                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <div class="d-flex m-3 me-0">
+                        <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Open search"><i class="fas fa-search text-primary"></i></button>
+                        <a href="cart.html" class="position-relative me-4 my-auto" aria-label="Shopping cart"><i class="fa fa-shopping-bag fa-2x"></i><span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px">3</span></a>
+                        <a href="login.html" class="my-auto" aria-label="Account"><i class="fas fa-user fa-2x"></i></a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen"><div class="modal-content rounded-0"><div class="modal-header"><h5 class="modal-title" id="searchModalLabel">Search by keyword</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body d-flex align-items-center"><div class="input-group w-75 mx-auto"><input type="search" class="form-control p-3" placeholder="Search products or shops" aria-label="Search products or shops" /><button class="input-group-text p-3" type="button" aria-label="Search"><i class="fa fa-search"></i></button></div></div></div></div>
+    </div>
+
+    <header class="container-fluid page-header py-5">
+        <div class="container text-center py-5"><p class="text-secondary fw-bold text-uppercase mb-2">Find your favourites</p><h1 class="text-white display-5 mb-3">Shop by Category</h1><p class="text-white mb-0">Fresh picks and everyday essentials from trusted local sellers.</p><ol class="breadcrumb justify-content-center mt-4 mb-0"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item active text-white">Categories</li></ol></div>
+    </header>
+
+    <main>
+        <section class="container-fluid py-5 bazaar-section">
+            <div class="container py-4">
+                <div class="category-listing-intro d-flex flex-wrap justify-content-between align-items-end mb-5">
+                    <div><p class="text-secondary fw-bold text-uppercase mb-2">Curated for your kitchen</p><h2 class="display-6 mb-2">Everything fresh, all in one place</h2><p class="text-muted mb-0">Choose a category to discover products available from shops near you.</p></div>
+                    <a href="shop.html" class="btn btn-primary rounded-pill px-4 mt-3 mt-lg-0">Browse all products <i class="fas fa-arrow-right ms-2"></i></a>
+                </div>
+                <div class="row g-4">
+                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="directory-card"><img src="img/fruite-item-1.jpg" alt="Fresh fruits" /><span><strong>Fresh Fruits</strong><small>48 products</small></span><i class="fas fa-arrow-right"></i></a></div>
+                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="directory-card"><img src="img/vegetable-item-1.jpg" alt="Vegetables" /><span><strong>Vegetables</strong><small>62 products</small></span><i class="fas fa-arrow-right"></i></a></div>
+                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="directory-card"><img src="img/fruite-item-3.jpg" alt="Bananas" /><span><strong>Bananas</strong><small>14 products</small></span><i class="fas fa-arrow-right"></i></a></div>
+                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="directory-card"><img src="img/fruite-item-5.jpg" alt="Grapes" /><span><strong>Grapes</strong><small>19 products</small></span><i class="fas fa-arrow-right"></i></a></div>
+                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="directory-card"><img src="img/vegetable-item-4.jpg" alt="Bell peppers" /><span><strong>Bell Peppers</strong><small>16 products</small></span><i class="fas fa-arrow-right"></i></a></div>
+                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="directory-card"><img src="img/vegetable-item-5.jpg" alt="Potatoes" /><span><strong>Potatoes</strong><small>23 products</small></span><i class="fas fa-arrow-right"></i></a></div>
+                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="directory-card"><img src="img/featur-2.jpg" alt="Bakery and pantry" /><span><strong>Bakery & Pantry</strong><small>37 products</small></span><i class="fas fa-arrow-right"></i></a></div>
+                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="directory-card"><img src="img/featur-3.jpg" alt="Seasonal offers" /><span><strong>Seasonal Offers</strong><small>21 products</small></span><i class="fas fa-arrow-right"></i></a></div>
+                </div>
+            </div>
+        </section>
+        <section class="container-fluid py-5 bg-light"><div class="container py-4"><div class="directory-banner rounded p-4 p-lg-5 d-flex flex-wrap align-items-center justify-content-between"><div><p class="text-secondary fw-bold text-uppercase mb-2">Local is always in season</p><h2 class="mb-2">Good food starts close to home.</h2><p class="mb-0 text-muted">Explore nearby sellers and support the people who make your neighbourhood special.</p></div><a href="shop-listing.html" class="btn btn-primary rounded-pill px-4 mt-4 mt-lg-0">Explore local shops <i class="fas fa-store ms-2"></i></a></div></div></section>
+    </main>
+
+    <footer class="container-fluid bg-dark text-white-50 footer pt-5"><div class="container py-5"><div class="row g-5"><div class="col-lg-4"><h2 class="text-primary mb-2">Bazaar Chalo</h2><p class="mb-4">Shop local. Live fresh.</p><p class="mb-0">Fresh products, trusted sellers, and easy delivery for every home.</p></div><div class="col-lg-4"><h4 class="text-light mb-3">Helpful links</h4><a class="btn-link d-block" href="about.html">About Us</a><a class="btn-link d-block" href="faq.html">FAQ / Help Center</a><a class="btn-link d-block" href="delivery-policy.html">Delivery Policy</a><a class="btn-link d-block" href="contact.html">Contact Us</a></div><div class="col-lg-4"><h4 class="text-light mb-3">Contact</h4><p>1429 Netus Rd, NY 48247</p><p>Email: Example@gmail.com</p><p>Phone: +0123 4567 8910</p></div></div></div></footer>
+    <div class="container-fluid copyright bg-dark py-4"><div class="container text-center"><span class="text-light"><i class="fas fa-copyright me-2"></i>2026: <a href="index.html">Bazaar Chalo</a>, All rights reserved.</span></div></div>
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" aria-label="Back to top"><i class="fa fa-arrow-up"></i></a>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script><script src="js/main.js"></script>
+</body>
+
+</html>

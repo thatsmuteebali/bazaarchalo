@@ -49,9 +49,9 @@
                             class="text-white">Email@Example.com</a></small>
                 </div>
                 <div class="top-link pe-2">
-                    <a href="privacy-policy.html" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
-                    <a href="terms-and-conditions.html" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
-                    <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
+                    <a href="https://www.facebook.com/" class="text-white" target="_blank"><small class="text-white mx-2">Facebook</small>/</a>
+                    <a href="https://www.instagram.com/" class="text-white" target="_blank"><small class="text-white mx-2">Instagram</small>/</a>
+                    <a href="https://www.tiktok.com/" class="text-white" target="_blank"><small class="text-white ms-2">Tiktok</small></a>
                 </div>
             </div>
         </div>
@@ -67,24 +67,63 @@
                 <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                     <div class="navbar-nav mx-auto">
                         <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="shop.html" class="nav-item nav-link">Shop</a>
-                        <a href="shop-detail.html" class="nav-item nav-link">Product Detail</a>
-                        
+                        <div class="nav-item dropdown mega-menu-wrapper"><a href="category-listing.html"
+                                class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">Categories</a>
+                            <div class="dropdown-menu mega-menu p-4">
+                                <div class="row g-3">
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-1.jpg" alt="Fresh fruits" /><span>Fresh
+                                                Fruits</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-1.jpg"
+                                                alt="Vegetables" /><span>Vegetables</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-3.jpg" alt="Bananas" /><span>Bananas</span></a>
+                                    </div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-5.jpg" alt="Grapes" /><span>Grapes</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-4.jpg" alt="Bell peppers" /><span>Bell
+                                                Peppers</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-5.jpg"
+                                                alt="Potatoes" /><span>Potatoes</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/featur-2.jpg" alt="Bakery and pantry" /><span>Bakery &amp;
+                                                Pantry</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/featur-3.jpg" alt="Seasonal offers" /><span>Seasonal
+                                                Offers</span></a></div>
+                                </div><a href="category-listing.html" class="mega-menu-link">View all categories <i
+                                        class="fas fa-arrow-right ms-2"></i></a>
+                            </div>
+                        </div>
+
                         <a href="contact.html" class="nav-item nav-link">Contact</a>
                     </div>
-                    <div class="d-flex m-3 me-0">
+                    <div class="d-flex align-items-center m-3 me-0">
+                        <div class="nav-search-box" id="navSearchBox">
+                            <i class="fas fa-search nav-search-icon"></i>
+                            <input type="search" class="nav-search-input" id="navSearchInput"
+                                placeholder="Search for a product..." aria-label="Search for a product" />
+                            <!-- <button type="button" class="nav-search-close" id="navSearchClose"
+                                aria-label="Close search">
+                                <i class="fas fa-times"></i>
+                            </button> -->
+                        </div>
                         <button
                             class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
-                            data-bs-toggle="modal" data-bs-target="#searchModal">
+                            id="navSearchToggle" aria-expanded="false" aria-controls="navSearchBox" aria-label="Search">
                             <i class="fas fa-search text-primary"></i>
                         </button>
-                        <a href="#" class="position-relative me-4 my-auto">
+                        <a href="cart.html" class="position-relative me-4 my-auto">
                             <i class="fa fa-shopping-bag fa-2x"></i>
                             <span
                                 class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
                                 style="top: -5px; left: 15px; height: 20px; min-width: 20px">3</span>
                         </a>
-                        <a href="login.html" class="my-auto" aria-label="Account">
+                        <a href="account.html" class="my-auto" aria-label="Account">
                             <i class="fas fa-user fa-2x"></i>
                         </a>
                     </div>
@@ -93,28 +132,6 @@
         </div>
     </div>
     <!-- Navbar End -->
-
-    <!-- Modal Search Start -->
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content rounded-0">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                        Search by keyword
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex align-items-center">
-                    <div class="input-group w-75 mx-auto d-flex">
-                        <input type="search" class="form-control p-3" placeholder="keywords"
-                            aria-describedby="search-icon-1" />
-                        <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal Search End -->
 
     <!-- Hero Start -->
     <div class="container-fluid py-5 mb-5 hero-header">
@@ -126,12 +143,13 @@
                         Your Local Bazaar, Delivered
                     </h1>
                     <div class="position-relative mx-auto">
-                        <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="number"
-                            placeholder="Search" />
+                        <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="search"
+                            name="product-search" placeholder="Search for a product..."
+                            aria-label="Search for a product" />
                         <button type="submit"
                             class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100"
                             style="top: 0; right: 25%">
-                            Submit Now
+                            Search
                         </button>
                     </div>
                 </div>
@@ -177,7 +195,8 @@
                         </p>
                         <h2 class="display-6 mb-0">Popular Categories</h2>
                     </div>
-                    <a href="shop.html" class="btn border border-secondary rounded-pill px-4 text-primary">View all
+                    <a href="category-listing.html"
+                        class="btn border border-secondary rounded-pill px-4 text-primary">View all
                         categories <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
                 <div class="row g-4">
@@ -219,7 +238,8 @@
                         </p>
                         <h2 class="display-6 mb-0">Popular Shops Near You</h2>
                     </div>
-                    <a href="shop.html" class="btn border border-secondary rounded-pill px-4 text-primary">Explore shops
+                    <a href="shop-listing.html"
+                        class="btn border border-secondary rounded-pill px-4 text-primary">Explore shops
                         <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
                 <div class="row g-4">
@@ -1984,14 +2004,14 @@
     <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
         <div class="container py-5">
             <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5)">
-                <div class="row g-4">
-                    <div class="col-lg-3">
+                <div class="d-flex flex-column flex-md-row align-items-start justify-content-between">
+                    <div class="">
                         <a href="#">
                             <h1 class="text-primary mb-0">Bazaar Chalo</h1>
                             <p class="text-secondary mb-0">Shop local. Live fresh.</p>
                         </a>
                     </div>
-                    <div class="col-lg-6">
+                    <!-- <div class="col-lg-6">
                         <div class="position-relative mx-auto">
                             <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number"
                                 placeholder="Your Email" />
@@ -2001,8 +2021,8 @@
                                 Subscribe Now
                             </button>
                         </div>
-                    </div>
-                    <div class="col-lg-3">
+                    </div> -->
+                    <div class="">
                         <div class="d-flex justify-content-end pt-3">
                             <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
                                     class="fab fa-twitter"></i></a>
@@ -2036,6 +2056,10 @@
                         <a class="btn-link" href="order-tracking.html">Track Order</a>
                         <a class="btn-link" href="faq.html">FAQ /Help Center</a>
                         <a class="btn-link" href="">Return</a>
+                        <a class="btn-link" href="privacy-policy.html">Privacy Policy</a>
+                        <a class="btn-link" href="terms-and-conditions.html">Terms & Conditions</a>
+                        <a class="btn-link" href="refund-policy.html">Refund Policy</a>
+                        <a class="btn-link" href="delivery-policy.html">Delivery Policy</a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
@@ -2045,15 +2069,6 @@
                         <a class="btn-link" href="register.html">Seller Registration</a>
                         <a class="btn-link" href="faq.html">Seller Guide</a>
                         <a class="btn-link" href="faq.html">Seller Support</a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="d-flex flex-column text-start footer-item">
-                        <h4 class="text-light mb-3">Policies</h4>
-                        <a class="btn-link" href="privacy-policy.html">Privacy Policy</a>
-                        <a class="btn-link" href="terms-and-conditions.html">Terms & Conditions</a>
-                        <a class="btn-link" href="refund-policy.html">Refund Policy</a>
-                        <a class="btn-link" href="delivery-policy.html">Delivery Policy</a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
@@ -2076,14 +2091,15 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center mb-3 mb-md-0">
-                    <span class="text-light"><i class="fas fa-copyright text-light me-2"></i>2026: <a href="#"></i>Bazaar
+                    <span class="text-light"><i class="fas fa-copyright text-light me-2"></i>2026: <a
+                            href="#"></i>Bazaar
                             Chalo</a>, All rights reserved.</span>
                 </div>
                 <!-- <div class="col-md-6 my-auto text-center text-md-end text-white"> -->
-                    <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
-                    <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
-                    <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
-                    <!-- Designed By
+                <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
+                <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
+                <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
+                <!-- Designed By
                     <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
                     Distributed By
                     <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
