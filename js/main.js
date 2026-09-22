@@ -39,7 +39,6 @@
     if (cartLink) cartLink.href = "cart.html";
     if (accountLink) accountLink.href = "account.html";
 
-    // Build one consistent mega menu for every template page.
     $(".mega-menu-wrapper").each(function () {
         var wrapper = $(this);
         var trigger = wrapper.children(".nav-link");
@@ -58,37 +57,7 @@
             })
             .removeAttr("data-bs-toggle");
 
-        menu.html(
-            '<div class="mega-menu-content">' +
-            '<div class="mega-menu-columns">' +
-            '<div class="mega-menu-column">' +
-            '<p class="mega-menu-heading">Fresh produce</p>' +
-            '<a href="shop.html">Fresh fruits</a>' +
-            '<a href="shop.html">Vegetables</a>' +
-            '<a href="shop.html">Bananas</a>' +
-            '<a href="shop.html">Grapes</a>' +
-            "</div>" +
-            '<div class="mega-menu-column">' +
-            '<p class="mega-menu-heading">Everyday essentials</p>' +
-            '<a href="shop.html">Bell peppers</a>' +
-            '<a href="shop.html">Potatoes</a>' +
-            '<a href="shop.html">Bakery and pantry</a>' +
-            '<a href="shop.html">Dairy and eggs</a>' +
-            "</div>" +
-            '<div class="mega-menu-column">' +
-            '<p class="mega-menu-heading">Shop by occasion</p>' +
-            '<a href="shop.html">Seasonal offers</a>' +
-            '<a href="shop.html">Organic picks</a>' +
-            '<a href="shop.html">Family favourites</a>' +
-            '<a href="shop.html">New arrivals</a>' +
-            "</div>" +
-            "</div>" +
-            '<a href="category-listing.html" class="mega-menu-feature">' +
-            '<img src="img/featur-2.jpg" alt="Fresh groceries from local sellers">' +
-            '<span><strong>Fresh picks, close to home</strong><small>Explore all categories <i class="fas fa-arrow-right"></i></small></span>' +
-            "</a>" +
-            "</div>",
-        );
+        // Content is now hardcoded in the HTML — no injection needed here.
 
         trigger.on("click", function (event) {
             if (window.innerWidth < 1200) {
