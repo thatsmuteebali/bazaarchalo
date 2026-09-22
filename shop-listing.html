@@ -6,42 +6,379 @@
     <title>Local Shops Near You - Bazaar Chalo</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="Discover trusted local shops and fresh sellers near you." name="description" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" /><link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="css/bootstrap.min.css" rel="stylesheet" /><link href="css/style.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
 </head>
 
 <body>
-    <div id="spinner" class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"><div class="spinner-grow text-primary" role="status"></div></div>
-    <div class="container-fluid fixed-top">
-        <div class="container topbar bg-primary d-none d-lg-block"><div class="d-flex justify-content-between"><div class="top-info ps-2"><small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i><a href="#" class="text-white">123 Street, New York</a></small><small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#" class="text-white">Email@Example.com</a></small></div><div class="top-link pe-2"><a href="privacy-policy.html" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a><a href="terms-and-conditions.html" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a><a href="refund-policy.html" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a></div></div></div>
-        <div class="container px-0"><nav class="navbar navbar-light bg-white navbar-expand-xl"><a href="index.html" class="navbar-brand"><h1 class="text-primary display-6">Bazaar Chalo</h1></a><button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-label="Toggle navigation"><span class="fa fa-bars text-primary"></span></button><div class="collapse navbar-collapse bg-white" id="navbarCollapse"><div class="navbar-nav mx-auto"><a href="index.html" class="nav-item nav-link">Home</a><a href="category-listing.html" class="nav-item nav-link">Categories</a><a href="shop-listing.html" class="nav-item nav-link active">Shops</a><a href="shop.html" class="nav-item nav-link">Products</a><a href="contact.html" class="nav-item nav-link">Contact</a></div><div class="d-flex m-3 me-0"><button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4" data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Open search"><i class="fas fa-search text-primary"></i></button><a href="cart.html" class="position-relative me-4 my-auto" aria-label="Shopping cart"><i class="fa fa-shopping-bag fa-2x"></i><span class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1" style="top: -5px; left: 15px; height: 20px; min-width: 20px">3</span></a><a href="login.html" class="my-auto" aria-label="Account"><i class="fas fa-user fa-2x"></i></a></div></div></nav></div>
+    <div id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status"></div>
     </div>
-    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true"><div class="modal-dialog modal-fullscreen"><div class="modal-content rounded-0"><div class="modal-header"><h5 class="modal-title" id="searchModalLabel">Search by keyword</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body d-flex align-items-center"><div class="input-group w-75 mx-auto"><input type="search" class="form-control p-3" placeholder="Search products or shops" aria-label="Search products or shops" /><button class="input-group-text p-3" type="button" aria-label="Search"><i class="fa fa-search"></i></button></div></div></div></div></div>
+    <!-- Navbar start -->
+    <div class="container-fluid fixed-top">
+        <div class="container topbar bg-primary d-none d-lg-block">
+            <div class="d-flex justify-content-between">
+                <div class="top-info ps-2">
+                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+                        <a href="#" class="text-white">123 Street, New York</a></small>
+                    <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#"
+                            class="text-white">Email@Example.com</a></small>
+                </div>
+                <div class="top-link pe-2">
+                    <a href="https://www.facebook.com/" class="text-white" target="_blank"><small class="text-white mx-2">Facebook</small>/</a>
+                    <a href="https://www.instagram.com/" class="text-white" target="_blank"><small class="text-white mx-2">Instagram</small>/</a>
+                    <a href="https://www.tiktok.com/" class="text-white" target="_blank"><small class="text-white ms-2">Tiktok</small></a>
+                </div>
+            </div>
+        </div>
+        <div class="container px-0">
+            <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                <a href="index.html" class="navbar-brand">
+                    <h1 class="text-primary display-6">Bazaar Chalo</h1>
+                </a>
+                <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars text-primary"></span>
+                </button>
+                <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto">
+                        <a href="index.html" class="nav-item nav-link active">Home</a>
+                        <div class="nav-item dropdown mega-menu-wrapper"><a href="category-listing.html"
+                                class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">Categories</a>
+                            <div class="dropdown-menu mega-menu p-4">
+                                <div class="row g-3">
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-1.jpg" alt="Fresh fruits" /><span>Fresh
+                                                Fruits</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-1.jpg"
+                                                alt="Vegetables" /><span>Vegetables</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-3.jpg" alt="Bananas" /><span>Bananas</span></a>
+                                    </div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-5.jpg" alt="Grapes" /><span>Grapes</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-4.jpg" alt="Bell peppers" /><span>Bell
+                                                Peppers</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-5.jpg"
+                                                alt="Potatoes" /><span>Potatoes</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/featur-2.jpg" alt="Bakery and pantry" /><span>Bakery &amp;
+                                                Pantry</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/featur-3.jpg" alt="Seasonal offers" /><span>Seasonal
+                                                Offers</span></a></div>
+                                </div><a href="category-listing.html" class="mega-menu-link">View all categories <i
+                                        class="fas fa-arrow-right ms-2"></i></a>
+                            </div>
+                        </div>
 
-    <header class="container-fluid page-header py-5"><div class="container text-center py-5"><p class="text-secondary fw-bold text-uppercase mb-2">Fresh from your neighbourhood</p><h1 class="text-white display-5 mb-3">Popular Shops Near You</h1><p class="text-white mb-0">Meet the local sellers behind the products you love.</p><ol class="breadcrumb justify-content-center mt-4 mb-0"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item active text-white">Shops</li></ol></div></header>
+                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <div class="d-flex align-items-center m-3 me-0">
+                        <div class="nav-search-box" id="navSearchBox">
+                            <i class="fas fa-search nav-search-icon"></i>
+                            <input type="search" class="nav-search-input" id="navSearchInput"
+                                placeholder="Search for a product..." aria-label="Search for a product" />
+                            <!-- <button type="button" class="nav-search-close" id="navSearchClose"
+                                aria-label="Close search">
+                                <i class="fas fa-times"></i>
+                            </button> -->
+                        </div>
+                        <button
+                            class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+                            id="navSearchToggle" aria-expanded="false" aria-controls="navSearchBox" aria-label="Search">
+                            <i class="fas fa-search text-primary"></i>
+                        </button>
+                        <a href="cart.html" class="position-relative me-4 my-auto">
+                            <i class="fa fa-shopping-bag fa-2x"></i>
+                            <span
+                                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+                                style="top: -5px; left: 15px; height: 20px; min-width: 20px">3</span>
+                        </a>
+                        <a href="account.html" class="my-auto" aria-label="Account">
+                            <i class="fas fa-user fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Navbar End -->
+    
+
+    <header class="container-fluid page-header py-5">
+        <div class="container text-center py-5">
+            <p class="text-secondary fw-bold text-uppercase mb-2">
+                Fresh from your neighbourhood
+            </p>
+            <h1 class="text-white display-5 mb-3">Popular Shops Near You</h1>
+            <p class="text-white mb-0">
+                Meet the local sellers behind the products you love.
+            </p>
+            <ol class="breadcrumb justify-content-center mt-4 mb-0">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active text-white">Shops</li>
+            </ol>
+        </div>
+    </header>
 
     <main>
-        <section class="container-fluid py-5 bazaar-section"><div class="container py-4">
-            <div class="d-flex flex-wrap justify-content-between align-items-end mb-4"><div><p class="text-secondary fw-bold text-uppercase mb-2">Your local marketplace</p><h2 class="display-6 mb-2">Find a shop you can trust</h2><p class="text-muted mb-0">Fresh produce and pantry essentials, delivered from sellers near you.</p></div><span class="shop-result-count mt-3 mt-lg-0"><i class="fas fa-map-marker-alt text-secondary me-2"></i>Showing shops near New York</span></div>
-            <div class="shop-directory-toolbar bg-light rounded p-3 mb-5"><div class="row g-3 align-items-center"><div class="col-lg-6"><div class="input-group"><span class="input-group-text bg-white border-0"><i class="fas fa-search text-primary"></i></span><input type="search" class="form-control border-0 py-3" placeholder="Search by shop name or speciality" aria-label="Search shops" /></div></div><div class="col-sm-6 col-lg-3"><select class="form-select border-0 py-3" aria-label="Filter shops by delivery"><option>All delivery options</option><option>Free delivery</option><option>Same-day delivery</option></select></div><div class="col-sm-6 col-lg-3"><select class="form-select border-0 py-3" aria-label="Sort shops"><option>Recommended</option><option>Highest rated</option><option>Nearest first</option></select></div></div></div>
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-4"><article class="seller-directory-card h-100"><div class="seller-directory-head"><img src="img/best-product-1.jpg" alt="Green Basket" class="shop-avatar rounded-circle" /><span class="seller-status"><i class="fas fa-circle"></i> Open now</span></div><h4 class="mt-4 mb-2">Green Basket</h4><p class="text-muted mb-3">Everyday fruits and vegetables, picked fresh from nearby farms.</p><div class="seller-meta"><span><i class="fas fa-star text-secondary me-1"></i>4.9 <small>(128)</small></span><span><i class="fas fa-map-marker-alt text-secondary me-1"></i>1.2 km</span></div><div class="seller-tags"><span>Fresh produce</span><span>Organic</span></div><a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i class="fas fa-arrow-right ms-2"></i></a></article></div>
-                <div class="col-md-6 col-lg-4"><article class="seller-directory-card h-100"><div class="seller-directory-head"><img src="img/best-product-2.jpg" alt="Daily Harvest" class="shop-avatar rounded-circle" /><span class="seller-status"><i class="fas fa-circle"></i> Open now</span></div><h4 class="mt-4 mb-2">Daily Harvest</h4><p class="text-muted mb-3">Local produce and pantry essentials for the whole family.</p><div class="seller-meta"><span><i class="fas fa-star text-secondary me-1"></i>4.8 <small>(94)</small></span><span><i class="fas fa-map-marker-alt text-secondary me-1"></i>2.4 km</span></div><div class="seller-tags"><span>Pantry</span><span>Same-day delivery</span></div><a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i class="fas fa-arrow-right ms-2"></i></a></article></div>
-                <div class="col-md-6 col-lg-4"><article class="seller-directory-card h-100"><div class="seller-directory-head"><img src="img/best-product-3.jpg" alt="Nature's Store" class="shop-avatar rounded-circle" /><span class="seller-status"><i class="fas fa-circle"></i> Open now</span></div><h4 class="mt-4 mb-2">Nature's Store</h4><p class="text-muted mb-3">Organic choices and seasonal favourites from local sellers.</p><div class="seller-meta"><span><i class="fas fa-star text-secondary me-1"></i>4.7 <small>(76)</small></span><span><i class="fas fa-map-marker-alt text-secondary me-1"></i>3.1 km</span></div><div class="seller-tags"><span>Organic</span><span>Seasonal</span></div><a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i class="fas fa-arrow-right ms-2"></i></a></article></div>
-                <div class="col-md-6 col-lg-4"><article class="seller-directory-card h-100"><div class="seller-directory-head"><img src="img/best-product-4.jpg" alt="The Green Crate" class="shop-avatar rounded-circle" /><span class="seller-status"><i class="fas fa-circle"></i> Open now</span></div><h4 class="mt-4 mb-2">The Green Crate</h4><p class="text-muted mb-3">Colourful vegetables and weekly boxes for simple healthy meals.</p><div class="seller-meta"><span><i class="fas fa-star text-secondary me-1"></i>4.8 <small>(61)</small></span><span><i class="fas fa-map-marker-alt text-secondary me-1"></i>3.8 km</span></div><div class="seller-tags"><span>Weekly boxes</span><span>Vegetables</span></div><a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i class="fas fa-arrow-right ms-2"></i></a></article></div>
-                <div class="col-md-6 col-lg-4"><article class="seller-directory-card h-100"><div class="seller-directory-head"><img src="img/best-product-5.jpg" alt="Harvest Corner" class="shop-avatar rounded-circle" /><span class="seller-status"><i class="fas fa-circle"></i> Open now</span></div><h4 class="mt-4 mb-2">Harvest Corner</h4><p class="text-muted mb-3">A friendly neighbourhood grocer for everyday essentials.</p><div class="seller-meta"><span><i class="fas fa-star text-secondary me-1"></i>4.6 <small>(49)</small></span><span><i class="fas fa-map-marker-alt text-secondary me-1"></i>4.2 km</span></div><div class="seller-tags"><span>Groceries</span><span>Free delivery</span></div><a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i class="fas fa-arrow-right ms-2"></i></a></article></div>
-                <div class="col-md-6 col-lg-4"><article class="seller-directory-card h-100"><div class="seller-directory-head"><img src="img/best-product-6.jpg" alt="Market & More" class="shop-avatar rounded-circle" /><span class="seller-status"><i class="fas fa-circle"></i> Open now</span></div><h4 class="mt-4 mb-2">Market & More</h4><p class="text-muted mb-3">A curated mix of fresh goods, treats, and local favourites.</p><div class="seller-meta"><span><i class="fas fa-star text-secondary me-1"></i>4.7 <small>(83)</small></span><span><i class="fas fa-map-marker-alt text-secondary me-1"></i>4.8 km</span></div><div class="seller-tags"><span>Local favourites</span><span>Fresh goods</span></div><a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i class="fas fa-arrow-right ms-2"></i></a></article></div>
+        <section class="container-fluid py-5 bazaar-section">
+            <div class="container py-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+                    <div>
+                        <p class="text-secondary fw-bold text-uppercase mb-2">
+                            Your local marketplace
+                        </p>
+                        <h2 class="display-6 mb-2">Find a shop you can trust</h2>
+                        <p class="text-muted mb-0">
+                            Fresh produce and pantry essentials, delivered from sellers near
+                            you.
+                        </p>
+                    </div>
+                    <span class="shop-result-count mt-3 mt-lg-0"><i
+                            class="fas fa-map-marker-alt text-secondary me-2"></i>Showing
+                        shops near New York</span>
+                </div>
+                <div class="shop-directory-toolbar bg-light rounded p-3 mb-5">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-0"><i
+                                        class="fas fa-search text-primary"></i></span><input type="search"
+                                    class="form-control border-0 py-3" placeholder="Search by shop name or speciality"
+                                    aria-label="Search shops" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <select class="form-select border-0 py-3" aria-label="Filter shops by delivery">
+                                <option>All delivery options</option>
+                                <option>Free delivery</option>
+                                <option>Same-day delivery</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-6 col-lg-3">
+                            <select class="form-select border-0 py-3" aria-label="Sort shops">
+                                <option>Recommended</option>
+                                <option>Highest rated</option>
+                                <option>Nearest first</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <article class="seller-directory-card h-100">
+                            <div class="seller-directory-head">
+                                <img src="img/best-product-1.jpg" alt="Green Basket"
+                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
+                                        class="fas fa-circle"></i> Open now</span>
+                            </div>
+                            <h4 class="mt-4 mb-2">Green Basket</h4>
+                            <p class="text-muted mb-3">
+                                Everyday fruits and vegetables, picked fresh from nearby
+                                farms.
+                            </p>
+                            <div class="seller-meta">
+                                <span><i class="fas fa-star text-secondary me-1"></i>4.9
+                                    <small>(128)</small></span><span><i
+                                        class="fas fa-map-marker-alt text-secondary me-1"></i>1.2 km</span>
+                            </div>
+                            <div class="seller-tags">
+                                <span>Fresh produce</span><span>Organic</span>
+                            </div>
+                            <a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
+                                    class="fas fa-arrow-right ms-2"></i></a>
+                        </article>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <article class="seller-directory-card h-100">
+                            <div class="seller-directory-head">
+                                <img src="img/best-product-2.jpg" alt="Daily Harvest"
+                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
+                                        class="fas fa-circle"></i> Open now</span>
+                            </div>
+                            <h4 class="mt-4 mb-2">Daily Harvest</h4>
+                            <p class="text-muted mb-3">
+                                Local produce and pantry essentials for the whole family.
+                            </p>
+                            <div class="seller-meta">
+                                <span><i class="fas fa-star text-secondary me-1"></i>4.8
+                                    <small>(94)</small></span><span><i
+                                        class="fas fa-map-marker-alt text-secondary me-1"></i>2.4 km</span>
+                            </div>
+                            <div class="seller-tags">
+                                <span>Pantry</span><span>Same-day delivery</span>
+                            </div>
+                            <a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
+                                    class="fas fa-arrow-right ms-2"></i></a>
+                        </article>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <article class="seller-directory-card h-100">
+                            <div class="seller-directory-head">
+                                <img src="img/best-product-3.jpg" alt="Nature's Store"
+                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
+                                        class="fas fa-circle"></i> Open now</span>
+                            </div>
+                            <h4 class="mt-4 mb-2">Nature's Store</h4>
+                            <p class="text-muted mb-3">
+                                Organic choices and seasonal favourites from local sellers.
+                            </p>
+                            <div class="seller-meta">
+                                <span><i class="fas fa-star text-secondary me-1"></i>4.7
+                                    <small>(76)</small></span><span><i
+                                        class="fas fa-map-marker-alt text-secondary me-1"></i>3.1 km</span>
+                            </div>
+                            <div class="seller-tags">
+                                <span>Organic</span><span>Seasonal</span>
+                            </div>
+                            <a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
+                                    class="fas fa-arrow-right ms-2"></i></a>
+                        </article>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <article class="seller-directory-card h-100">
+                            <div class="seller-directory-head">
+                                <img src="img/best-product-4.jpg" alt="The Green Crate"
+                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
+                                        class="fas fa-circle"></i> Open now</span>
+                            </div>
+                            <h4 class="mt-4 mb-2">The Green Crate</h4>
+                            <p class="text-muted mb-3">
+                                Colourful vegetables and weekly boxes for simple healthy
+                                meals.
+                            </p>
+                            <div class="seller-meta">
+                                <span><i class="fas fa-star text-secondary me-1"></i>4.8
+                                    <small>(61)</small></span><span><i
+                                        class="fas fa-map-marker-alt text-secondary me-1"></i>3.8 km</span>
+                            </div>
+                            <div class="seller-tags">
+                                <span>Weekly boxes</span><span>Vegetables</span>
+                            </div>
+                            <a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
+                                    class="fas fa-arrow-right ms-2"></i></a>
+                        </article>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <article class="seller-directory-card h-100">
+                            <div class="seller-directory-head">
+                                <img src="img/best-product-5.jpg" alt="Harvest Corner"
+                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
+                                        class="fas fa-circle"></i> Open now</span>
+                            </div>
+                            <h4 class="mt-4 mb-2">Harvest Corner</h4>
+                            <p class="text-muted mb-3">
+                                A friendly neighbourhood grocer for everyday essentials.
+                            </p>
+                            <div class="seller-meta">
+                                <span><i class="fas fa-star text-secondary me-1"></i>4.6
+                                    <small>(49)</small></span><span><i
+                                        class="fas fa-map-marker-alt text-secondary me-1"></i>4.2 km</span>
+                            </div>
+                            <div class="seller-tags">
+                                <span>Groceries</span><span>Free delivery</span>
+                            </div>
+                            <a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
+                                    class="fas fa-arrow-right ms-2"></i></a>
+                        </article>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <article class="seller-directory-card h-100">
+                            <div class="seller-directory-head">
+                                <img src="img/best-product-6.jpg" alt="Market & More"
+                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
+                                        class="fas fa-circle"></i> Open now</span>
+                            </div>
+                            <h4 class="mt-4 mb-2">Market & More</h4>
+                            <p class="text-muted mb-3">
+                                A curated mix of fresh goods, treats, and local favourites.
+                            </p>
+                            <div class="seller-meta">
+                                <span><i class="fas fa-star text-secondary me-1"></i>4.7
+                                    <small>(83)</small></span><span><i
+                                        class="fas fa-map-marker-alt text-secondary me-1"></i>4.8 km</span>
+                            </div>
+                            <div class="seller-tags">
+                                <span>Local favourites</span><span>Fresh goods</span>
+                            </div>
+                            <a href="shop.html" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
+                                    class="fas fa-arrow-right ms-2"></i></a>
+                        </article>
+                    </div>
+                </div>
             </div>
-        </div></section>
-        <section class="container-fluid py-5 bg-light"><div class="container py-4"><div class="directory-banner rounded p-4 p-lg-5 d-flex flex-wrap align-items-center justify-content-between"><div><p class="text-secondary fw-bold text-uppercase mb-2">Are you a local seller?</p><h2 class="mb-2">Bring your shop online.</h2><p class="mb-0 text-muted">Reach more nearby customers and grow with Bazaar Chalo.</p></div><a href="register.html" class="btn btn-primary rounded-pill px-4 mt-4 mt-lg-0">Register your shop <i class="fas fa-store ms-2"></i></a></div></div></section>
+        </section>
+        <section class="container-fluid py-5 bg-light">
+            <div class="container py-4">
+                <div
+                    class="directory-banner rounded p-4 p-lg-5 d-flex flex-wrap align-items-center justify-content-between">
+                    <div>
+                        <p class="text-secondary fw-bold text-uppercase mb-2">
+                            Are you a local seller?
+                        </p>
+                        <h2 class="mb-2">Bring your shop online.</h2>
+                        <p class="mb-0 text-muted">
+                            Reach more nearby customers and grow with Bazaar Chalo.
+                        </p>
+                    </div>
+                    <a href="register.html" class="btn btn-primary rounded-pill px-4 mt-4 mt-lg-0">Register your shop <i
+                            class="fas fa-store ms-2"></i></a>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <footer class="container-fluid bg-dark text-white-50 footer pt-5"><div class="container py-5"><div class="row g-5"><div class="col-lg-4"><h2 class="text-primary mb-2">Bazaar Chalo</h2><p class="mb-4">Shop local. Live fresh.</p><p class="mb-0">Fresh products, trusted sellers, and easy delivery for every home.</p></div><div class="col-lg-4"><h4 class="text-light mb-3">Helpful links</h4><a class="btn-link d-block" href="about.html">About Us</a><a class="btn-link d-block" href="faq.html">FAQ / Help Center</a><a class="btn-link d-block" href="delivery-policy.html">Delivery Policy</a><a class="btn-link d-block" href="contact.html">Contact Us</a></div><div class="col-lg-4"><h4 class="text-light mb-3">Contact</h4><p>1429 Netus Rd, NY 48247</p><p>Email: Example@gmail.com</p><p>Phone: +0123 4567 8910</p></div></div></div></footer>
-    <div class="container-fluid copyright bg-dark py-4"><div class="container text-center"><span class="text-light"><i class="fas fa-copyright me-2"></i>2026: <a href="index.html">Bazaar Chalo</a>, All rights reserved.</span></div></div>
-    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" aria-label="Back to top"><i class="fa fa-arrow-up"></i></a>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script><script src="js/main.js"></script>
+    <footer class="container-fluid bg-dark text-white-50 footer pt-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <h2 class="text-primary mb-2">Bazaar Chalo</h2>
+                    <p class="mb-4">Shop local. Live fresh.</p>
+                    <p class="mb-0">
+                        Fresh products, trusted sellers, and easy delivery for every home.
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <h4 class="text-light mb-3">Helpful links</h4>
+                    <a class="btn-link d-block" href="about.html">About Us</a><a class="btn-link d-block"
+                        href="faq.html">FAQ / Help Center</a><a class="btn-link d-block"
+                        href="delivery-policy.html">Delivery Policy</a><a class="btn-link d-block"
+                        href="contact.html">Contact Us</a>
+                </div>
+                <div class="col-lg-4">
+                    <h4 class="text-light mb-3">Contact</h4>
+                    <p>1429 Netus Rd, NY 48247</p>
+                    <p>Email: Example@gmail.com</p>
+                    <p>Phone: +0123 4567 8910</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="container-fluid copyright bg-dark py-4">
+        <div class="container text-center">
+            <span class="text-light"><i class="fas fa-copyright me-2"></i>2026:
+                <a href="index.html">Bazaar Chalo</a>, All rights reserved.</span>
+        </div>
+    </div>
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" aria-label="Back to top"><i
+            class="fa fa-arrow-up"></i></a>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>

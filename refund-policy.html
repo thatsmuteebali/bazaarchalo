@@ -23,20 +23,20 @@
         <div class="spinner-grow text-primary" role="status"></div>
     </div>
 
+    <!-- Navbar start -->
     <div class="container-fluid fixed-top">
         <div class="container topbar bg-primary d-none d-lg-block">
             <div class="d-flex justify-content-between">
                 <div class="top-info ps-2">
-                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i><a href="#"
-                            class="text-white">123 Street, New York</a></small><small class="me-3"><i
-                            class="fas fa-envelope me-2 text-secondary"></i><a href="#"
+                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+                        <a href="#" class="text-white">123 Street, New York</a></small>
+                    <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#"
                             class="text-white">Email@Example.com</a></small>
                 </div>
                 <div class="top-link pe-2">
-                    <a href="privacy-policy.html" class="text-white"><small class="text-white mx-2">Privacy
-                            Policy</small>/</a><a href="terms-and-conditions.html" class="text-white"><small
-                            class="text-white mx-2">Terms of Use</small>/</a><a href="#" class="text-white"><small
-                            class="text-white ms-2">Sales and Refunds</small></a>
+                    <a href="https://www.facebook.com/" class="text-white" target="_blank"><small class="text-white mx-2">Facebook</small>/</a>
+                    <a href="https://www.instagram.com/" class="text-white" target="_blank"><small class="text-white mx-2">Instagram</small>/</a>
+                    <a href="https://www.tiktok.com/" class="text-white" target="_blank"><small class="text-white ms-2">Tiktok</small></a>
                 </div>
             </div>
         </div>
@@ -46,32 +46,77 @@
                     <h1 class="text-primary display-6">Bazaar Chalo</h1>
                 </a>
                 <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse" aria-label="Toggle navigation">
+                    data-bs-target="#navbarCollapse">
                     <span class="fa fa-bars text-primary"></span>
                 </button>
                 <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                     <div class="navbar-nav mx-auto">
-                        <a href="index.html" class="nav-item nav-link">Home</a><a href="shop.html"
-                            class="nav-item nav-link">Shop</a><a href="shop-detail.html"
-                            class="nav-item nav-link">Product Detail</a>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                            
+                        <a href="index.html" class="nav-item nav-link active">Home</a>
+                        <div class="nav-item dropdown mega-menu-wrapper"><a href="category-listing.html"
+                                class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">Categories</a>
+                            <div class="dropdown-menu mega-menu p-4">
+                                <div class="row g-3">
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-1.jpg" alt="Fresh fruits" /><span>Fresh
+                                                Fruits</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-1.jpg"
+                                                alt="Vegetables" /><span>Vegetables</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-3.jpg" alt="Bananas" /><span>Bananas</span></a>
+                                    </div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/fruite-item-5.jpg" alt="Grapes" /><span>Grapes</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-4.jpg" alt="Bell peppers" /><span>Bell
+                                                Peppers</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/vegetable-item-5.jpg"
+                                                alt="Potatoes" /><span>Potatoes</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/featur-2.jpg" alt="Bakery and pantry" /><span>Bakery &amp;
+                                                Pantry</span></a></div>
+                                    <div class="col-6 col-md-4 col-lg-3"><a href="shop.html" class="mega-category"><img
+                                                src="img/featur-3.jpg" alt="Seasonal offers" /><span>Seasonal
+                                                Offers</span></a></div>
+                                </div><a href="category-listing.html" class="mega-menu-link">View all categories <i
+                                        class="fas fa-arrow-right ms-2"></i></a>
+                            </div>
                         </div>
+
                         <a href="contact.html" class="nav-item nav-link">Contact</a>
                     </div>
-                    <div class="d-flex m-3 me-0">
-                        <a href="cart.html" class="position-relative me-4 my-auto" aria-label="Shopping cart"><i
-                                class="fa fa-shopping-bag fa-2x"></i><span
+                    <div class="d-flex align-items-center m-3 me-0">
+                        <div class="nav-search-box" id="navSearchBox">
+                            <i class="fas fa-search nav-search-icon"></i>
+                            <input type="search" class="nav-search-input" id="navSearchInput"
+                                placeholder="Search for a product..." aria-label="Search for a product" />
+                            <!-- <button type="button" class="nav-search-close" id="navSearchClose"
+                                aria-label="Close search">
+                                <i class="fas fa-times"></i>
+                            </button> -->
+                        </div>
+                        <button
+                            class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+                            id="navSearchToggle" aria-expanded="false" aria-controls="navSearchBox" aria-label="Search">
+                            <i class="fas fa-search text-primary"></i>
+                        </button>
+                        <a href="cart.html" class="position-relative me-4 my-auto">
+                            <i class="fa fa-shopping-bag fa-2x"></i>
+                            <span
                                 class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                                style="top: -5px; left: 15px; height: 20px; min-width: 20px">3</span></a><a
-                            href="account.html" class="my-auto" aria-label="Account"><i
-                                class="fas fa-user fa-2x"></i></a>
+                                style="top: -5px; left: 15px; height: 20px; min-width: 20px">3</span>
+                        </a>
+                        <a href="account.html" class="my-auto" aria-label="Account">
+                            <i class="fas fa-user fa-2x"></i>
+                        </a>
                     </div>
                 </div>
             </nav>
         </div>
     </div>
+    <!-- Navbar End -->
 
     <div class="container-fluid page-header py-5">
         <h1 class="text-center text-white display-6">Refund Policy</h1>
