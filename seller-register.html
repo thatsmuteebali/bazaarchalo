@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Seller Register - Bazaar Chalo</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta name="description" content="Register your shop on Bazaar Chalo." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" />
+    <style>
+        .seller-auth-card {
+            max-width: 960px;
+        }
+
+        .seller-form-section {
+            border-top: 1px solid rgba(129, 196, 8, 0.18);
+            padding-top: 1.5rem;
+        }
+
+        .seller-form-section:first-of-type {
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .seller-form-section-title {
+            color: var(--bs-primary);
+            font-family: Raleway, sans-serif;
+            font-weight: 800;
+        }
+
+        .shop-image-picker {
+            border: 2px dashed rgba(129, 196, 8, 0.35);
+            border-radius: 8px;
+            min-height: 220px;
+            padding: 1rem;
+            text-align: center;
+            transition:
+                border-color 0.2s,
+                background-color 0.2s;
+        }
+
+        .shop-image-picker:hover,
+        .shop-image-picker:focus-within {
+            background: rgba(129, 196, 8, 0.04);
+            border-color: var(--bs-secondary);
+        }
+
+        .shop-image-preview {
+            display: none;
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+        }
+
+        .shop-image-preview.is-visible {
+            display: block;
+        }
+
+        .shop-image-placeholder {
+            color: #777;
+            padding: 2.4rem 0.5rem 1rem;
+        }
+
+        .shop-image-placeholder i {
+            display: block;
+            color: var(--bs-secondary);
+            font-size: 2.4rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .seller-auth-card .form-control,
+        .seller-auth-card .form-select,
+        .seller-auth-card .input-group .btn {
+            border-color: rgba(129, 196, 8, 0.25);
+        }
+
+        .seller-auth-card textarea {
+            resize: vertical;
+            min-height: 112px;
+        }
+
+        .seller-auth-card .form-control:focus,
+        .seller-auth-card .form-select:focus {
+            border-color: var(--bs-secondary);
+            box-shadow: 0 0 0 0.25rem rgba(255, 181, 36, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="spinner"
+        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" role="status">
+            <span class="visually-hidden">Loading</span>
+        </div>
+    </div>
+
+    <!-- Navbar start -->
+    <div class="container-fluid fixed-top">
+        <div class="container topbar bg-primary d-none d-lg-block">
+            <div class="d-flex justify-content-between">
+                <div class="top-info ps-2">
+                    <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+                        <a href="#" class="text-white">123 Street, New York</a></small>
+                    <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#"
+                            class="text-white">Email@Example.com</a></small>
+                </div>
+                <div class="top-link pe-2">
+                    <a href="https://www.facebook.com/" class="text-white" target="_blank"><small
+                            class="text-white mx-2">Facebook</small>/</a>
+                    <a href="https://www.instagram.com/" class="text-white" target="_blank"><small
+                            class="text-white mx-2">Instagram</small>/</a>
+                    <a href="https://www.tiktok.com/" class="text-white" target="_blank"><small
+                            class="text-white ms-2">Tiktok</small></a>
+                </div>
+            </div>
+        </div>
+        <div class="container px-0">
+            <nav class="navbar navbar-light bg-white navbar-expand-xl">
+                <a href="index.html" class="navbar-brand">
+                    <h1 class="text-primary display-6">Bazaar Chalo</h1>
+                </a>
+                <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
+                    <span class="fa fa-bars text-primary"></span>
+                </button>
+                <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto">
+                        <a href="index.html" class="nav-item nav-link active">Home</a>
+                        <a href="shop.html" class="nav-item nav-link">Shop</a>
+                        <div class="nav-item dropdown mega-menu-wrapper">
+                            <a href="category-listing.html" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">Categories</a>
+                            <div class="dropdown-menu mega-menu p-4">
+                                <div class="mega-menu-content">
+                                    <div class="mega-menu-columns">
+                                        <div class="mega-menu-column">
+                                            <p class="mega-menu-heading">Fresh produce</p>
+                                            <a href="shop.html">Fresh fruits</a>
+                                            <a href="shop.html">Vegetables</a>
+                                            <a href="shop.html">Bananas</a>
+                                            <a href="shop.html">Grapes</a>
+                                        </div>
+                                        <div class="mega-menu-column">
+                                            <p class="mega-menu-heading">Everyday essentials</p>
+                                            <a href="shop.html">Bell peppers</a>
+                                            <a href="shop.html">Potatoes</a>
+                                            <a href="shop.html">Bakery and pantry</a>
+                                            <a href="shop.html">Dairy and eggs</a>
+                                        </div>
+                                        <div class="mega-menu-column">
+                                            <p class="mega-menu-heading">Shop by occasion</p>
+                                            <a href="shop.html">Seasonal offers</a>
+                                            <a href="shop.html">Organic picks</a>
+                                            <a href="shop.html">Family favourites</a>
+                                            <a href="shop.html">New arrivals</a>
+                                        </div>
+                                    </div>
+                                    <a href="category-listing.html" class="mega-menu-feature">
+                                        <img src="img/featur-2.jpg" alt="Fresh groceries from local sellers">
+                                        <span><strong>Fresh picks, close to home</strong><small>Explore all categories
+                                                <i class="fas fa-arrow-right"></i></small></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="about.html" class="nav-item nav-link">About</a>
+                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    </div>
+                    <div class="d-flex align-items-center m-3 me-0">
+                        <div class="nav-search-box" id="navSearchBox">
+                            <i class="fas fa-search nav-search-icon"></i>
+                            <input type="search" class="nav-search-input" id="navSearchInput"
+                                placeholder="Search for a product..." aria-label="Search for a product" />
+                            <!-- <button type="button" class="nav-search-close" id="navSearchClose"
+                                aria-label="Close search">
+                                <i class="fas fa-times"></i>
+                            </button> -->
+                        </div>
+                        <button
+                            class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+                            id="navSearchToggle" aria-expanded="false" aria-controls="navSearchBox" aria-label="Search">
+                            <i class="fas fa-search text-primary"></i>
+                        </button>
+                        <a href="cart.html" class="position-relative me-4 my-auto">
+                            <i class="fa fa-shopping-bag fa-2x"></i>
+                            <span
+                                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+                                style="top: -5px; left: 15px; height: 20px; min-width: 20px">3</span>
+                        </a>
+                        <a href="account.html" class="my-auto" aria-label="Account">
+                            <i class="fas fa-user fa-2x"></i>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Navbar End -->
+
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Become a Seller</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="register.html">Register</a></li>
+            <li class="breadcrumb-item active text-white">Seller Register</li>
+        </ol>
+    </div>
+
+    <main class="container-fluid py-5 auth-page">
+        <div class="container py-5">
+            <div class="auth-card seller-auth-card bg-light rounded p-4 p-md-5 mx-auto">
+                <div class="text-center mb-5">
+                    <i class="fas fa-store text-secondary auth-icon"></i>
+                    <h2 class="mb-2">Open Your Shop</h2>
+                    <p class="mb-0 text-muted">
+                        Bring your fresh products to more local customers.
+                    </p>
+                </div>
+                <form id="sellerRegisterForm" novalidate>
+                    <section class="seller-form-section mb-5">
+                        <h4 class="seller-form-section-title mb-4">
+                            <i class="fas fa-store-alt me-2"></i>Shop details
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-lg-5">
+                                <label for="shopImage" class="form-label">Shop image <sup>*</sup></label>
+                                <div class="shop-image-picker">
+                                    <img id="shopImagePreview" class="shop-image-preview" alt="Selected shop preview" />
+                                    <div id="shopImagePlaceholder" class="shop-image-placeholder">
+                                        <i class="fas fa-camera"></i><strong>Upload a shop image</strong><small
+                                            class="d-block mt-2">JPG or PNG, up to 5 MB</small>
+                                    </div>
+                                    <input class="form-control mt-3" type="file" id="shopImage"
+                                        accept="image/png, image/jpeg" required />
+                                </div>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="mb-4">
+                                    <label for="shopName" class="form-label">Shop name <sup>*</sup></label>
+                                    <input type="text" class="form-control py-3" id="shopName"
+                                        placeholder="e.g. Green Basket Market" required />
+                                </div>
+                                <div class="mb-4">
+                                    <label for="shopCategory" class="form-label">Shop category <sup>*</sup></label>
+                                    <select class="form-select py-3" id="shopCategory" required>
+                                        <option value="" selected disabled>
+                                            Choose a category
+                                        </option>
+                                        <option>Fresh fruits and vegetables</option>
+                                        <option>Grocery and pantry</option>
+                                        <option>Bakery and confectionery</option>
+                                        <option>Dairy and eggs</option>
+                                        <option>Other local products</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="shopDescription" class="form-label">About your shop</label>
+                                    <textarea class="form-control" id="shopDescription"
+                                        placeholder="Tell customers what makes your shop special"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="seller-form-section mb-4">
+                        <h4 class="seller-form-section-title mb-4">
+                            <i class="fas fa-map-marker-alt me-2"></i>Shop address
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label for="shopAddress" class="form-label">Address <sup>*</sup></label><input
+                                    type="text" class="form-control py-3" id="shopAddress"
+                                    placeholder="Building, street, and area" required />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="shopCity" class="form-label">City <sup>*</sup></label><input type="text"
+                                    class="form-control py-3" id="shopCity" placeholder="City" required />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="shopState" class="form-label">State / Province <sup>*</sup></label><input
+                                    type="text" class="form-control py-3" id="shopState" placeholder="State or province"
+                                    required />
+                            </div>
+                            <div class="col-md-4">
+                                <label for="shopPostalCode" class="form-label">Postal code <sup>*</sup></label><input
+                                    type="text" class="form-control py-3" id="shopPostalCode" placeholder="Postal code"
+                                    required />
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="seller-form-section mb-5">
+                        <h4 class="seller-form-section-title mb-4">
+                            <i class="fas fa-user-tie me-2"></i>Seller details
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label for="sellerFirstName" class="form-label">First name <sup>*</sup></label><input
+                                    type="text" class="form-control py-3" id="sellerFirstName" placeholder="First name"
+                                    required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sellerLastName" class="form-label">Last name <sup>*</sup></label><input
+                                    type="text" class="form-control py-3" id="sellerLastName" placeholder="Last name"
+                                    required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sellerEmail" class="form-label">Email address <sup>*</sup></label><input
+                                    type="email" class="form-control py-3" id="sellerEmail"
+                                    placeholder="you@example.com" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sellerPhone" class="form-label">Phone number <sup>*</sup></label><input
+                                    type="tel" class="form-control py-3" id="sellerPhone"
+                                    placeholder="Enter your phone number" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sellerPassword" class="form-label">Password <sup>*</sup></label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control py-3" id="sellerPassword"
+                                        placeholder="Create a password" minlength="6" required /><button
+                                        class="btn border border-start-0 bg-white px-3" type="button"
+                                        data-toggle-password="sellerPassword" aria-label="Show password">
+                                        <i class="fas fa-eye text-primary"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="sellerConfirmPassword" class="form-label">Confirm password
+                                    <sup>*</sup></label><input type="password" class="form-control py-3"
+                                    id="sellerConfirmPassword" placeholder="Repeat your password" minlength="6"
+                                    required />
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="sellerTerms" required /><label
+                            class="form-check-label" for="sellerTerms">I agree to the
+                            <a href="terms-and-conditions.html" class="text-primary">Seller Terms &
+                                Conditions</a>.</label>
+                    </div>
+                    <a href="seller/dashboard.html" class="btn btn-primary w-100 py-3 rounded-pill text-white">
+                        </i>Register
+                    </a>
+                </form>
+                <p id="sellerRegisterMessage" class="text-center text-primary mt-4 mb-0" role="status"
+                    aria-live="polite"></p>
+                <p class="text-center mt-4 mb-0">
+                    Already registered?
+                    <a href="login.html" class="text-primary">Login here</a>
+                </p>
+                <p class="text-center mt-3 mb-0">
+                    Shopping instead?
+                    <a href="register.html" class="text-primary">Create a customer account</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
+        <div class="container py-5">
+            <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5)">
+                <div class="d-flex flex-column flex-md-row align-items-start justify-content-between">
+                    <div class="">
+                        <a href="#">
+                            <h1 class="text-primary mb-0">Bazaar Chalo</h1>
+                            <p class="text-secondary mb-0">Shop local. Live fresh.</p>
+                        </a>
+                    </div>
+                    <!-- <div class="col-lg-6">
+                        <div class="position-relative mx-auto">
+                            <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number"
+                                placeholder="Your Email" />
+                            <button type="submit"
+                                class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white"
+                                style="top: 0; right: 0">
+                                Subscribe Now
+                            </button>
+                        </div>
+                    </div> -->
+                    <div class="">
+                        <div class="d-flex justify-content-end pt-3">
+                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
+                                    class="fab fa-twitter"></i></a>
+                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
+                                    class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
+                                    class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i
+                                    class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex flex-column text-start footer-item">
+                        <h4 class="text-light mb-3">Bazaar Chalo</h4>
+                        <a class="btn-link" href="about.html">About Us</a>
+                        <a class="btn-link" href="contact.html">Contact Us</a>
+                        <a class="btn-link" href="#">Careers</a>
+                        <a class="btn-link" href="#">Become a Seller</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex flex-column text-start footer-item">
+                        <h4 class="text-light mb-3">Customer</h4>
+                        <a class="btn-link" href="login.html">Login</a>
+                        <a class="btn-link" href="register.html">Register</a>
+                        <a class="btn-link" href="account.html">My Account</a>
+                        <a class="btn-link" href="my-orders.html">My Orders</a>
+                        <a class="btn-link" href="order-tracking.html">Track Order</a>
+                        <a class="btn-link" href="faq.html">FAQ /Help Center</a>
+                        <a class="btn-link" href="">Return</a>
+                        <a class="btn-link" href="privacy-policy.html">Privacy Policy</a>
+                        <a class="btn-link" href="terms-and-conditions.html">Terms & Conditions</a>
+                        <a class="btn-link" href="refund-policy.html">Refund Policy</a>
+                        <a class="btn-link" href="delivery-policy.html">Delivery Policy</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex flex-column text-start footer-item">
+                        <h4 class="text-light mb-3">Seller</h4>
+                        <a class="btn-link" href="seller/dashboard.html">Seller Login</a>
+                        <a class="btn-link" href="register.html">Seller Registration</a>
+                        <a class="btn-link" href="faq.html">Seller Guide</a>
+                        <a class="btn-link" href="faq.html">Seller Support</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-item">
+                        <h4 class="text-light mb-3">Contact</h4>
+                        <p>Address: 1429 Netus Rd, NY 48247</p>
+                        <p>Email: Example@gmail.com</p>
+                        <p>Phone: +0123 4567 8910</p>
+                        <p>Payment Accepted</p>
+                        <img src="img/payment.png" class="img-fluid" alt="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+    <!-- Copyright Start -->
+    <div class="container-fluid copyright bg-dark py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center mb-3 mb-md-0">
+                    <span class="text-light"><i class="fas fa-copyright text-light me-2"></i>2026: <a
+                            href="#"></i>Bazaar
+                            Chalo</a>, All rights reserved.</span>
+                </div>
+                <!-- <div class="col-md-6 my-auto text-center text-md-end text-white"> -->
+                <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
+                <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
+                <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
+                <!-- Designed By
+                    <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                    Distributed By
+                    <a class="border-bottom" href="https://themewagon.com">ThemeWagon</a>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <!-- Copyright End -->
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top" aria-label="Back to top"><i
+            class="fa fa-arrow-up"></i></a>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        (function () {
+            var imageInput = document.getElementById("shopImage");
+            var imagePreview = document.getElementById("shopImagePreview");
+            var imagePlaceholder = document.getElementById("shopImagePlaceholder");
+            imageInput.addEventListener("change", function () {
+                var file = imageInput.files[0];
+                if (!file) return;
+                if (file.size > 5 * 1024 * 1024) {
+                    imageInput.value = "";
+                    imagePreview.classList.remove("is-visible");
+                    imagePlaceholder.style.display = "block";
+                    alert("Please choose an image smaller than 5 MB.");
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    imagePreview.src = event.target.result;
+                    imagePreview.classList.add("is-visible");
+                    imagePlaceholder.style.display = "none";
+                };
+                reader.readAsDataURL(file);
+            });
+
+            document
+                .querySelectorAll("[data-toggle-password]")
+                .forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        var input = document.getElementById(
+                            button.dataset.togglePassword,
+                        );
+                        var visible = input.type === "text";
+                        input.type = visible ? "password" : "text";
+                        button.setAttribute(
+                            "aria-label",
+                            visible ? "Show password" : "Hide password",
+                        );
+                        button
+                            .querySelector("i")
+                            .classList.toggle("fa-eye-slash", !visible);
+                        button.querySelector("i").classList.toggle("fa-eye", visible);
+                    });
+                });
+
+            document
+                .getElementById("sellerRegisterForm")
+                .addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    var form = event.currentTarget;
+                    var message = document.getElementById("sellerRegisterMessage");
+                    var password = document.getElementById("sellerPassword").value;
+                    var confirmation = document.getElementById(
+                        "sellerConfirmPassword",
+                    ).value;
+                    if (!form.checkValidity()) {
+                        form.classList.add("was-validated");
+                        message.textContent = "Please complete all required fields.";
+                        message.classList.remove("text-primary");
+                        message.classList.add("text-danger");
+                        return;
+                    }
+                    if (password !== confirmation) {
+                        message.textContent = "Please make sure both passwords match.";
+                        message.classList.remove("text-primary");
+                        message.classList.add("text-danger");
+                        return;
+                    }
+                    message.textContent = "Seller registration submitted successfully.";
+                    message.classList.remove("text-danger");
+                    message.classList.add("text-primary");
+                });
+        })();
+    </script>
+</body>
+
+</html>
