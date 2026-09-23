@@ -1307,6 +1307,7 @@ body.sidebar-minimized .sidebar-profile {
     
     .navbar-custom {
         display: flex !important;
+        justify-content: space-between !important;
         margin-top: -1.5rem;
         margin-left: -1.5rem;
         margin-right: -1.5rem;
