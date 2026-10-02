@@ -1007,6 +1007,7 @@
 
 @media (min-width: 992px) {
     .hero-header,
+    .error-page,
     .page-header {
         margin-top: 152px !important;
     }
@@ -1014,6 +1015,7 @@
 
 @media (max-width: 992px) {
     .hero-header,
+    .error-page,
     .page-header {
         margin-top: 97px !important;
     }
