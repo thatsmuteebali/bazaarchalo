@@ -103,7 +103,13 @@
                             </td>
                             <td>{{ $product->shop->name ?? '—' }}</td>
                             <td>{{ $product->category->name ?? '—' }}</td>
-                            <td>{{ number_format($product->price, 2) }}</td>
+                            <td>
+                                @if ($product->has_variants)
+                                {{ number_format($product->variants()->min('price'), 2) }}
+                                @else
+                                {{ number_format($product->price, 2) }}
+                                @endif
+                            </td>
                             <td>
                                 @if ($product->stock < 1)
                                     <span class="badge-table failed">Out of stock</span>
@@ -114,7 +120,7 @@
                             <td><span class="badge-table {{ $status_label }}">{{ ucfirst($product->status) }}</span></td>
                             <td>
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('seller.products.edit', ['product' => $product] + $queryParams) }}"
+                                    <a href="{{ route('seller.products.edit', ['product' => $product]) }}"
                                         class="table-btn-action" title="Edit product"
                                         aria-label="Edit {{ $product->name }}">
                                         <i class="bi bi-pencil"></i>
