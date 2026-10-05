@@ -2249,7 +2249,7 @@ span.flatpickr-weekday {
     height: 38px;
     border-radius: var(--radius-lg);
     object-fit: cover;
-    background-color: var(--brand-forest-medium);
+    /* background-color: var(--brand-forest-medium); */
 }
 
 .table-user-name {

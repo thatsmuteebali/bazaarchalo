@@ -55,12 +55,17 @@
                         <tr>
                             <td>{{ $categories->firstItem() + $loop->index }}</td>
                             <td>
-                                @if ($category->image)
-                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
-                                        style="width: 56px; height: 44px; object-fit: cover;">
-                                @else
-                                    <span class="text-muted">No image</span>
-                                @endif
+                                <div class="table-user-cell">
+                                    @if ($category->image)
+                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="table-user-avatar"
+                                        onerror="this.src='../assets/images/avatar.png'">
+                                    @else
+                                        <span class="d-inline-flex align-items-center justify-content-center bg-light text-muted"
+                                            style="width: 56px; height: 44px;">
+                                            <i class="bi bi-category" aria-hidden="true"></i>
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
                             <td>{{ $category->name }}</td>
                             @php
@@ -109,7 +114,7 @@
 
         <!-- Footer Controls / Pagination -->
         <div class="table-footer-control">
-            {{ $categories->links('pagination::bootstrap-5') }}
+            {{ $categories->links() }}
         </div>
     </div>
 

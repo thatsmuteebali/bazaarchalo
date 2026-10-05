@@ -46,17 +46,19 @@
                         <tr>
                             <td>{{ $shops->firstItem() + $loop->index }}</td>
                             <td>
-                                <div class="d-flex align-items-center gap-2">
+                                <div class="table-user-cell">
                                     @if ($shop->banner)
-                                        <img src="{{ asset('storage/' . $shop->banner) }}" alt="{{ $shop->name }}"
-                                            style="width: 56px; height: 44px; object-fit: cover;">
+                                    <img src="{{ asset('storage/' . $shop->banner) }}" alt="{{ $shop->name }}" class="table-user-avatar"
+                                        onerror="this.src='../assets/images/avatar.png'">
                                     @else
                                         <span class="d-inline-flex align-items-center justify-content-center bg-light text-muted"
                                             style="width: 56px; height: 44px;">
                                             <i class="bi bi-shop" aria-hidden="true"></i>
                                         </span>
                                     @endif
-                                    <span>{{ $shop->name }}</span>
+                                    <div>
+                                        <div class="table-user-name">{{ $shop->name }}</div>
+                                    </div>
                                 </div>
                             </td>
                             <td>{{ $shop->address ?: '—' }}</td>
@@ -100,7 +102,7 @@
         </div>
 
         <div class="table-footer-control">
-            {{ $shops->links('pagination::bootstrap-5') }}
+            {{ $shops->links() }}
         </div>
     </div>
 

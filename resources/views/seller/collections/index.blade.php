@@ -45,10 +45,11 @@
                         <tr>
                             <td>{{ $collections->firstItem() + $loop->index }}</td>
                             <td>
-                                <div class="d-flex align-items-center gap-2">
+
+                                <div class="table-user-cell">
                                     @if ($collection->image)
-                                        <img src="{{ asset('storage/' . $collection->image) }}" alt="{{ $collection->name }}"
-                                            style="width: 56px; height: 44px; object-fit: cover;">
+                                    <img src="{{ asset('storage/' . $collection->image) }}" alt="{{ $collection->name }}" class="table-user-avatar"
+                                        onerror="this.src='../assets/images/avatar.png'">
                                     @else
                                         <span class="d-inline-flex align-items-center justify-content-center bg-light text-muted"
                                             style="width: 56px; height: 44px;">
@@ -56,7 +57,7 @@
                                         </span>
                                     @endif
                                     <div>
-                                        <div>{{ $collection->name }}</div>
+                                        <div class="table-user-name">{{ $collection->name }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -103,7 +104,7 @@
         </div>
 
         <div class="table-footer-control">
-            {{ $collections->links('pagination::bootstrap-5') }}
+            {{ $collections->links() }}
         </div>
     </div>
 @endsection
