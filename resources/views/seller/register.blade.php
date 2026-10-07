@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Screen - Bazaar Chalo Premium Bootstrap 5 Admin Dashboard Template</title>
+    <title>Seller Register - Bazaar Chalo Premium Bootstrap 5 Admin Dashboard Template</title>
 
     <!-- SEO Optimization -->
     <meta name="description" content="Login Screen - Bazaar Chalo Premium Bootstrap 5 Admin Dashboard Template">
@@ -60,7 +60,7 @@
                     @enderror
                 </div>
                 <div class="login-form-group">
-                    <label for="username" class="login-form-label">Full username</label>
+                    <label for="username" class="login-form-label">Username</label>
                     <div class="login-input-group">
                         <i class="bi bi-person-badge  input-icon"></i>
                         <input type="text" name="username" id="username" class="login-input" placeholder="seller123"
@@ -95,6 +95,20 @@
                             required>
                     </div>
                     @error('phone_number')
+                        <div class="form-feedback-custom invalid-custom">
+                            <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <div class="login-form-group">
+                    <label for="shop_name" class="login-form-label">Shop Name</label>
+                    <div class="login-input-group">
+                        <i class="bi bi-shop  input-icon"></i>
+                        <input type="text" name="shop_name" id="shop_name" class="login-input" placeholder="stylish garments"
+                            required>
+                    </div>
+                    @error('shop_name')
                         <div class="form-feedback-custom invalid-custom">
                             <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
                         </div>
@@ -181,10 +195,15 @@
                     <span>GitHub</span>
                 </button>
             </div> --}}
-            <button class="btn-social w-100 mb-3" type="button" id="btn-google">
+            <a href="{{ route('seller.social.redirect', 'google') }}" class="btn-social w-100 mb-3" type="button" id="btn-google">
                 <i class="bi bi-google text-danger"></i>
                 <span>Google</span>
-            </button>
+            </a>
+
+            <a href="{{ route('seller.social.redirect', 'facebook') }}" class="btn-social w-100 mb-3" type="button" id="btn-facebook">
+                <i class="bi bi-facebook text-primary"></i>
+                <span>Facebook</span>
+            </a>
 
             <!-- Footer Link -->
             <p class="login-footer-text">

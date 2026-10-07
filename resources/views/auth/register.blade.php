@@ -112,6 +112,14 @@
                             <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill text-white">
                                 Create Account
                             </button>
+
+                            <a href="{{ route('social.redirect', 'google') }}" class="btn btn-outline-danger w-100  mt-2 py-3 rounded-pill">
+                        <i class="fab fa-google"></i> Sign in with Google
+                    </a>
+
+                    <a href="{{ route('social.redirect', 'facebook') }}" class="btn btn-outline-danger w-100  mt-2 py-3 rounded-pill">
+                        <i class="fab fa-facebook"></i> Sign in with Facebook
+                    </a>
                         </div>
                     </div>
                 </form>

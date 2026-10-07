@@ -19,8 +19,15 @@ use Throwable;
 class ProductController extends Controller
 {
     private const FIELDS = [
-        'shop_id', 'category_id', 'collection_id', 'name',
-        'short_description', 'description', 'price', 'compare_price', 'status',
+        'shop_id',
+        'category_id',
+        'collection_id',
+        'name',
+        'short_description',
+        'description',
+        'price',
+        'compare_price',
+        'status',
     ];
 
     /* ------------------------------------------------------------------ */
@@ -28,14 +35,19 @@ class ProductController extends Controller
     /* ------------------------------------------------------------------ */
     public function index(Request $request)
     {
+        $search = trim((string) $request->query('q', ''));
+        $status = (string) $request->query('status', '');
+        $perPage = in_array((int) $request->query('per_page'), [10, 20, 50], true) ? (int) $request->query('per_page') : 10;
+
         $products = Product::query()
             ->where('seller_id', auth()->id())
-            ->with(['shop:id,name', 'category:id,name', 'coverImage','variants'])
+            ->with(['shop:id,name', 'category:id,name', 'coverImage'])
             ->withCount('variants')
-            ->when($request->filled('q'), fn ($q) => $q->where('name', 'like', '%' . $request->q . '%'))
-            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->status))
+            ->withMin('variants', 'price') // -> $product->variants_min_price (no extra query per row)
+            ->when($search !== '', fn($q) => $q->where('name', 'like', "%{$search}%"))
+            ->when(in_array($status, ['active', 'draft', 'inactive'], true), fn($q) => $q->where('status', $status))
             ->latest()
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         return view('seller.products.index', compact('products'));
@@ -51,17 +63,17 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request, StockService $stock)
     {
-        $data        = $request->validated();
+        $data = $request->validated();
         $hasVariants = (bool) ($data['has_variants'] ?? false);
-        $stored      = []; // uploaded files, deleted again if something fails
+        $stored = []; // uploaded files, deleted again if something fails
 
         try {
             DB::transaction(function () use ($request, $data, $hasVariants, $stock, &$stored) {
                 $product = Product::create($this->attributes($data) + [
-                    'seller_id'    => auth()->id(),
-                    'is_featured'  => (bool) ($data['is_featured'] ?? false),
+                    'seller_id' => auth()->id(),
+                    'is_featured' => (bool) ($data['is_featured'] ?? false),
                     'has_variants' => $hasVariants,
-                    'stock'        => 0, // stock is only ever changed through StockService
+                    'stock' => 0, // stock is only ever changed through StockService
                 ]);
 
                 $this->storeImages($product, Arr::wrap($request->file('images')), 0, $stored);
@@ -95,9 +107,29 @@ class ProductController extends Controller
         return redirect()->route('seller.products.index')->with('success', 'Product created successfully.');
     }
 
+    /* ------------------------------------------------------------------ */
+    /*  VIEW                                                              */
+    /* ------------------------------------------------------------------ */
     public function show(Product $product)
     {
-        return redirect()->route('seller.products.edit', $product);
+        $this->ownProduct($product);
+
+        $product->load([
+            'shop:id,name',
+            'category:id,name',
+            'collection:id,name',
+            'images' => fn($q) => $q->orderBy('sort_order')->orderBy('id'),
+            'options' => fn($q) => $q->orderBy('position'),
+            'variants' => fn($q) => $q->orderBy('id'),
+        ]);
+
+        $movements = $product->movements()
+            ->with('user:id,name')
+            ->latest('created_at')->latest('id')
+            ->limit(5)
+            ->get();
+
+        return view('seller.products.show', compact('product', 'movements'));
     }
 
     /* ------------------------------------------------------------------ */
@@ -108,9 +140,9 @@ class ProductController extends Controller
         $this->ownProduct($product);
 
         $product->load([
-            'images'   => fn ($q) => $q->orderBy('sort_order')->orderBy('id'),
-            'options'  => fn ($q) => $q->orderBy('position'),
-            'variants' => fn ($q) => $q->orderBy('id'),
+            'images' => fn($q) => $q->orderBy('sort_order')->orderBy('id'),
+            'options' => fn($q) => $q->orderBy('position'),
+            'variants' => fn($q) => $q->orderBy('id'),
         ]);
 
         $movements = $product->movements()
@@ -126,7 +158,7 @@ class ProductController extends Controller
     {
         $this->ownProduct($product);
 
-        $data     = $request->validated();
+        $data = $request->validated();
         $newPaths = [];
         $oldPaths = [];
 
@@ -167,13 +199,13 @@ class ProductController extends Controller
 
         Storage::disk('public')->delete($oldPaths);
 
-        return redirect()->route('seller.products.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('seller.products.edit', $product)->with('success', 'Product updated successfully.');
     }
 
     /* ------------------------------------------------------------------ */
     /*  DELETE                                                            */
     /* ------------------------------------------------------------------ */
-    public function destroy(Product $product)
+    public function destroy(Request $request, Product $product)
     {
         $this->ownProduct($product);
 
@@ -184,7 +216,8 @@ class ProductController extends Controller
 
         Storage::disk('public')->delete($paths);
 
-        return redirect()->route('seller.products.index')->with('success', 'Product deleted.');
+        return redirect()->route('seller.products.index', $request->only(['q', 'status', 'page', 'per_page']))
+            ->with('success', 'Product deleted.');
     }
 
     /* ------------------------------------------------------------------ */
@@ -198,8 +231,8 @@ class ProductController extends Controller
     private function formData(): array
     {
         return [
-            'categories'  => Category::where('status', 'active')->orderBy('name')->get(),
-            'shops'       => Shop::where('status', 'active')->where('seller_id', auth()->id())->orderBy('name')->get(),
+            'categories' => Category::where('status', 'active')->orderBy('name')->get(),
+            'shops' => Shop::where('status', 'active')->where('seller_id', auth()->id())->orderBy('name')->get(),
             'collections' => Collection::where('status', 'active')->where('seller_id', auth()->id())->orderBy('name')->get(),
         ];
     }
@@ -215,8 +248,8 @@ class ProductController extends Controller
     {
         return [
             'option_values' => array_values($v['option_values']),
-            'sku'           => $v['sku'] ?? null,
-            'price'         => $v['price'],
+            'sku' => $v['sku'] ?? null,
+            'price' => $v['price'],
             'compare_price' => $v['compare_price'] ?? null,
         ];
     }
@@ -224,7 +257,7 @@ class ProductController extends Controller
     private function storeImages(Product $product, array $files, int $startOrder, array &$stored): void
     {
         foreach (array_values($files) as $i => $file) {
-            $path     = $file->store('products', 'public');
+            $path = $file->store('products', 'public');
             $stored[] = $path;
 
             $product->images()->create(['path' => $path, 'sort_order' => $startOrder + $i]);
@@ -235,8 +268,8 @@ class ProductController extends Controller
     {
         foreach (array_values($options) as $position => $option) {
             $product->options()->create([
-                'name'     => $option['name'],
-                'values'   => array_values($option['values']),
+                'name' => $option['name'],
+                'values' => array_values($option['values']),
                 'position' => $position,
             ]);
         }
@@ -252,7 +285,7 @@ class ProductController extends Controller
         $this->saveOptions($product, $data['options']);
 
         $existing = $product->variants()->get()->keyBy('title');
-        $keep     = [];
+        $keep = [];
 
         foreach (array_values($data['variants']) as $v) {
             $keep[] = $v['title'];

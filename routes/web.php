@@ -102,7 +102,7 @@ Route::prefix('seller')->name('seller.')->middleware('guest')->group(function ()
 
 Route::group(['middleware' => ['SellerMiddleware']], function () {
     Route::prefix('seller')->name('seller.')->group(function () {
-       Route::controller(\App\Http\Controllers\Seller\Dashboard::class)->group(function () {
+        Route::controller(\App\Http\Controllers\Seller\Dashboard::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
         });
 
@@ -110,6 +110,7 @@ Route::group(['middleware' => ['SellerMiddleware']], function () {
         Route::resource('collections', CollectionController::class);
         Route::resource('products', ProductController::class);
         Route::post('products/{product}/stock', [ProductStockController::class, 'store'])->name('products.stock.store');
+        Route::get('products/{product}/inventory', [ProductStockController::class, 'index'])->name('products.inventory');
 
         Route::post('logout', [SellerLoginController::class, 'logout'])->name('logout');
     });

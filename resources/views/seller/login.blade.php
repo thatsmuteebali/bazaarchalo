@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Screen - Bazaar Chalo Premium Bootstrap 5 Admin Dashboard Template</title>
+    <title>Seller Login - Bazaar Chalo Premium Bootstrap 5 Admin Dashboard Template</title>
 
     <!-- SEO Optimization -->
     <meta name="description" content="Login Screen - Bazaar Chalo Premium Bootstrap 5 Admin Dashboard Template">
@@ -44,7 +44,7 @@
                 <i class="bi bi-asterisk"></i>
                 <span>Bazaar Chalo</span>
             </a>
-
+            @include('dashboard-message')
             <p class="login-subtitle">Please sign in to access your dashboard</p>
 
             <!-- Login Form -->

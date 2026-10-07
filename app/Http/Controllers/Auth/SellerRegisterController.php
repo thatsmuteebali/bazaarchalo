@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Shop;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class SellerRegisterController extends Controller
             'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone_number' => ['required'],
+            'shop_name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users'],
         ]);
     }
@@ -46,8 +48,14 @@ class SellerRegisterController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        Shop::create([
+            'seller_id' => $user->id,
+            'name' => $request->shop_name,
+            'is_primary' => true,
+        ]);
+
         event(new Registered($user));
 
-        return redirect()->route('seller.login')->with('status', 'Registration successful! Please log in.');
+        return redirect()->route('seller.login')->with('success', 'Registration successful! Please log in.');
     }
 }

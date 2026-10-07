@@ -105,9 +105,9 @@
                             <td>{{ $product->category->name ?? '—' }}</td>
                             <td>
                                 @if ($product->has_variants)
-                                {{ number_format($product->variants()->min('price'), 2) }}
+                                    {{ number_format($product->variants()->min('price'), 2) }}
                                 @else
-                                {{ number_format($product->price, 2) }}
+                                    {{ number_format($product->price, 2) }}
                                 @endif
                             </td>
                             <td>
@@ -120,6 +120,11 @@
                             <td><span class="badge-table {{ $status_label }}">{{ ucfirst($product->status) }}</span></td>
                             <td>
                                 <div class="d-flex justify-content-center gap-1">
+                                    <a href="{{ route('seller.products.show', ['product' => $product]) }}"
+                                        class="table-btn-action" title="View product"
+                                        aria-label="View {{ $product->name }}">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
                                     <a href="{{ route('seller.products.edit', ['product' => $product]) }}"
                                         class="table-btn-action" title="Edit product"
                                         aria-label="Edit {{ $product->name }}">
