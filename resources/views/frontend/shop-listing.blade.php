@@ -34,175 +34,64 @@
                         </p>
                     </div>
                     <span class="shop-result-count mt-3 mt-lg-0"><i
-                            class="fas fa-map-marker-alt text-secondary me-2"></i>Showing
-                        shops near New York</span>
+                            class="fas fa-store text-secondary me-2"></i>{{ $shops->total() }} shops found</span>
                 </div>
                 <div class="shop-directory-toolbar bg-light rounded p-3 mb-5">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-lg-6">
+                    <form action="{{ route('frontend.shop-listing') }}" method="GET" class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label for="shopSearch" class="form-label">Search shops</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-0"><i
-                                        class="fas fa-search text-primary"></i></span><input type="search"
-                                    class="form-control border-0 py-3" placeholder="Search by shop name or speciality"
-                                    aria-label="Search shops" />
+                                        class="fas fa-search text-primary"></i></span><input id="shopSearch" type="search" name="q"
+                                    value="{{ $filters['search'] }}" class="form-control border-0 py-3"
+                                    placeholder="Shop name or description" aria-label="Search shops" />
                             </div>
                         </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <select class="form-select border-0 py-3" aria-label="Filter shops by delivery">
-                                <option>All delivery options</option>
-                                <option>Free delivery</option>
-                                <option>Same-day delivery</option>
+                        <div class="col-md-4">
+                            <label for="shopCategory" class="form-label">Product category</label>
+                            <select id="shopCategory" name="category" class="form-select py-3">
+                                <option value="">All categories</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" @selected($filters['category'] == $category->id)>{{ $category->name }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <select class="form-select border-0 py-3" aria-label="Sort shops">
-                                <option>Recommended</option>
-                                <option>Highest rated</option>
-                                <option>Nearest first</option>
-                            </select>
+                        <div class="col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-grow-1" aria-label="Apply filters">
+                                <i class="fas fa-filter" aria-hidden="true"></i>
+                            </button>
+                            <a href="{{ route('frontend.shop-listing') }}" class="btn btn-outline-secondary" aria-label="Clear filters">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </a>
                         </div>
-                    </div>
+                    </form>
                 </div>
                 <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <article class="seller-directory-card h-100">
-                            <div class="seller-directory-head">
-                                <img src="{{ asset('img/best-product-1.jpg') }}" alt="Green Basket"
-                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
-                                        class="fas fa-circle"></i> Open now</span>
+                    @forelse ($shops as $shop)
+                            <div class="col-md-6 col-lg-4">
+                                <article class="seller-directory-card h-100">
+                                    <div class="seller-directory-head">
+                                        <img src="{{ $shop->banner_url }}" alt="{{ $shop->name }}"
+                                            class="shop-avatar rounded-circle" /><span class="seller-status"><i
+                                                class="fas fa-circle"></i> Open now</span>
+                                    </div>
+                                    <h4 class="mt-4 mb-2">{{ $shop->name }}</h4>
+                                    <p class="text-muted mb-3">
+                                        {{ $shop->description }}
+                                    </p>
+                                    <div class="seller-meta">
+                                        <span><i class="fas fa-box-open text-secondary me-1"></i>{{ $shop->products_count }} active products</span>
+                                    </div>
+                                    <a href="{{ route('frontend.shop', ['shop' => $shop->id]) }}"
+                                        class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
+                                            class="fas fa-arrow-right ms-2"></i></a>
+                                </article>
                             </div>
-                            <h4 class="mt-4 mb-2">Green Basket</h4>
-                            <p class="text-muted mb-3">
-                                Everyday fruits and vegetables, picked fresh from nearby
-                                farms.
-                            </p>
-                            <div class="seller-meta">
-                                <span><i class="fas fa-star text-secondary me-1"></i>4.9
-                                    <small>(128)</small></span><span><i
-                                        class="fas fa-map-marker-alt text-secondary me-1"></i>1.2 km</span>
-                            </div>
-                            <div class="seller-tags">
-                                <span>Fresh produce</span><span>Organic</span>
-                            </div>
-                            <a href="{{ route('frontend.shop') }}" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
-                                    class="fas fa-arrow-right ms-2"></i></a>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <article class="seller-directory-card h-100">
-                            <div class="seller-directory-head">
-                                <img src="{{ asset('img/best-product-2.jpg') }}" alt="Daily Harvest"
-                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
-                                        class="fas fa-circle"></i> Open now</span>
-                            </div>
-                            <h4 class="mt-4 mb-2">Daily Harvest</h4>
-                            <p class="text-muted mb-3">
-                                Local produce and pantry essentials for the whole family.
-                            </p>
-                            <div class="seller-meta">
-                                <span><i class="fas fa-star text-secondary me-1"></i>4.8
-                                    <small>(94)</small></span><span><i
-                                        class="fas fa-map-marker-alt text-secondary me-1"></i>2.4 km</span>
-                            </div>
-                            <div class="seller-tags">
-                                <span>Pantry</span><span>Same-day delivery</span>
-                            </div>
-                            <a href="{{ route('frontend.shop') }}" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
-                                    class="fas fa-arrow-right ms-2"></i></a>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <article class="seller-directory-card h-100">
-                            <div class="seller-directory-head">
-                                <img src="{{ asset('img/best-product-3.jpg') }}" alt="Nature's Store"
-                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
-                                        class="fas fa-circle"></i> Open now</span>
-                            </div>
-                            <h4 class="mt-4 mb-2">Nature's Store</h4>
-                            <p class="text-muted mb-3">
-                                Organic choices and seasonal favourites from local sellers.
-                            </p>
-                            <div class="seller-meta">
-                                <span><i class="fas fa-star text-secondary me-1"></i>4.7
-                                    <small>(76)</small></span><span><i
-                                        class="fas fa-map-marker-alt text-secondary me-1"></i>3.1 km</span>
-                            </div>
-                            <div class="seller-tags">
-                                <span>Organic</span><span>Seasonal</span>
-                            </div>
-                            <a href="{{ route('frontend.shop') }}" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
-                                    class="fas fa-arrow-right ms-2"></i></a>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <article class="seller-directory-card h-100">
-                            <div class="seller-directory-head">
-                                <img src="{{ asset('img/best-product-4.jpg') }}" alt="The Green Crate"
-                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
-                                        class="fas fa-circle"></i> Open now</span>
-                            </div>
-                            <h4 class="mt-4 mb-2">The Green Crate</h4>
-                            <p class="text-muted mb-3">
-                                Colourful vegetables and weekly boxes for simple healthy
-                                meals.
-                            </p>
-                            <div class="seller-meta">
-                                <span><i class="fas fa-star text-secondary me-1"></i>4.8
-                                    <small>(61)</small></span><span><i
-                                        class="fas fa-map-marker-alt text-secondary me-1"></i>3.8 km</span>
-                            </div>
-                            <div class="seller-tags">
-                                <span>Weekly boxes</span><span>Vegetables</span>
-                            </div>
-                            <a href="{{ route('frontend.shop') }}" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
-                                    class="fas fa-arrow-right ms-2"></i></a>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <article class="seller-directory-card h-100">
-                            <div class="seller-directory-head">
-                                <img src="{{ asset('img/best-product-5.jpg') }}" alt="Harvest Corner"
-                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
-                                        class="fas fa-circle"></i> Open now</span>
-                            </div>
-                            <h4 class="mt-4 mb-2">Harvest Corner</h4>
-                            <p class="text-muted mb-3">
-                                A friendly neighbourhood grocer for everyday essentials.
-                            </p>
-                            <div class="seller-meta">
-                                <span><i class="fas fa-star text-secondary me-1"></i>4.6
-                                    <small>(49)</small></span><span><i
-                                        class="fas fa-map-marker-alt text-secondary me-1"></i>4.2 km</span>
-                            </div>
-                            <div class="seller-tags">
-                                <span>Groceries</span><span>Free delivery</span>
-                            </div>
-                            <a href="{{ route('frontend.shop') }}" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
-                                    class="fas fa-arrow-right ms-2"></i></a>
-                        </article>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <article class="seller-directory-card h-100">
-                            <div class="seller-directory-head">
-                                <img src="{{ asset('img/best-product-6.jpg') }}" alt="Market & More"
-                                    class="shop-avatar rounded-circle" /><span class="seller-status"><i
-                                        class="fas fa-circle"></i> Open now</span>
-                            </div>
-                            <h4 class="mt-4 mb-2">Market & More</h4>
-                            <p class="text-muted mb-3">
-                                A curated mix of fresh goods, treats, and local favourites.
-                            </p>
-                            <div class="seller-meta">
-                                <span><i class="fas fa-star text-secondary me-1"></i>4.7
-                                    <small>(83)</small></span><span><i
-                                        class="fas fa-map-marker-alt text-secondary me-1"></i>4.8 km</span>
-                            </div>
-                            <div class="seller-tags">
-                                <span>Local favourites</span><span>Fresh goods</span>
-                            </div>
-                            <a href="{{ route('frontend.shop') }}" class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
-                                    class="fas fa-arrow-right ms-2"></i></a>
-                        </article>
+                    @empty
+                        <div class="col-12"><p class="alert alert-light border mb-0">No shops match these filters.</p></div>
+                    @endforelse
+                    <div class="col-12 d-flex justify-content-center mt-4">
+                        {{ $shops->links() }}
                     </div>
                 </div>
             </div>
@@ -220,8 +109,8 @@
                             Reach more nearby customers and grow with Bazaar Chalo.
                         </p>
                     </div>
-                    <a href="{{ route('seller.register') }}" class="btn btn-primary rounded-pill px-4 mt-4 mt-lg-0">Register your shop <i
-                            class="fas fa-store ms-2"></i></a>
+                    <a href="{{ route('seller.register') }}" class="btn btn-primary rounded-pill px-4 mt-4 mt-lg-0">Register
+                        your shop <i class="fas fa-store ms-2"></i></a>
                 </div>
             </div>
         </section>

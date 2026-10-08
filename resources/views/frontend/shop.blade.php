@@ -10,171 +10,171 @@
     </div>
 
     <div class="container-fluid fruite py-5">
-        <div class="container py-5">
-            <h1 class="mb-4">Fresh Products Shop</h1>
-
-            <div class="row g-4">
-                <div class="col-xl-3">
-                    <div class="input-group w-100 mx-auto d-flex">
-                        <input type="search" class="form-control p-3" placeholder="keywords" aria-describedby="search-icon-1" />
-                        <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
-                    </div>
+        <div class="container py-4">
+            <div class="shop-page-heading d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+                <div>
+                    <p class="text-secondary fw-bold text-uppercase mb-2">Local marketplace</p>
+                    <h1 class="display-6 mb-1">Shop Products</h1>
+                    <p class="text-muted mb-0">Discover products from active local shops.</p>
                 </div>
-                <div class="col-6"></div>
-                <div class="col-xl-3">
-                    <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                        <label for="fruits">Default Sorting:</label>
-                        <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3" form="fruitform">
-                            <option value="volvo">Nothing</option>
-                            <option value="saab">Popularity</option>
-                            <option value="opel">Organic</option>
-                            <option value="audi">Fantastic</option>
+                <button type="button" class="btn btn-outline-primary d-lg-none" id="shopFiltersToggle"
+                    aria-controls="shopFilterPanel" aria-expanded="false">
+                    <i class="fas fa-sliders-h me-2" aria-hidden="true"></i>Filters
+                </button>
+            </div>
+
+            <div class="shop-results-toolbar mb-4">
+                <div class="row g-3 align-items-center">
+
+                    <div class="col-12 col-md-9 shop-search-row">
+                        <div class="input-group input-group-md pt-md-2">
+                            <span class="input-group-text bg-white"><i class="fas fa-search text-muted"
+                                    aria-hidden="true"></i></span>
+                            <input id="shopSearch" type="search" name="q" form="shopFilterForm"
+                                value="{{ $filters['search'] }}" class="form-control"
+                                placeholder="Search products by name or description" aria-label="Search products" />
+                            <button type="submit" form="shopFilterForm" class="btn btn-primary px-4">Search</button>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 mt-md-0">
+                        <label for="sortProducts" class="shop-results-sort mb-0">
+                            <span class="text-muted text-nowrap">Sort by</span>
+                        </label>
+                        <select id="sortProducts" name="sort" form="shopFilterForm"
+                            class="form-select form-select-md" onchange="document.getElementById('shopFilterForm').submit()">
+                            <option value="latest" @selected($filters['sort'] === 'latest')>Newest</option>
+                            <option value="price_asc" @selected($filters['sort'] === 'price_asc')>Price: low to high</option>
+                            <option value="price_desc" @selected($filters['sort'] === 'price_desc')>Price: high to low</option>
+                            <option value="name" @selected($filters['sort'] === 'name')>Name</option>
                         </select>
+                    </div>
+                    <div class="col-12">
+                        <p class="shop-results-count text-muted mb-0">{{ $products->total() }} products found</p>
                     </div>
                 </div>
             </div>
 
+            <div class="shop-filter-backdrop" id="shopFilterBackdrop"></div>
             <div class="row g-4">
-                <div class="col-lg-3">
-                    <div class="row g-4">
-                        <div class="col-lg-12">
-                            <h4>Categories</h4>
-                            <ul class="list-unstyled fruite-categorie">
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Apples</a><span>(3)</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Oranges</a><span>(5)</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Strawberry</a><span>(2)</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Banana</a><span>(8)</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="d-flex justify-content-between fruite-name">
-                                        <a href="#"><i class="fas fa-apple-alt me-2"></i>Pumpkin</a><span>(5)</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <h4 class="mb-2">Price</h4>
-                            <input type="range" class="form-range w-100" id="rangeInput" name="rangeInput" min="0" max="500" value="0" oninput="amount.value = rangeInput.value" />
-                            <output id="amount" name="amount" for="rangeInput">0</output>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <h4>Additional</h4>
-                            <div class="mb-2"><input type="radio" class="me-2" id="Categories-1" name="Categories-1" /><label for="Categories-1">Organic</label></div>
-                            <div class="mb-2"><input type="radio" class="me-2" id="Categories-2" name="Categories-1" /><label for="Categories-2">Fresh</label></div>
-                            <div class="mb-2"><input type="radio" class="me-2" id="Categories-3" name="Categories-1" /><label for="Categories-3">Sales</label></div>
-                            <div class="mb-2"><input type="radio" class="me-2" id="Categories-4" name="Categories-1" /><label for="Categories-4">Discount</label></div>
-                            <div class="mb-2"><input type="radio" class="me-2" id="Categories-5" name="Categories-1" /><label for="Categories-5">Expired</label></div>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <h4 class="mb-3">Featured Products</h4>
-                            @foreach ([
-                                ['img' => 'featur-1.jpg', 'name' => 'Big Banana'],
-                                ['img' => 'featur-2.jpg', 'name' => 'Big Banana'],
-                                ['img' => 'featur-3.jpg', 'name' => 'Big Banana'],
-                            ] as $item)
-                                <div class="d-flex align-items-center mb-3">
-                                    <img src="{{ asset('img/' . $item['img']) }}" class="img-fluid rounded me-3" style="width: 80px; height: 80px; object-fit: cover" alt="{{ $item['name'] }}" />
-                                    <div>
-                                        <a href="{{ route('frontend.product-detail') }}"><h6 class="mb-1">{{ $item['name'] }}</h6></a>
-                                        <div class="product-rating mb-1">
-                                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            <span class="fw-bold me-2">$2.99</span>
-                                            <span class="text-danger text-decoration-line-through">$4.11</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                            <a href="#" class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">View More</a>
-                        </div>
-
-                        <div class="col-lg-12">
-                            <div class="position-relative">
-                                <img src="{{ asset('img/banner-fruits.jpg') }}" class="img-fluid w-100 rounded" alt="Fresh fruits banner" />
-                                <div class="position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%)">
-                                    <h3 class="text-secondary fw-bold">Fresh<br />Fruits<br />Banner</h3>
-                                </div>
-                            </div>
-                        </div>
+                <aside class="col-lg-3 shop-filter-panel" id="shopFilterPanel" aria-label="Product filters">
+                    <div class="shop-filter-panel-header d-flex justify-content-between align-items-center d-lg-none mb-3">
+                        <h2 class="h5 mb-0">Filters</h2>
+                        <button type="button" class="btn btn-sm btn-light" id="shopFiltersClose"
+                            aria-label="Close filters">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
                     </div>
-                </div>
 
-                <div class="col-lg-9">
-                    <div class="row g-4">
-                        @foreach ([
-                            ['name' => 'Grapes', 'img' => 'fruite-item-5.jpg', 'hover' => 'best-product-1.jpg', 'price' => '4.99', 'badge' => null],
-                            ['name' => 'Raspberries', 'img' => 'fruite-item-2.jpg', 'hover' => 'best-product-2.jpg', 'price' => '4.99', 'badge' => 'New'],
-                            ['name' => 'Apricots', 'img' => 'fruite-item-4.jpg', 'hover' => 'best-product-3.jpg', 'price' => '4.99', 'badge' => null],
-                            ['name' => 'Banana', 'img' => 'fruite-item-3.jpg', 'hover' => 'best-product-4.jpg', 'price' => '4.99', 'badge' => null],
-                            ['name' => 'Fresh Oranges', 'img' => 'fruite-item-1.jpg', 'hover' => 'best-product-1.jpg', 'price' => '4.99', 'badge' => 'New'],
-                            ['name' => 'Bell Peppers', 'img' => 'vegetable-item-4.jpg', 'hover' => 'best-product-2.jpg', 'price' => '7.99', 'badge' => '-15%'],
-                            ['name' => 'Seedless Grapes', 'img' => 'fruite-item-5.jpg', 'hover' => 'best-product-3.jpg', 'price' => '5.49', 'badge' => null],
-                            ['name' => 'Farm Potatoes', 'img' => 'vegetable-item-5.jpg', 'hover' => 'best-product-4.jpg', 'price' => '3.99', 'badge' => null],
-                            ['name' => 'Strawberries', 'img' => 'fruite-item-2.jpg', 'hover' => 'best-product-1.jpg', 'price' => '4.49', 'badge' => null],
-                        ] as $product)
-                            <div class="col-md-6 col-lg-6 col-xl-4">
-                                <div class="product-card">
-                                    @if ($product['badge'])
-                                        <span class="product-badge {{ $product['badge'] === 'New' ? 'product-badge-new' : 'product-badge-sale' }}">{{ $product['badge'] }}</span>
-                                    @endif
-                                    <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                                        <i class="far fa-heart" aria-hidden="true"></i>
-                                    </button>
-                                    <div class="product-media">
-                                        <a href="{{ route('frontend.product-detail') }}" class="product-image-link" aria-label="View {{ $product['name'] }}">
-                                            <img src="{{ asset('img/' . $product['img']) }}" class="product-image product-image-primary" alt="{{ $product['name'] }}" />
-                                            <img src="{{ asset('img/' . $product['hover']) }}" class="product-image product-image-secondary" alt="" aria-hidden="true" />
-                                        </a>
-                                        <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag" aria-hidden="true"></i> Add to Cart</a>
-                                    </div>
-                                    <div class="product-body">
-                                        <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">{{ $product['name'] }}</a>
-                                        <div class="product-meta">
-                                            <div class="product-rating">
-                                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
-                                            </div>
-                                            <div class="product-price">
-                                                <span class="product-price-current">${{ $product['price'] }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <form id="shopFilterForm" action="{{ route('frontend.shop') }}" method="GET" class="shop-filter-form">
+                        <fieldset class="shop-filter-section">
+                            <legend class="shop-filter-label">Categories</legend>
+                            <div class="shop-filter-options">
+                                @forelse ($categories as $category)
+                                    <label class="shop-filter-option">
+                                        <input type="checkbox" name="category[]" value="{{ $category->id }}"
+                                            @checked(in_array((int) $category->id, $filters['categoryIds'], true)) />
+                                        <span>{{ $category->name }}</span>
+                                        <small>{{ $category->products_count }}</small>
+                                    </label>
+                                @empty
+                                    <p class="text-muted small mb-0">No categories available.</p>
+                                @endforelse
                             </div>
-                        @endforeach
+                        </fieldset>
 
-                        <div class="col-12">
-                            <div class="pagination d-flex justify-content-center mt-5">
-                                <a href="#" class="rounded">&laquo;</a>
-                                <a href="#" class="active rounded">1</a>
-                                <a href="#" class="rounded">2</a>
-                                <a href="#" class="rounded">3</a>
-                                <a href="#" class="rounded">4</a>
-                                <a href="#" class="rounded">5</a>
-                                <a href="#" class="rounded">6</a>
-                                <a href="#" class="rounded">&raquo;</a>
+                        <fieldset class="shop-filter-section">
+                            <legend class="shop-filter-label">Shops</legend>
+                            <div class="shop-filter-options">
+                                @forelse ($shops as $shop)
+                                    <label class="shop-filter-option">
+                                        <input type="checkbox" name="shop[]" value="{{ $shop->id }}"
+                                            @checked(in_array((int) $shop->id, $filters['shopIds'], true)) />
+                                        <span>{{ $shop->name }}</span>
+                                    </label>
+                                @empty
+                                    <p class="text-muted small mb-0">No shops available.</p>
+                                @endforelse
+                            </div>
+                        </fieldset>
+
+                        <div class="shop-filter-section">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="shop-filter-label mb-0">Price range</span>
+                                <span class="shop-price-values small">
+                                    <output id="minPriceOutput" for="minPrice">${{ number_format($filters['minPrice'], 0) }}</output>
+                                    <span aria-hidden="true">-</span>
+                                    <output id="maxPriceOutput" for="maxPrice">${{ number_format($filters['maxPrice'], 0) }}</output>
+                                </span>
+                            </div>
+                            <div class="shop-price-slider" id="shopPriceSlider"
+                                data-price-limit="{{ $filters['priceLimit'] }}">
+                                <div class="shop-price-track" aria-hidden="true"></div>
+                                <div class="shop-price-selection" id="shopPriceSelection" aria-hidden="true"></div>
+                                <input id="minPrice" type="range" name="min_price" min="0"
+                                    max="{{ $filters['priceLimit'] }}" step="1" value="{{ $filters['minPrice'] }}"
+                                    aria-label="Minimum price" />
+                                <input id="maxPrice" type="range" name="max_price" min="0"
+                                    max="{{ $filters['priceLimit'] }}" step="1" value="{{ $filters['maxPrice'] }}"
+                                    aria-label="Maximum price" />
                             </div>
                         </div>
+
+                        <div class="shop-filter-actions d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-fill">
+                                <i class="fas fa-filter me-2" aria-hidden="true"></i>Filter
+                            </button>
+                            <a href="{{ route('frontend.shop') }}" class="btn btn-outline-secondary">Clear</a>
+                        </div>
+                    </form>
+
+                    @if ($featuredProducts->isNotEmpty())
+                        <section class="shop-featured-section" aria-labelledby="shopFeaturedHeading">
+                            <h2 class="shop-filter-label" id="shopFeaturedHeading">Featured products</h2>
+                            <div class="shop-featured-list">
+                                @foreach ($featuredProducts as $featuredProduct)
+                                    @php
+                                        $featuredImage =
+                                            $featuredProduct->coverImage?->url ?? asset('img/fruite-item-1.jpg');
+                                        $featuredPrice = $featuredProduct->has_variants
+                                            ? $featuredProduct->variants_min_price ??
+                                                ($featuredProduct->variants->min('price') ?? $featuredProduct->price)
+                                            : $featuredProduct->price;
+                                    @endphp
+                                    <a class="shop-featured-item"
+                                        href="{{ route('frontend.product-detail', $featuredProduct) }}">
+                                        <img src="{{ $featuredImage }}" alt="{{ $featuredProduct->name }}" />
+                                        <span>
+                                            <strong>{{ $featuredProduct->name }}</strong>
+                                            <small>${{ number_format((float) $featuredPrice, 2) }}</small>
+                                        </span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+                </aside>
+
+                <section class="col-lg-9" aria-label="Products">
+                    <div class="row g-4">
+                        @forelse ($products as $product)
+                            <div class="col-md-6 col-xl-4">
+                                @include('frontend.partials.product-card', ['product' => $product])
+                            </div>
+                        @empty
+                            <div class="col-12">
+                                <div class="alert alert-light border">No products match these filters.</div>
+                            </div>
+                        @endforelse
+
+                        @if ($products->hasPages())
+                            <div class="col-12">
+                                <div class="pagination d-flex justify-content-center mt-5">
+                                    {{ $products->links() }}
+                                </div>
+                            </div>
+                        @endif
                     </div>
-                </div>
+                </section>
             </div>
         </div>
     </div>

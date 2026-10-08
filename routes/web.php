@@ -24,7 +24,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::controller(FrontendController::class)->name('frontend.')->group(function () {
     Route::get('/', 'index')->name('home');
     Route::get('/shop', 'shop')->name('shop');
-    Route::get('/product-detail', 'productDetail')->name('product-detail');
+    Route::get('/product-detail/{product?}', 'productDetail')->name('product-detail');
     Route::get('/about', 'about')->name('about');
     Route::get('/contact', 'contact')->name('contact');
     Route::get('/categories', 'categories')->name('categories');

@@ -38,13 +38,30 @@
     // Reusable: turns any .owl-carousel into a dot-navigated carousel.
     // Used by both the category carousel and the product carousel.
     function initDottedCarousel($carousel, owlOptions) {
-        if (!$carousel.length) {
-            return;
-        }
+    if (!$carousel.length) {
+        return;
+    }
 
-        var itemCount = $carousel.children().length;
-        var $dots = $('<div class="category-dots"></div>');
+    var itemCount = $carousel.children().length;
+    var $dots = $('<div class="category-dots"></div>');
 
+    var responsiveCounts = Object.keys(owlOptions.responsive || {}).map(function (breakpoint) {
+        return owlOptions.responsive[breakpoint].items;
+    });
+    var maxVisibleItems = Math.max.apply(null, responsiveCounts.concat([1]));
+
+    // Not enough items to scroll: turn off looping/autoplay,
+    // but DO NOT change `items`, so card size stays consistent.
+    var needsScroll = itemCount > maxVisibleItems;
+    if (!needsScroll) {
+        owlOptions.loop = false;
+        owlOptions.autoplay = false;
+        owlOptions.mouseDrag = false;
+        owlOptions.touchDrag = false;
+    }
+
+    // Dots only make sense if the carousel can actually move
+    if (needsScroll) {
         for (var i = 0; i < itemCount; i++) {
             $dots.append(
                 $("<button>", {
@@ -55,27 +72,32 @@
             );
         }
         $carousel.after($dots);
-
-        $carousel.owlCarousel(owlOptions);
-
-        var owlApi = $carousel.data("owl.carousel");
-
-        var setActiveDot = function (realIndex) {
-            $dots.find(".category-dot").removeClass("active").eq(realIndex).addClass("active");
-        };
-
-        $carousel.on("translated.owl.carousel", function () {
-            if (owlApi) {
-                setActiveDot(owlApi.relative(owlApi.current()));
-            }
-        });
-
-        $dots.on("click", ".category-dot", function () {
-            $carousel.trigger("to.owl.carousel", [$(this).index(), 300]);
-        });
-
-        setActiveDot(0);
     }
+
+    $carousel.owlCarousel(owlOptions);
+
+    if (!needsScroll) {
+        return;
+    }
+
+    var owlApi = $carousel.data("owl.carousel");
+
+    var setActiveDot = function (realIndex) {
+        $dots.find(".category-dot").removeClass("active").eq(realIndex).addClass("active");
+    };
+
+    $carousel.on("translated.owl.carousel", function () {
+        if (owlApi) {
+            setActiveDot(owlApi.relative(owlApi.current()));
+        }
+    });
+
+    $dots.on("click", ".category-dot", function () {
+        $carousel.trigger("to.owl.carousel", [$(this).index(), 300]);
+    });
+
+    setActiveDot(0);
+}
     /*** Dotted Carousel Helper End ***/
 
     /*** Category Carousel Start ***/
@@ -213,18 +235,30 @@
     /*** Wishlist Buttons End ***/
 
     /*** Cart Drawer Start ***/
+    var cartStorageKey = "bazaar-chalo-cart";
     var cart = [];
+
+    try {
+        var savedCart = JSON.parse(localStorage.getItem(cartStorageKey) || "[]");
+        cart = Array.isArray(savedCart) ? savedCart : [];
+    } catch (error) {
+        cart = [];
+    }
+
+    function escapeHtml(value) {
+        return String(value == null ? "" : value).replace(/[&<>"']/g, function (character) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+            }[character];
+        });
+    }
 
     function formatCurrency(amount) {
         return "$" + amount.toFixed(2);
-    }
-
-    function slugify(text) {
-        return text
-            .toLowerCase()
-            .trim()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/(^-|-$)/g, "");
     }
 
     function getCartTotalQty() {
@@ -235,6 +269,60 @@
 
     function updateCartBadge() {
         $(".nav-cart-count").text(getCartTotalQty());
+    }
+
+    function renderCartPage() {
+        var $items = $("#cartPageItems");
+        if (!$items.length) {
+            return;
+        }
+
+        if (!cart.length) {
+            $items.html('<tr><td colspan="6" class="text-center py-5">Your cart is empty. <a href="' + escapeHtml($("#shopPageLink").attr("href") || "/shop") + '">Browse products</a>.</td></tr>');
+            $("#cartPageSubtotal, #cartPageTotal").text(formatCurrency(0));
+            $("#cartPageShipping").text(formatCurrency(0));
+            $("#cartPageCheckout").addClass("disabled").attr("aria-disabled", "true");
+            return;
+        }
+
+        var subtotal = 0;
+        var html = "";
+        cart.forEach(function (item) {
+            var price = Number(item.price) || 0;
+            var quantity = Number(item.qty) || 1;
+            subtotal += price * quantity;
+            html +=
+                '<tr data-id="' + escapeHtml(item.id) + '">' +
+                '<td><img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '" class="rounded" style="width: 72px; height: 72px; object-fit: cover" /></td>' +
+                '<td><span class="d-block fw-semibold">' + escapeHtml(item.name) + '</span>' +
+                (item.variantTitle ? '<small class="text-muted">' + escapeHtml(item.variantTitle) + '</small>' : "") + "</td>" +
+                '<td>' + formatCurrency(price) + "</td>" +
+                '<td><div class="d-inline-flex align-items-center gap-2">' +
+                '<button type="button" class="btn btn-sm btn-light" data-action="decrease" aria-label="Decrease quantity">-</button>' +
+                '<span>' + quantity + "</span>" +
+                '<button type="button" class="btn btn-sm btn-light" data-action="increase" aria-label="Increase quantity">+</button>' +
+                "</div></td>" +
+                '<td>' + formatCurrency(price * quantity) + "</td>" +
+                '<td><button type="button" class="btn btn-sm btn-outline-danger" data-action="remove" aria-label="Remove item"><i class="fas fa-trash-alt" aria-hidden="true"></i></button></td>' +
+                "</tr>";
+        });
+
+        var shipping = 3;
+        $items.html(html);
+        $("#cartPageSubtotal").text(formatCurrency(subtotal));
+        $("#cartPageShipping").text(formatCurrency(shipping));
+        $("#cartPageTotal").text(formatCurrency(subtotal + shipping));
+        $("#cartPageCheckout").removeClass("disabled").removeAttr("aria-disabled");
+    }
+
+    function persistCart() {
+        try {
+            localStorage.setItem(cartStorageKey, JSON.stringify(cart));
+        } catch (error) {
+            // The current page can still use the in-memory cart if storage is unavailable.
+        }
+        renderCartDrawer();
+        renderCartPage();
     }
 
     function renderCartDrawer() {
@@ -254,13 +342,15 @@
         var html = "";
 
         cart.forEach(function (item) {
-            subtotal += item.price * item.qty;
+            var price = Number(item.price) || 0;
+            subtotal += price * item.qty;
             html +=
-                '<div class="cart-drawer-item" data-id="' + item.id + '">' +
-                '<img src="' + item.image + '" alt="' + item.name + '" />' +
+                '<div class="cart-drawer-item" data-id="' + escapeHtml(item.id) + '">' +
+                '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '" />' +
                 '<div class="cart-drawer-item-info">' +
-                '<div class="cart-drawer-item-title">' + item.name + "</div>" +
-                '<div class="cart-drawer-item-price">' + formatCurrency(item.price) + "</div>" +
+                '<div class="cart-drawer-item-title">' + escapeHtml(item.name) + "</div>" +
+                (item.variantTitle ? '<small class="text-muted">' + escapeHtml(item.variantTitle) + '</small>' : "") +
+                '<div class="cart-drawer-item-price">' + formatCurrency(price) + "</div>" +
                 '<div class="cart-drawer-qty">' +
                 '<button type="button" data-action="decrease" aria-label="Decrease quantity">-</button>' +
                 "<span>" + item.qty + "</span>" +
@@ -295,37 +385,91 @@
         });
 
         if (existing) {
-            existing.qty += 1;
+            existing.qty = Math.min(existing.qty + item.qty, item.stock || Infinity);
         } else {
             cart.push(item);
         }
 
-        renderCartDrawer();
+        persistCart();
         openCartDrawer();
     }
 
-    $(document).on("click", ".product-cart-cta", function (e) {
+    $(document).on("click", "[data-cart-add]", function (e) {
         e.preventDefault();
         e.stopPropagation();
 
-        var $card = $(this).closest(".product-card");
-        var name = $card.find(".product-title").first().text().trim();
-        var priceText = $card.find(".product-price-current").first().text().trim();
-        var price = parseFloat(priceText.replace(/[^0-9.]/g, "")) || 0;
-        var image = $card.find(".product-image-primary").first().attr("src") || "";
-
         addToCart({
-            id: slugify(name),
-            name: name,
-            price: price,
-            image: image,
+            id: "product-" + this.dataset.productId,
+            productId: this.dataset.productId,
+            name: this.dataset.productName,
+            price: Number(this.dataset.productPrice) || 0,
+            image: this.dataset.productImage || "",
+            stock: Number(this.dataset.productStock) || 1,
             qty: 1,
         });
     });
 
-    $(document).on("click", "#cartDrawerItems [data-action]", function () {
+    $(document).on("change", "#productVariant", function () {
+        var option = this.options[this.selectedIndex];
+        var stock = Number(option.dataset.stock) || 0;
+        var quantity = document.getElementById("detailQuantity");
+        var addButton = document.getElementById("detailAddToCart");
+        var price = document.getElementById("detailPrice");
+
+        addButton.disabled = !this.value || stock < 1;
+        quantity.max = Math.max(stock, 1);
+        quantity.value = 1;
+        price.textContent = option.dataset.price ? formatCurrency(Number(option.dataset.price)) : "";
+        $("#variantStockMessage").text(this.value ? stock + " in stock" : "");
+    });
+
+    $(document).on("submit", "#productDetailCartForm", function (event) {
+        event.preventDefault();
+        var form = this;
+        var variant = document.getElementById("productVariant");
+        var selected = variant && variant.options[variant.selectedIndex];
+        var quantity = Math.max(1, Number(document.getElementById("detailQuantity").value) || 1);
+        var price = Number(form.dataset.productPrice) || 0;
+        var variantId = null;
+        var variantTitle = "";
+        var stock = Number(form.dataset.productStock) || 0;
+
+        if (form.dataset.hasVariants === "1") {
+            if (!selected || !variant.value) {
+                variant.focus();
+                return;
+            }
+            price = Number(selected.dataset.price) || 0;
+            stock = Number(selected.dataset.stock) || 0;
+            variantId = variant.value;
+            variantTitle = selected.dataset.title || selected.textContent.trim();
+        }
+
+        if (quantity > stock) {
+            document.getElementById("variantStockMessage").textContent = "Only " + stock + " available.";
+            return;
+        }
+
+        addToCart({
+            id: "product-" + form.dataset.productId + (variantId ? "-variant-" + variantId : ""),
+            productId: form.dataset.productId,
+            variantId: variantId,
+            variantTitle: variantTitle,
+            name: form.dataset.productName,
+            price: price,
+            image: form.dataset.productImage,
+            stock: stock,
+            qty: quantity,
+        });
+    });
+
+    $(document).on("click", "[data-product-image]", function () {
+        $("#productDetailImage").attr("src", this.dataset.productImage);
+    });
+
+    $(document).on("click", "#cartDrawerItems [data-action], #cartPageItems [data-action]", function () {
         var action = $(this).data("action");
-        var id = $(this).closest(".cart-drawer-item").data("id");
+        var id = $(this).closest("[data-id]").data("id");
         var item = cart.find(function (c) {
             return c.id === id;
         });
@@ -335,7 +479,9 @@
         }
 
         if (action === "increase") {
-            item.qty += 1;
+            if (!item.stock || item.qty < item.stock) {
+                item.qty += 1;
+            }
         } else if (action === "decrease") {
             item.qty -= 1;
             if (item.qty <= 0) {
@@ -349,16 +495,21 @@
             });
         }
 
-        renderCartDrawer();
+        persistCart();
     });
 
     $("#cartDrawerClose, #cartDrawerBackdrop, #cartDrawerContinue").on("click", function () {
         closeCartDrawer();
     });
 
+    $(document).on("click", "#cartPageCheckout[aria-disabled='true']", function (event) {
+        event.preventDefault();
+    });
+
     $(document).on("keydown", function (e) {
         if (e.key === "Escape") {
             closeCartDrawer();
+            closeShopFilters();
         }
     });
 
@@ -370,7 +521,80 @@
     });
 
     renderCartDrawer();
+    renderCartPage();
     /*** Cart Drawer End ***/
+
+    /*** Shop Filters Start ***/
+    var shopFilterPanel = document.getElementById("shopFilterPanel");
+    var shopFilterBackdrop = document.getElementById("shopFilterBackdrop");
+    var shopFiltersToggle = document.getElementById("shopFiltersToggle");
+    var shopFiltersClose = document.getElementById("shopFiltersClose");
+    var shopFilterForm = document.getElementById("shopFilterForm");
+
+    function closeShopFilters() {
+        if (!shopFilterPanel || !shopFilterBackdrop || !shopFiltersToggle) {
+            return;
+        }
+
+        shopFilterPanel.classList.remove("is-open");
+        shopFilterBackdrop.classList.remove("is-open");
+        shopFiltersToggle.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("shop-filter-open");
+    }
+
+    if (shopFilterPanel && shopFilterBackdrop && shopFiltersToggle) {
+        shopFiltersToggle.addEventListener("click", function () {
+            var isOpen = shopFilterPanel.classList.toggle("is-open");
+            shopFilterBackdrop.classList.toggle("is-open", isOpen);
+            shopFiltersToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+            document.body.classList.toggle("shop-filter-open", isOpen);
+        });
+
+        shopFilterBackdrop.addEventListener("click", closeShopFilters);
+        if (shopFiltersClose) {
+            shopFiltersClose.addEventListener("click", closeShopFilters);
+        }
+        if (shopFilterForm) {
+            shopFilterForm.addEventListener("submit", closeShopFilters);
+        }
+    }
+
+    var priceSlider = document.getElementById("shopPriceSlider");
+    var minPriceInput = document.getElementById("minPrice");
+    var maxPriceInput = document.getElementById("maxPrice");
+
+    if (priceSlider && minPriceInput && maxPriceInput) {
+        var priceLimit = Number(priceSlider.dataset.priceLimit) || 1;
+
+        var updatePriceRange = function (activeInput) {
+            var minPrice = Number(minPriceInput.value);
+            var maxPrice = Number(maxPriceInput.value);
+
+            if (activeInput === minPriceInput && minPrice >= maxPrice) {
+                minPrice = Math.max(0, maxPrice - 1);
+                minPriceInput.value = minPrice;
+            } else if (activeInput === maxPriceInput && maxPrice <= minPrice) {
+                maxPrice = Math.min(priceLimit, minPrice + 1);
+                maxPriceInput.value = maxPrice;
+            }
+
+            $("#minPriceOutput").text("$" + minPrice.toLocaleString());
+            $("#maxPriceOutput").text("$" + maxPrice.toLocaleString());
+            priceSlider.style.setProperty("--price-min-position", (minPrice / priceLimit) * 100 + "%");
+            priceSlider.style.setProperty("--price-max-position", (maxPrice / priceLimit) * 100 + "%");
+        };
+
+        [minPriceInput, maxPriceInput].forEach(function (input) {
+            input.addEventListener("input", function () {
+                minPriceInput.style.zIndex = input === minPriceInput ? "3" : "2";
+                maxPriceInput.style.zIndex = input === maxPriceInput ? "3" : "2";
+                updatePriceRange(input);
+            });
+        });
+
+        updatePriceRange();
+    }
+    /*** Shop Filters End ***/
 
     /*** Fixed Navbar Start ***/
     $(window).scroll(function () {

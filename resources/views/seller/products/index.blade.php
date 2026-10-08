@@ -105,7 +105,7 @@
                             <td>{{ $product->category->name ?? '—' }}</td>
                             <td>
                                 @if ($product->has_variants)
-                                    {{ number_format($product->variants()->min('price'), 2) }}
+                                    {{ number_format($product->variants_min_price, 2) }}
                                 @else
                                     {{ number_format($product->price, 2) }}
                                 @endif

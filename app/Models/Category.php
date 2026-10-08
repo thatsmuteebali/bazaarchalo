@@ -12,4 +12,10 @@ class Category extends Model
         'status',
         'description',
     ];
+
+    public function getImageUrlAttribute(): string
+    {
+        return asset('storage/' . ltrim($this->image, '/'));
+    }
+    public function products()   { return $this->hasMany(Product::class); }
 }

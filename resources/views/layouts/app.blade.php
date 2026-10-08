@@ -76,7 +76,7 @@
                 </button>
                 <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                     <div class="navbar-nav mx-auto">
-                        <a href="{{ route('frontend.home') }}" class="nav-item nav-link active">Home</a>
+                        <a href="{{ route('frontend.home') }}" class="nav-item nav-link {{ request()->routeIs('frontend.home') ? 'active' : '' }}">Home</a>
 
                         <div class="nav-item dropdown mega-menu-wrapper">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
@@ -191,8 +191,8 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('frontend.shop') }}" class="nav-item nav-link">Shop</a>
-                        <a href="{{ route('frontend.about') }}" class="nav-item nav-link">About</a>
+                        <a href="{{ route('frontend.shop') }}" class="nav-item nav-link {{ request()->routeIs('frontend.shop') ? 'active' : '' }}">Shop</a>
+                        <a href="{{ route('frontend.about') }}" class="nav-item nav-link {{ request()->routeIs('frontend.about') ? 'active' : '' }}">About</a>
                     </div>
                     <div class="d-flex align-items-center m-3 me-0">
                         <div class="nav-search-box" id="navSearchBox">

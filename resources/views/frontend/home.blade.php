@@ -9,15 +9,15 @@
                     <h1 class="mb-5 display-3 text-primary">
                         Apne Bazaar Se Apne Ghar Tak
                     </h1>
-                    <div class="position-relative mx-auto">
+                    <form action="{{ route('frontend.shop') }}" method="GET" class="position-relative mx-auto">
                         <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="search"
-                            name="product-search" placeholder="Search for a product..." aria-label="Search for a product" />
+                            name="q" placeholder="Search for a product..." aria-label="Search for a product" />
                         <button type="submit"
                             class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100"
                             style="top: 0; right: 25%">
                             Search
                         </button>
-                    </div>
+                    </form>
                 </div>
                 <div class="col-md-12 col-lg-5" data-aos="fade-left" data-aos-duration="900" data-aos-delay="150">
                     <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
@@ -66,18 +66,14 @@
                         categories <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
                 <div class="owl-carousel category-carousel" data-aos="fade-up" data-aos-delay="100">
-                    <a href="{{ route('frontend.shop') }}" class="category-card"><img src="{{ asset('img/fruite-item-1.jpg') }}"
-                            alt="Fresh fruits" /><span>Fresh Fruits</span></a>
-                    <a href="{{ route('frontend.shop') }}" class="category-card"><img src="{{ asset('img/vegetable-item-1.jpg') }}"
-                            alt="Fresh vegetables" /><span>Vegetables</span></a>
-                    <a href="{{ route('frontend.shop') }}" class="category-card"><img src="{{ asset('img/fruite-item-3.jpg') }}"
-                            alt="Bananas" /><span>Bananas</span></a>
-                    <a href="{{ route('frontend.shop') }}" class="category-card"><img src="{{ asset('img/fruite-item-5.jpg') }}"
-                            alt="Grapes" /><span>Grapes</span></a>
-                    <a href="{{ route('frontend.shop') }}" class="category-card"><img src="{{ asset('img/vegetable-item-4.jpg') }}"
-                            alt="Bell peppers" /><span>Bell Peppers</span></a>
-                    <a href="{{ route('frontend.shop') }}" class="category-card"><img src="{{ asset('img/vegetable-item-5.jpg') }}"
-                            alt="Potatoes" /><span>Potatoes</span></a>
+                    @if (count($categories) > 0)
+                        @foreach ($categories as $category)
+                            <a href="{{ route('frontend.shop', ['category' => $category->id]) }}" class="category-card">
+                                <img src="{{ $category->image ? $category->image_url : asset('img/fruite-item-1.jpg') }}" alt="{{ $category->name }}" />
+                                <span>{{$category->name}}</span>
+                            </a>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </section>
@@ -98,72 +94,32 @@
                         <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
                 <div class="row g-4">
-                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-                        <div class="shop-card bg-white rounded p-4 h-100">
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="{{ asset('img/best-product-1.jpg') }}" alt="Green Basket"
-                                    class="shop-avatar rounded-circle me-3" />
-                                <div>
-                                    <h5 class="mb-1">Green Basket</h5>
-                                    <small class="text-muted"><i class="fas fa-map-marker-alt text-secondary me-1"></i>
-                                        1.2 km away</small>
+                    @if (count($shops) > 0)
+                        @foreach ($shops as $shop)
+                            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                                <div class="shop-card bg-white rounded p-4 h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="{{ $shop->banner_url }}" alt="Green Basket"
+                                            class="shop-avatar rounded-circle me-3" />
+                                        <div>
+                                            <h5 class="mb-1">{{$shop->name}}</h5>
+                                            {{-- <small class="text-muted"><i class="fas fa-map-marker-alt text-secondary me-1"></i>
+                                                1.2 km away</small> --}}
+                                        </div>
+                                    </div>
+                                    <p class="mb-3">
+                                        {{$shop->description}}
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-primary"><i class="fas fa-star text-secondary me-1"></i> 4.9</span><a
+                                            href="{{ route('frontend.shop', ['shop' => $shop->id]) }}"
+                                            class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">Visit
+                                            shop</a>
+                                    </div>
                                 </div>
                             </div>
-                            <p class="mb-3">
-                                Everyday fruits and vegetables, picked fresh.
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-primary"><i class="fas fa-star text-secondary me-1"></i> 4.9</span><a
-                                    href="{{ route('frontend.shop') }}"
-                                    class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">Visit
-                                    shop</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-                        <div class="shop-card bg-white rounded p-4 h-100">
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="{{ asset('img/best-product-2.jpg') }}" alt="Daily Harvest"
-                                    class="shop-avatar rounded-circle me-3" />
-                                <div>
-                                    <h5 class="mb-1">Daily Harvest</h5>
-                                    <small class="text-muted"><i class="fas fa-map-marker-alt text-secondary me-1"></i>
-                                        2.4 km away</small>
-                                </div>
-                            </div>
-                            <p class="mb-3">
-                                Local produce and pantry essentials for your home.
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-primary"><i class="fas fa-star text-secondary me-1"></i> 4.8</span><a
-                                    href="{{ route('frontend.shop') }}"
-                                    class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">Visit
-                                    shop</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
-                        <div class="shop-card bg-white rounded p-4 h-100">
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="{{ asset('img/best-product-3.jpg') }}" alt="Nature's Store"
-                                    class="shop-avatar rounded-circle me-3" />
-                                <div>
-                                    <h5 class="mb-1">Nature's Store</h5>
-                                    <small class="text-muted"><i class="fas fa-map-marker-alt text-secondary me-1"></i>
-                                        3.1 km away</small>
-                                </div>
-                            </div>
-                            <p class="mb-3">
-                                Organic choices and seasonal favourites from local sellers.
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-primary"><i class="fas fa-star text-secondary me-1"></i> 4.7</span><a
-                                    href="{{ route('frontend.shop') }}"
-                                    class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">Visit
-                                    shop</a>
-                            </div>
-                        </div>
-                    </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </section>
@@ -183,118 +139,11 @@
                         products <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
                 <div class="owl-carousel product-carousel" data-aos="fade-up" data-aos-delay="100">
-                    <div class="product-card">
-                        <span class="product-badge product-badge-new">New</span>
-                        <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                            <i class="far fa-heart" aria-hidden="true"></i>
-                        </button>
-                        <div class="product-media">
-                            <a href="{{ route('frontend.product-detail') }}" class="product-image-link" aria-label="View Fresh Oranges">
-                                <img src="{{ asset('img/fruite-item-1.jpg') }}" class="product-image product-image-primary"
-                                    alt="Fresh oranges" />
-                                <img src="{{ asset('img/best-product-1.jpg') }}" class="product-image product-image-secondary"
-                                    alt="" aria-hidden="true" />
-                            </a>
-                            <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag"
-                                    aria-hidden="true"></i> Add to Cart</a>
-                        </div>
-                        <div class="product-body">
-                            <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">Fresh Oranges</a>
-                            <div class="product-meta">
-                                <div class="product-rating">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="far fa-star"></i>
-                                </div>
-                                <div class="product-price">
-                                    <span class="product-price-current">$4.99</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <span class="product-badge product-badge-sale">-15%</span>
-                        <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                            <i class="far fa-heart" aria-hidden="true"></i>
-                        </button>
-                        <div class="product-media">
-                            <a href="{{ route('frontend.product-detail') }}" class="product-image-link" aria-label="View Bell Peppers">
-                                <img src="{{ asset('img/vegetable-item-4.jpg') }}" class="product-image product-image-primary"
-                                    alt="Fresh bell peppers" />
-                                <img src="{{ asset('img/best-product-2.jpg') }}" class="product-image product-image-secondary"
-                                    alt="" aria-hidden="true" />
-                            </a>
-                            <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag"
-                                    aria-hidden="true"></i> Add to Cart</a>
-                        </div>
-                        <div class="product-body">
-                            <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">Bell Peppers</a>
-                            <div class="product-meta">
-                                <div class="product-rating">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="far fa-star"></i>
-                                </div>
-                                <div class="product-price">
-                                    <span class="product-price-old">$9.99</span>
-                                    <span class="product-price-current">$7.99</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <span class="product-badge product-badge-new">New</span>
-                        <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                            <i class="far fa-heart" aria-hidden="true"></i>
-                        </button>
-                        <div class="product-media">
-                            <a href="{{ route('frontend.product-detail') }}" class="product-image-link" aria-label="View Seedless Grapes">
-                                <img src="{{ asset('img/fruite-item-5.jpg') }}" class="product-image product-image-primary"
-                                    alt="Fresh grapes" />
-                                <img src="{{ asset('img/best-product-3.jpg') }}" class="product-image product-image-secondary"
-                                    alt="" aria-hidden="true" />
-                            </a>
-                            <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag"
-                                    aria-hidden="true"></i> Add to Cart</a>
-                        </div>
-                        <div class="product-body">
-                            <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">Seedless Grapes</a>
-                            <div class="product-meta">
-                                <div class="product-rating">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="fas fa-star"></i>
-                                </div>
-                                <div class="product-price">
-                                    <span class="product-price-current">$5.49</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                            <i class="far fa-heart" aria-hidden="true"></i>
-                        </button>
-                        <div class="product-media">
-                            <a href="{{ route('frontend.product-detail') }}" class="product-image-link" aria-label="View Farm Potatoes">
-                                <img src="{{ asset('img/vegetable-item-5.jpg') }}" class="product-image product-image-primary"
-                                    alt="Fresh potatoes" />
-                                <img src="{{ asset('img/best-product-4.jpg') }}" class="product-image product-image-secondary"
-                                    alt="" aria-hidden="true" />
-                            </a>
-                            <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag"
-                                    aria-hidden="true"></i> Add to Cart</a>
-                        </div>
-                        <div class="product-body">
-                            <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">Farm Potatoes</a>
-                            <div class="product-meta">
-                                <div class="product-rating">
-                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                        class="fas fa-star"></i><i class="far fa-star"></i>
-                                </div>
-                                <div class="product-price">
-                                    <span class="product-price-current">$3.99</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @forelse ($featuredProducts as $product)
+                        @include('frontend.partials.product-card', ['product' => $product])
+                    @empty
+                        <div class="text-muted py-4">No featured products are available right now.</div>
+                    @endforelse
                 </div>
             </div>
         </section>
