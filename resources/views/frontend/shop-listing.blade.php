@@ -43,13 +43,13 @@
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-0"><i
                                         class="fas fa-search text-primary"></i></span><input id="shopSearch" type="search" name="q"
-                                    value="{{ $filters['search'] }}" class="form-control border-0 py-3"
+                                    value="{{ $filters['search'] }}" class="form-control border-0"
                                     placeholder="Shop name or description" aria-label="Search shops" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <label for="shopCategory" class="form-label">Product category</label>
-                            <select id="shopCategory" name="category" class="form-select py-3">
+                            <select id="shopCategory" name="category" class="form-select">
                                 <option value="">All categories</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}" @selected($filters['category'] == $category->id)>{{ $category->name }}</option>
