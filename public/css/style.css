@@ -2576,7 +2576,7 @@ body.cart-drawer-open {
 .bc-toast-container {
     position: fixed;
     left: 50%;
-    top: 28px;
+    bottom: 28px;
     z-index: 1300;
     display: flex;
     width: min(92vw, 420px);
