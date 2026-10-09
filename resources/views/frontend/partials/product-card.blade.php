@@ -10,11 +10,18 @@
         && $product->compare_price
         && (float) $product->compare_price > (float) $product->price;
     $productUrl = route('frontend.product-detail', $product);
+
 @endphp
 <div class="product-card">
     @if ($hasDiscount)
         <span class="product-badge product-badge-discount">
             {{ round((1 - (float) $product->price / (float) $product->compare_price) * 100) }}% off
+        </span>
+    @endif
+
+    @if ($product->has_variants)
+        <span class="product-badge product-badge-discount">
+            {{ $product->variants_count }} variants
         </span>
     @endif
     <button type="button" class="wishlist-button" aria-label="Add to wishlist">
@@ -51,9 +58,11 @@
             </div>
             <div class="product-price">
                 @if ($hasDiscount)
-                    <span class="product-price-old">${{ number_format((float) $product->compare_price, 2) }}</span>
+                    <span class="product-price-old">${{ number_format((float) $product->compare_price, 0) }}</span>
                 @endif
-                <span class="product-price-current">${{ number_format((float) $displayPrice, 2) }}</span>
+                <span class="product-price-current">${{ number_format((float) $displayPrice, 0) }} @if ($product->has_variants && $product->variants_max_price !== $displayPrice)
+                - ${{ number_format((float) $product->variants_max_price, 0) }}
+                @endif</span>
             </div>
         </div>
     </div>

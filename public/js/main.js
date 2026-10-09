@@ -235,14 +235,19 @@
     /*** Wishlist Buttons End ***/
 
     /*** Cart Drawer Start ***/
-    var cartStorageKey = "bazaar-chalo-cart";
-    var cart = [];
+    // The cart lives in the PHP session. The browser never stores it:
+    // it only shows what the server sends back (window.BAZAAR_CART on page load,
+    // then the JSON returned by /cart/add, /cart/items/{key} ...).
+    var cartBase = String(window.BAZAAR_CART_URL || "/cart").replace(/\/$/, "");
+    var csrfToken = $('meta[name="csrf-token"]').attr("content") || "";
+    var emptyCart = { count: 0, subtotal: 0, items: [], notices: [] };
+    var cart = emptyCart;
 
+    // the old localStorage cart is not used any more
     try {
-        var savedCart = JSON.parse(localStorage.getItem(cartStorageKey) || "[]");
-        cart = Array.isArray(savedCart) ? savedCart : [];
+        localStorage.removeItem("bazaar-chalo-cart");
     } catch (error) {
-        cart = [];
+        // storage may be blocked; nothing to clean
     }
 
     function escapeHtml(value) {
@@ -258,17 +263,37 @@
     }
 
     function formatCurrency(amount) {
-        return "$" + amount.toFixed(2);
+        return "$" + Number(amount || 0).toFixed(2);
     }
 
-    function getCartTotalQty() {
-        return cart.reduce(function (sum, item) {
-            return sum + item.qty;
-        }, 0);
+    /* ----- small message toast ----- */
+    function showCartToast(message, type) {
+        if (!message) {
+            return;
+        }
+
+        var $container = $("#bcToastContainer");
+        if (!$container.length) {
+            $container = $('<div id="bcToastContainer" class="bc-toast-container" aria-live="polite"></div>').appendTo("body");
+        }
+
+        var $toast = $('<div class="bc-toast"></div>')
+            .addClass(type === "error" ? "bc-toast-error" : "bc-toast-info")
+            .text(message);
+
+        $container.append($toast);
+
+        setTimeout(function () {
+            $toast.addClass("hide");
+            setTimeout(function () {
+                $toast.remove();
+            }, 300);
+        }, 3800);
     }
 
+    /* ----- rendering ----- */
     function updateCartBadge() {
-        $(".nav-cart-count").text(getCartTotalQty());
+        $(".nav-cart-count").text(cart.count);
     }
 
     function renderCartPage() {
@@ -277,7 +302,7 @@
             return;
         }
 
-        if (!cart.length) {
+        if (!cart.items.length) {
             $items.html('<tr><td colspan="6" class="text-center py-5">Your cart is empty. <a href="' + escapeHtml($("#shopPageLink").attr("href") || "/shop") + '">Browse products</a>.</td></tr>');
             $("#cartPageSubtotal, #cartPageTotal").text(formatCurrency(0));
             $("#cartPageShipping").text(formatCurrency(0));
@@ -285,76 +310,59 @@
             return;
         }
 
-        var subtotal = 0;
         var html = "";
-        cart.forEach(function (item) {
-            var price = Number(item.price) || 0;
-            var quantity = Number(item.qty) || 1;
-            subtotal += price * quantity;
+        cart.items.forEach(function (item) {
             html +=
-                '<tr data-id="' + escapeHtml(item.id) + '">' +
+                '<tr data-id="' + escapeHtml(item.key) + '">' +
                 '<td><img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '" class="rounded" style="width: 72px; height: 72px; object-fit: cover" /></td>' +
-                '<td><span class="d-block fw-semibold">' + escapeHtml(item.name) + '</span>' +
-                (item.variantTitle ? '<small class="text-muted">' + escapeHtml(item.variantTitle) + '</small>' : "") + "</td>" +
-                '<td>' + formatCurrency(price) + "</td>" +
+                '<td><a class="d-block fw-semibold text-dark" href="' + escapeHtml(item.url) + '">' + escapeHtml(item.name) + "</a>" +
+                (item.variant_title ? '<small class="text-muted">' + escapeHtml(item.variant_title) + "</small>" : "") + "</td>" +
+                "<td>" + formatCurrency(item.price) + "</td>" +
                 '<td><div class="d-inline-flex align-items-center gap-2">' +
                 '<button type="button" class="btn btn-sm btn-light" data-action="decrease" aria-label="Decrease quantity">-</button>' +
-                '<span>' + quantity + "</span>" +
-                '<button type="button" class="btn btn-sm btn-light" data-action="increase" aria-label="Increase quantity">+</button>' +
+                "<span>" + item.qty + "</span>" +
+                '<button type="button" class="btn btn-sm btn-light" data-action="increase" aria-label="Increase quantity"' + (item.qty >= item.stock ? " disabled" : "") + ">+</button>" +
                 "</div></td>" +
-                '<td>' + formatCurrency(price * quantity) + "</td>" +
+                "<td>" + formatCurrency(item.line_total) + "</td>" +
                 '<td><button type="button" class="btn btn-sm btn-outline-danger" data-action="remove" aria-label="Remove item"><i class="fas fa-trash-alt" aria-hidden="true"></i></button></td>' +
                 "</tr>";
         });
 
         var shipping = 3;
         $items.html(html);
-        $("#cartPageSubtotal").text(formatCurrency(subtotal));
+        $("#cartPageSubtotal").text(formatCurrency(cart.subtotal));
         $("#cartPageShipping").text(formatCurrency(shipping));
-        $("#cartPageTotal").text(formatCurrency(subtotal + shipping));
+        $("#cartPageTotal").text(formatCurrency(cart.subtotal + shipping));
         $("#cartPageCheckout").removeClass("disabled").removeAttr("aria-disabled");
-    }
-
-    function persistCart() {
-        try {
-            localStorage.setItem(cartStorageKey, JSON.stringify(cart));
-        } catch (error) {
-            // The current page can still use the in-memory cart if storage is unavailable.
-        }
-        renderCartDrawer();
-        renderCartPage();
     }
 
     function renderCartDrawer() {
         var $items = $("#cartDrawerItems");
         var $footer = $("#cartDrawerFooter");
 
-        if (!cart.length) {
+        updateCartBadge();
+
+        if (!cart.items.length) {
             $items.html(
                 '<div class="cart-drawer-empty"><i class="fas fa-shopping-bag"></i><p>Your cart is empty</p></div>',
             );
             $footer.hide();
-            updateCartBadge();
             return;
         }
 
-        var subtotal = 0;
         var html = "";
-
-        cart.forEach(function (item) {
-            var price = Number(item.price) || 0;
-            subtotal += price * item.qty;
+        cart.items.forEach(function (item) {
             html +=
-                '<div class="cart-drawer-item" data-id="' + escapeHtml(item.id) + '">' +
+                '<div class="cart-drawer-item" data-id="' + escapeHtml(item.key) + '">' +
                 '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '" />' +
                 '<div class="cart-drawer-item-info">' +
-                '<div class="cart-drawer-item-title">' + escapeHtml(item.name) + "</div>" +
-                (item.variantTitle ? '<small class="text-muted">' + escapeHtml(item.variantTitle) + '</small>' : "") +
-                '<div class="cart-drawer-item-price">' + formatCurrency(price) + "</div>" +
+                '<a class="cart-drawer-item-title d-block" href="' + escapeHtml(item.url) + '">' + escapeHtml(item.name) + "</a>" +
+                (item.variant_title ? '<small class="text-muted">' + escapeHtml(item.variant_title) + "</small>" : "") +
+                '<div class="cart-drawer-item-price">' + formatCurrency(item.price) + "</div>" +
                 '<div class="cart-drawer-qty">' +
                 '<button type="button" data-action="decrease" aria-label="Decrease quantity">-</button>' +
                 "<span>" + item.qty + "</span>" +
-                '<button type="button" data-action="increase" aria-label="Increase quantity">+</button>' +
+                '<button type="button" data-action="increase" aria-label="Increase quantity"' + (item.qty >= item.stock ? " disabled" : "") + ">+</button>" +
                 "</div>" +
                 "</div>" +
                 '<button type="button" class="cart-drawer-item-remove" data-action="remove" aria-label="Remove item"><i class="fas fa-trash-alt"></i></button>' +
@@ -363,8 +371,56 @@
 
         $items.html(html);
         $footer.show();
-        $("#cartDrawerSubtotal").text(formatCurrency(subtotal));
-        updateCartBadge();
+        $("#cartDrawerSubtotal").text(formatCurrency(cart.subtotal));
+    }
+
+    function setCart(next) {
+        cart = next && Array.isArray(next.items) ? next : emptyCart;
+        renderCartDrawer();
+        renderCartPage();
+
+        (cart.notices || []).forEach(function (notice) {
+            showCartToast(notice, "info");
+        });
+    }
+
+    /* ----- talking to the server ----- */
+    function cartRequest(method, path, payload) {
+        return fetch(cartBase + path, {
+            method: method,
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "X-CSRF-TOKEN": csrfToken,
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: payload ? JSON.stringify(payload) : undefined,
+        }).then(function (response) {
+            return response
+                .json()
+                .catch(function () {
+                    return {};
+                })
+                .then(function (data) {
+                    if (data && data.cart) {
+                        setCart(data.cart); // the screen always shows the real cart
+                    }
+
+                    if (!response.ok || (data && data.ok === false)) {
+                        var message = (data && data.message) || "Something went wrong. Please try again.";
+                        if (response.status === 419) {
+                            message = "Your session has expired. Please refresh the page and try again.";
+                        }
+
+                        var error = new Error(message);
+                        error.redirect = (data && data.redirect) || null;
+                        throw error;
+                    }
+
+                    return data;
+                });
+        });
     }
 
     function openCartDrawer() {
@@ -379,123 +435,100 @@
         $("body").removeClass("cart-drawer-open");
     }
 
-    function addToCart(item) {
-        var existing = cart.find(function (c) {
-            return c.id === item.id;
-        });
+    // Public API used by the product page and any other script
+    window.BazaarCart = {
+        add: function (payload, options) {
+            return cartRequest("POST", "/add", payload).then(function (data) {
+                if (!options || options.open !== false) {
+                    openCartDrawer();
+                }
+                return data;
+            });
+        },
+        update: function (key, quantity) {
+            return cartRequest("PATCH", "/items/" + encodeURIComponent(key), { quantity: quantity });
+        },
+        remove: function (key) {
+            return cartRequest("DELETE", "/items/" + encodeURIComponent(key));
+        },
+        refresh: function () {
+            return cartRequest("GET", "/summary");
+        },
+        open: openCartDrawer,
+        toast: showCartToast,
+        get: function () {
+            return cart;
+        },
+    };
 
-        if (existing) {
-            existing.qty = Math.min(existing.qty + item.qty, item.stock || Infinity);
-        } else {
-            cart.push(item);
-        }
+    /* ----- events ----- */
 
-        persistCart();
-        openCartDrawer();
-    }
-
+    // "Add to cart" buttons on product cards (shop, home, related products)
     $(document).on("click", "[data-cart-add]", function (e) {
         e.preventDefault();
         e.stopPropagation();
 
-        addToCart({
-            id: "product-" + this.dataset.productId,
-            productId: this.dataset.productId,
-            name: this.dataset.productName,
-            price: Number(this.dataset.productPrice) || 0,
-            image: this.dataset.productImage || "",
-            stock: Number(this.dataset.productStock) || 1,
-            qty: 1,
-        });
-    });
+        var button = this;
+        var $button = $(button);
 
-    $(document).on("change", "#productVariant", function () {
-        var option = this.options[this.selectedIndex];
-        var stock = Number(option.dataset.stock) || 0;
-        var quantity = document.getElementById("detailQuantity");
-        var addButton = document.getElementById("detailAddToCart");
-        var price = document.getElementById("detailPrice");
-
-        addButton.disabled = !this.value || stock < 1;
-        quantity.max = Math.max(stock, 1);
-        quantity.value = 1;
-        price.textContent = option.dataset.price ? formatCurrency(Number(option.dataset.price)) : "";
-        $("#variantStockMessage").text(this.value ? stock + " in stock" : "");
-    });
-
-    $(document).on("submit", "#productDetailCartForm", function (event) {
-        event.preventDefault();
-        var form = this;
-        var variant = document.getElementById("productVariant");
-        var selected = variant && variant.options[variant.selectedIndex];
-        var quantity = Math.max(1, Number(document.getElementById("detailQuantity").value) || 1);
-        var price = Number(form.dataset.productPrice) || 0;
-        var variantId = null;
-        var variantTitle = "";
-        var stock = Number(form.dataset.productStock) || 0;
-
-        if (form.dataset.hasVariants === "1") {
-            if (!selected || !variant.value) {
-                variant.focus();
-                return;
-            }
-            price = Number(selected.dataset.price) || 0;
-            stock = Number(selected.dataset.stock) || 0;
-            variantId = variant.value;
-            variantTitle = selected.dataset.title || selected.textContent.trim();
-        }
-
-        if (quantity > stock) {
-            document.getElementById("variantStockMessage").textContent = "Only " + stock + " available.";
+        // products with options must be chosen on the product page
+        if (button.dataset.hasVariants === "1" && button.dataset.productUrl) {
+            window.location.href = button.dataset.productUrl;
             return;
         }
 
-        addToCart({
-            id: "product-" + form.dataset.productId + (variantId ? "-variant-" + variantId : ""),
-            productId: form.dataset.productId,
-            variantId: variantId,
-            variantTitle: variantTitle,
-            name: form.dataset.productName,
-            price: price,
-            image: form.dataset.productImage,
-            stock: stock,
-            qty: quantity,
-        });
-    });
-
-    $(document).on("click", "[data-product-image]", function () {
-        $("#productDetailImage").attr("src", this.dataset.productImage);
-    });
-
-    $(document).on("click", "#cartDrawerItems [data-action], #cartPageItems [data-action]", function () {
-        var action = $(this).data("action");
-        var id = $(this).closest("[data-id]").data("id");
-        var item = cart.find(function (c) {
-            return c.id === id;
-        });
-
-        if (!item) {
+        if ($button.data("busy")) {
             return;
         }
+        $button.data("busy", true).addClass("disabled");
 
-        if (action === "increase") {
-            if (!item.stock || item.qty < item.stock) {
-                item.qty += 1;
-            }
-        } else if (action === "decrease") {
-            item.qty -= 1;
-            if (item.qty <= 0) {
-                cart = cart.filter(function (c) {
-                    return c.id !== id;
-                });
-            }
-        } else if (action === "remove") {
-            cart = cart.filter(function (c) {
-                return c.id !== id;
+        window.BazaarCart.add({
+            product_id: button.dataset.productId,
+            variant_id: button.dataset.variantId || null,
+            quantity: 1,
+        })
+            .catch(function (error) {
+                showCartToast(error.message, "error");
+                if (error.redirect) {
+                    setTimeout(function () {
+                        window.location.href = error.redirect;
+                    }, 1200);
+                }
+            })
+            .then(function () {
+                $button.data("busy", false).removeClass("disabled");
             });
+    });
+
+    // + / - / remove inside the drawer and on the cart page
+    $(document).on("click", "#cartDrawerItems [data-action], #cartPageItems [data-action]", function () {
+        var $button = $(this);
+        var $row = $button.closest("[data-id]");
+        var key = String($row.attr("data-id"));
+        var action = $button.attr("data-action");
+
+        var item = cart.items.find(function (c) {
+            return c.key === key;
+        });
+
+        if (!item || $row.data("busy")) {
+            return;
+        }
+        $row.data("busy", true).find("button").prop("disabled", true);
+
+        var request;
+        if (action === "increase") {
+            request = window.BazaarCart.update(key, item.qty + 1);
+        } else if (action === "decrease") {
+            request = item.qty <= 1 ? window.BazaarCart.remove(key) : window.BazaarCart.update(key, item.qty - 1);
+        } else {
+            request = window.BazaarCart.remove(key);
         }
 
-        persistCart();
+        request.catch(function (error) {
+            showCartToast(error.message, "error");
+            $row.data("busy", false).find("button").prop("disabled", false);
+        });
     });
 
     $("#cartDrawerClose, #cartDrawerBackdrop, #cartDrawerContinue").on("click", function () {
@@ -514,14 +547,20 @@
     });
 
     $(".nav-cart-link").on("click", function (e) {
-        if (cart.length) {
+        if (cart.items.length) {
             e.preventDefault();
             openCartDrawer();
         }
     });
 
-    renderCartDrawer();
-    renderCartPage();
+    // coming back with the browser's back button: ask the server for the current cart
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.BazaarCart.refresh().catch(function () {});
+        }
+    });
+
+    setCart(window.BAZAAR_CART);
     /*** Cart Drawer End ***/
 
     /*** Shop Filters Start ***/

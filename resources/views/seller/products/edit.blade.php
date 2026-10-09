@@ -13,10 +13,6 @@
         <a href="{{ route('seller.products.index') }}" class="btn-custom btn-custom-light">Back to Products</a>
     </div>
 
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
     <div class="row g-4 mb-4">
         <div class="col-12">
             @include('seller.products._form', ['product' => $product])

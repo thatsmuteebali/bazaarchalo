@@ -31,6 +31,9 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" />
 
+    {{-- token for ajax --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Template Stylesheet -->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
     @yield('customCss')
@@ -359,6 +362,11 @@
 
     <!-- AOS (Animate On Scroll) Library -->
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+    <script>
+       window.BAZAAR_CART_URL = "{{ url('/cart') }}";
+       window.BAZAAR_CART = {{ \Illuminate\Support\Js::from(app(\App\Services\CartService::class)->summary()) }};
+   </script>
 
     <!-- Template Javascript -->
     <script src="{{ asset('js/main.js') }}"></script>

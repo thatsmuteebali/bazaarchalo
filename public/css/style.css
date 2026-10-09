@@ -2571,3 +2571,65 @@ body.cart-drawer-open {
     }
 }
 /*** Cart Drawer End ***/
+
+/*** Cart Toast Start ***/
+.bc-toast-container {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: 1300;
+    display: flex;
+    width: min(92vw, 420px);
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+.bc-toast {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 10px;
+    background: var(--bs-dark);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    color: var(--bs-white);
+    font-size: .92rem;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: auto;
+    transform: translateY(10px);
+    animation: bc-toast-in .3s ease forwards;
+}
+
+.bc-toast-error {
+    background: #d93636;
+}
+
+.bc-toast.hide {
+    animation: bc-toast-out .3s ease forwards;
+}
+
+@keyframes bc-toast-in {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bc-toast-out {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+.cart-drawer-item-title:hover {
+    color: var(--bs-primary);
+}
+/*** Cart Toast End ***/

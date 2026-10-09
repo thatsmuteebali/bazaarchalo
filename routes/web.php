@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Auth\SellerLoginController;
@@ -38,6 +39,15 @@ Route::controller(FrontendController::class)->name('frontend.')->group(function 
 
     Route::get('/cart', 'cart')->name('cart');
 });
+
+   Route::prefix('cart')->name('cart.')->controller(CartController::class)
+       ->middleware('throttle:60,1')->group(function () {
+           Route::get('summary', 'summary')->name('summary');
+           Route::post('add', 'add')->name('add');
+           Route::patch('items/{key}', 'update')->name('update')->where('key', '[A-Za-z0-9\-]+');
+           Route::delete('items/{key}', 'remove')->name('remove')->where('key', '[A-Za-z0-9\-]+');
+           Route::delete('items', 'clear')->name('clear');
+       });
 
 Route::group(['middleware' => ['CustomerMiddleware']], function () {
     Route::prefix('account')->name('customer.')->group(function () {
