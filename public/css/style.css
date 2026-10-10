@@ -1988,7 +1988,7 @@
 }
 
 .shop-filter-form {
-    position: sticky;
+    /* position: sticky; */
     top: 120px;
 }
 

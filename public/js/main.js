@@ -262,9 +262,20 @@
         });
     }
 
+    // Same look as the server's Money::format(): "Rs. 2,500" (decimals only when needed)
+    var currencySymbol = (window.BAZAAR_CURRENCY && window.BAZAAR_CURRENCY.symbol) || "Rs.";
+
     function formatCurrency(amount) {
-        return "$" + Number(amount || 0).toFixed(2);
+        var value = Math.round(Number(amount || 0) * 100) / 100;
+        var decimals = Math.abs(value - Math.round(value)) < 0.005 ? 0 : 2;
+
+        return currencySymbol + " " + value.toLocaleString("en-US", {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals,
+        });
     }
+
+    window.BazaarMoney = formatCurrency;
 
     /* ----- small message toast ----- */
     function showCartToast(message, type) {
@@ -294,46 +305,6 @@
     /* ----- rendering ----- */
     function updateCartBadge() {
         $(".nav-cart-count").text(cart.count);
-    }
-
-    function renderCartPage() {
-        var $items = $("#cartPageItems");
-        if (!$items.length) {
-            return;
-        }
-
-        if (!cart.items.length) {
-            $items.html('<tr><td colspan="6" class="text-center py-5">Your cart is empty. <a href="' + escapeHtml($("#shopPageLink").attr("href") || "/shop") + '">Browse products</a>.</td></tr>');
-            $("#cartPageSubtotal, #cartPageTotal").text(formatCurrency(0));
-            $("#cartPageShipping").text(formatCurrency(0));
-            $("#cartPageCheckout").addClass("disabled").attr("aria-disabled", "true");
-            return;
-        }
-
-        var html = "";
-        cart.items.forEach(function (item) {
-            html +=
-                '<tr data-id="' + escapeHtml(item.key) + '">' +
-                '<td><img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '" class="rounded" style="width: 72px; height: 72px; object-fit: cover" /></td>' +
-                '<td><a class="d-block fw-semibold text-dark" href="' + escapeHtml(item.url) + '">' + escapeHtml(item.name) + "</a>" +
-                (item.variant_title ? '<small class="text-muted">' + escapeHtml(item.variant_title) + "</small>" : "") + "</td>" +
-                "<td>" + formatCurrency(item.price) + "</td>" +
-                '<td><div class="d-inline-flex align-items-center gap-2">' +
-                '<button type="button" class="btn btn-sm btn-light" data-action="decrease" aria-label="Decrease quantity">-</button>' +
-                "<span>" + item.qty + "</span>" +
-                '<button type="button" class="btn btn-sm btn-light" data-action="increase" aria-label="Increase quantity"' + (item.qty >= item.stock ? " disabled" : "") + ">+</button>" +
-                "</div></td>" +
-                "<td>" + formatCurrency(item.line_total) + "</td>" +
-                '<td><button type="button" class="btn btn-sm btn-outline-danger" data-action="remove" aria-label="Remove item"><i class="fas fa-trash-alt" aria-hidden="true"></i></button></td>' +
-                "</tr>";
-        });
-
-        var shipping = 3;
-        $items.html(html);
-        $("#cartPageSubtotal").text(formatCurrency(cart.subtotal));
-        $("#cartPageShipping").text(formatCurrency(shipping));
-        $("#cartPageTotal").text(formatCurrency(cart.subtotal + shipping));
-        $("#cartPageCheckout").removeClass("disabled").removeAttr("aria-disabled");
     }
 
     function renderCartDrawer() {
@@ -377,7 +348,6 @@
     function setCart(next) {
         cart = next && Array.isArray(next.items) ? next : emptyCart;
         renderCartDrawer();
-        renderCartPage();
 
         (cart.notices || []).forEach(function (notice) {
             showCartToast(notice, "info");
@@ -386,15 +356,24 @@
 
     /* ----- talking to the server ----- */
     function cartRequest(method, path, payload) {
+        var headers = {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "X-CSRF-TOKEN": csrfToken,
+            "X-Requested-With": "XMLHttpRequest",
+        };
+
+        // on the cart page / checkout page the server also sends that part of the page as HTML
+        if (document.getElementById("cartPageContent")) {
+            headers["X-Cart-View"] = "page";
+        } else if (document.getElementById("checkoutSummary")) {
+            headers["X-Cart-View"] = "checkout";
+        }
+
         return fetch(cartBase + path, {
             method: method,
             credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                "X-CSRF-TOKEN": csrfToken,
-                "X-Requested-With": "XMLHttpRequest",
-            },
+            headers: headers,
             body: payload ? JSON.stringify(payload) : undefined,
         }).then(function (response) {
             return response
@@ -405,6 +384,11 @@
                 .then(function (data) {
                     if (data && data.cart) {
                         setCart(data.cart); // the screen always shows the real cart
+                    }
+
+                    if (data && data.page_html) {
+                        $("#cartPageContent, #checkoutSummary").html(data.page_html);
+                        $(document).trigger("cart:page-updated");
                     }
 
                     if (!response.ok || (data && data.ok === false)) {
@@ -450,6 +434,9 @@
         },
         remove: function (key) {
             return cartRequest("DELETE", "/items/" + encodeURIComponent(key));
+        },
+        clear: function () {
+            return cartRequest("DELETE", "/items");
         },
         refresh: function () {
             return cartRequest("GET", "/summary");
@@ -535,8 +522,15 @@
         closeCartDrawer();
     });
 
-    $(document).on("click", "#cartPageCheckout[aria-disabled='true']", function (event) {
-        event.preventDefault();
+    // "Clear cart" button on the cart page
+    $(document).on("click", "[data-cart-clear]", function () {
+        if (!window.confirm("Remove all items from your cart?")) {
+            return;
+        }
+
+        window.BazaarCart.clear().catch(function (error) {
+            showCartToast(error.message, "error");
+        });
     });
 
     $(document).on("keydown", function (e) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\CartException;
 use App\Services\CartService;
+use App\Services\CheckoutService;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class CartController extends Controller
 
     public function summary(): JsonResponse
     {
-        return response()->json(['ok' => true, 'cart' => $this->cart->summary()]);
+        return $this->respond(['ok' => true, 'cart' => $this->cart->summary()]);
     }
 
     public function add(Request $request): JsonResponse
@@ -58,7 +59,7 @@ class CartController extends Controller
         try {
             $cart = $action();
         } catch (CartException $e) {
-            return response()->json([
+            return $this->respond([
                 'ok'       => false,
                 'message'  => $e->getMessage(),
                 'redirect' => $e->redirect,
@@ -66,6 +67,26 @@ class CartController extends Controller
             ], 422);
         }
 
-        return response()->json(['ok' => true, 'message' => $message, 'cart' => $cart]);
+        return $this->respond(['ok' => true, 'message' => $message, 'cart' => $cart]);
+    }
+
+    /**
+     * The cart page sends "X-Cart-View: page" and the checkout page "X-Cart-View: checkout".
+     * They get their part of the page as ready-made HTML, rendered by the same Blade partial as the page itself.
+     */
+    private function respond(array $body, int $status = 200): JsonResponse
+    {
+        $view = request()->header('X-Cart-View');
+
+        if ($view === 'page') {
+            $body['page_html'] = view('frontend.partials.cart-content', ['cart' => $body['cart']])->render();
+        } elseif ($view === 'checkout') {
+            $body['page_html'] = view('customer.partials.checkout-summary', [
+                'cart'   => $body['cart'],
+                'totals' => app(CheckoutService::class)->totals($body['cart']),
+            ])->render();
+        }
+
+        return response()->json($body, $status);
     }
 }

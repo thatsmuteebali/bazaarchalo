@@ -547,14 +547,14 @@
                         <div class="pd-price-row">
                             <span class="pd-price" id="pdPrice">
                                 @if ($hasVariants && $minPrice !== $maxPrice)
-                                    ${{ number_format($minPrice, 2) }} – ${{ number_format($maxPrice, 2) }}
+                                    @money($minPrice) – @money($maxPrice)
                                 @else
-                                    ${{ number_format($minPrice, 2) }}
+                                    @money($minPrice)
                                 @endif
                             </span>
                             <del class="pd-compare" id="pdCompare"
                                 @if (! $baseCompare || $hasVariants) style="display:none" @endif>
-                                ${{ number_format($baseCompare ?? 0, 2) }}
+                                @money($baseCompare ?? 0)
                             </del>
                             <span class="pd-discount" id="pdDiscount"
                                 @if (! $baseCompare || $hasVariants) style="display:none" @endif>
@@ -747,7 +747,7 @@
             var busy = false;
 
             function money(n) {
-                return '$' + Number(n).toFixed(2);
+                return window.BazaarMoney(n); // same currency format as the rest of the site
             }
 
             /* ---------- gallery ---------- */

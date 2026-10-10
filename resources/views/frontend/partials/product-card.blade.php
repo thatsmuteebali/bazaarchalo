@@ -1,14 +1,14 @@
 @php
     $coverImage = $product->coverImage;
-    $secondaryImage = $product->images->first(fn ($image) => ! $coverImage || $image->id !== $coverImage->id) ?? $coverImage;
+    $secondaryImage =
+        $product->images->first(fn($image) => !$coverImage || $image->id !== $coverImage->id) ?? $coverImage;
     $imageUrl = $coverImage?->url ?? asset('img/fruite-item-1.jpg');
     $secondaryImageUrl = $secondaryImage?->url ?? $imageUrl;
     $displayPrice = $product->has_variants
-        ? ($product->variants_min_price ?? $product->variants->min('price') ?? $product->price)
+        ? $product->variants_min_price ?? ($product->variants->min('price') ?? $product->price)
         : $product->price;
-    $hasDiscount = ! $product->has_variants
-        && $product->compare_price
-        && (float) $product->compare_price > (float) $product->price;
+    $hasDiscount =
+        !$product->has_variants && $product->compare_price && (float) $product->compare_price > (float) $product->price;
     $productUrl = route('frontend.product-detail', $product);
 
 @endphp
@@ -30,7 +30,8 @@
     <div class="product-media">
         <a href="{{ $productUrl }}" class="product-image-link" aria-label="View {{ $product->name }}">
             <img src="{{ $imageUrl }}" class="product-image product-image-primary" alt="{{ $product->name }}" />
-            <img src="{{ $secondaryImageUrl }}" class="product-image product-image-secondary" alt="" aria-hidden="true" />
+            <img src="{{ $secondaryImageUrl }}" class="product-image product-image-secondary" alt=""
+                aria-hidden="true" />
         </a>
         @if ($product->has_variants)
             <a href="{{ $productUrl }}" class="product-cart-cta">
@@ -54,15 +55,17 @@
         @endif
         <div class="product-meta">
             <div class="product-rating" aria-label="No reviews yet">
-                <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i
+                    class="far fa-star"></i><i class="far fa-star"></i>
             </div>
             <div class="product-price">
                 @if ($hasDiscount)
                     <span class="product-price-old">${{ number_format((float) $product->compare_price, 0) }}</span>
                 @endif
                 <span class="product-price-current">${{ number_format((float) $displayPrice, 0) }} @if ($product->has_variants && $product->variants_max_price !== $displayPrice)
-                - ${{ number_format((float) $product->variants_max_price, 0) }}
-                @endif</span>
+                        - ${{ number_format((float) $product->variants_max_price, 0) }}
+                    @endif
+                </span>
             </div>
         </div>
     </div>

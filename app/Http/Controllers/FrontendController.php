@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Shop;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -229,8 +230,8 @@ class FrontendController extends Controller
     {
         return view('frontend.terms-and-conditions');
     }
-    public function cart()
-    {
-        return view('frontend.cart');
-    }
+    public function cart(CartService $cart)
+   {
+       return view('frontend.cart', ['cart' => $cart->summary()]);
+   }
 }

@@ -19,6 +19,9 @@ class CartService
 
     private const SESSION_KEY = 'cart_lines';
 
+    /** Summary built during this request, so the layout, the page and the JSON do not rebuild it (and notices are not lost). */
+    private ?array $summaryCache = null;
+
     /* ------------------------------------------------------------------ */
     /*  Changing the cart                                                 */
     /* ------------------------------------------------------------------ */
@@ -124,10 +127,14 @@ class CartService
      */
     public function summary(): array
     {
+        if ($this->summaryCache !== null) {
+            return $this->summaryCache;
+        }
+
         $lines = $this->lines();
 
         if ($lines === []) {
-            return $this->emptySummary();
+            return $this->summaryCache = $this->emptySummary();
         }
 
         $products = $this->purchasable()
@@ -199,7 +206,7 @@ class CartService
             $this->save($lines);
         }
 
-        return [
+        return $this->summaryCache = [
             'count'    => (int) array_sum(array_column($items, 'qty')),
             'subtotal' => round((float) array_sum(array_column($items, 'line_total')), 2),
             'items'    => $items,
@@ -259,6 +266,7 @@ class CartService
     private function save(array $lines): void
     {
         session()->put(self::SESSION_KEY, $lines);
+        $this->summaryCache = null;
     }
 
     private function emptySummary(): array

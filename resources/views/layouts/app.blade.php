@@ -364,6 +364,8 @@
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
     <script>
+        window.BAZAAR_CURRENCY = {{ \Illuminate\Support\Js::from(['symbol' => config('shop.currency_symbol')]) }};
+
        window.BAZAAR_CART_URL = "{{ url('/cart') }}";
        window.BAZAAR_CART = {{ \Illuminate\Support\Js::from(app(\App\Services\CartService::class)->summary()) }};
    </script>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CartService;
+use App\Services\CheckoutService;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -21,9 +23,26 @@ class CustomerController extends Controller
     public function orderTracking(){
         return view('customer.order-tracking');
     }
-    public function checkout(){
-        return view('customer.checkout');
+
+    public function checkout(CartService $cart, CheckoutService $checkout)
+    {
+        $summary = $cart->summary();
+
+        // nothing to pay for: send the customer back to the cart
+        if (empty($summary['items'])) {
+            return redirect()->route('frontend.cart');
+        }
+
+        return view('customer.checkout', [
+            'cart'      => $summary,
+            'totals'    => $checkout->totals($summary),
+            'provinces' => config('shop.provinces'),
+            'cities'    => config('shop.cities'),
+            'payments'  => config('shop.payment_methods'),
+            'user'      => auth()->user(),
+        ]);
     }
+
     public function orderSuccess(){
         return view('customer.order-success');
     }
