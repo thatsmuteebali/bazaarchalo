@@ -60,10 +60,10 @@
             </div>
             <div class="product-price">
                 @if ($hasDiscount)
-                    <span class="product-price-old">${{ number_format((float) $product->compare_price, 0) }}</span>
+                    <span class="product-price-old">Rs.{{ number_format((float) $product->compare_price, 0) }}</span>
                 @endif
-                <span class="product-price-current">${{ number_format((float) $displayPrice, 0) }} @if ($product->has_variants && $product->variants_max_price !== $displayPrice)
-                        - ${{ number_format((float) $product->variants_max_price, 0) }}
+                <span class="product-price-current">Rs.{{ number_format((float) $displayPrice, 0) }} @if ($product->has_variants && $product->variants_max_price !== $displayPrice)
+                        - Rs.{{ number_format((float) $product->variants_max_price, 0) }}
                     @endif
                 </span>
             </div>

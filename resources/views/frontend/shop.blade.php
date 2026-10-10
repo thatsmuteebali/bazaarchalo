@@ -101,9 +101,9 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="shop-filter-label mb-0">Price range</span>
                                 <span class="shop-price-values small">
-                                    <output id="minPriceOutput" for="minPrice">${{ number_format($filters['minPrice'], 0) }}</output>
+                                    <output id="minPriceOutput" for="minPrice">Rs.{{ number_format($filters['minPrice'], 0) }}</output>
                                     <span aria-hidden="true">-</span>
-                                    <output id="maxPriceOutput" for="maxPrice">${{ number_format($filters['maxPrice'], 0) }}</output>
+                                    <output id="maxPriceOutput" for="maxPrice">Rs.{{ number_format($filters['maxPrice'], 0) }}</output>
                                 </span>
                             </div>
                             <div class="shop-price-slider" id="shopPriceSlider"
@@ -145,7 +145,7 @@
                                         <img src="{{ $featuredImage }}" alt="{{ $featuredProduct->name }}" />
                                         <span>
                                             <strong>{{ $featuredProduct->name }}</strong>
-                                            <small>${{ number_format((float) $featuredPrice, 2) }}</small>
+                                            <small>Rs.{{ number_format((float) $featuredPrice, 2) }}</small>
                                         </span>
                                     </a>
                                 @endforeach
