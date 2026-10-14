@@ -73,7 +73,7 @@
     <div class="row g-4 justify-content-between mt-2">
         <div class="col-lg-6 align-self-start">
             <div class="d-flex flex-wrap align-items-center gap-3">
-                <a href="{{ route('frontend.shop') }}" class="btn btn-outline-primary rounded-pill px-4 py-3">
+                <a href="{{ route('frontend.shop') }}" class="btn border-secondary rounded-pill px-4 py-3">
                     <i class="fas fa-arrow-left me-2" aria-hidden="true"></i>Continue shopping
                 </a>
                 <button type="button" class="btn btn-link text-danger" data-cart-clear>

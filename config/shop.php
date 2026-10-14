@@ -18,8 +18,8 @@ return [
     | free_over : orders at or above this subtotal get free delivery (null = never free)
     */
     'shipping' => [
-        'flat_rate' => 250,
-        'free_over' => 5000,
+        'flat_rate' => 0,
+        'free_over' => 0,
     ],
 
     /*
