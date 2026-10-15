@@ -195,7 +195,7 @@
                             </div>
                         </div>
                         <a href="{{ route('frontend.shop') }}" class="nav-item nav-link {{ request()->routeIs('frontend.shop') ? 'active' : '' }}">Shop</a>
-                        <a href="{{ route('frontend.about') }}" class="nav-item nav-link {{ request()->routeIs('frontend.about') ? 'active' : '' }}">About</a>
+                        {{-- <a href="{{ route('frontend.about') }}" class="nav-item nav-link {{ request()->routeIs('frontend.about') ? 'active' : '' }}">About</a> --}}
                     </div>
                     <div class="d-flex align-items-center m-3 me-0">
                         <div class="nav-search-box" id="navSearchBox">

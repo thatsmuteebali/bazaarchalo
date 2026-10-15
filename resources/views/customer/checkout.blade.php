@@ -65,93 +65,70 @@
             box-shadow: 0 0 0 .2rem rgba(255, 181, 36, .18);
         }
 
-        /* ---------- payment options ---------- */
-        .co-pay {
-            position: relative;
-            display: block;
-            margin: 0 0 12px;
+        .co-address-map {
+            width: 100%;
+            height: 280px;
+            border-radius: 8px;
+            background: var(--bs-light);
+        }
+
+        /* ---------- address suggestions dropdown ---------- */
+        .co-suggestions {
+            position: absolute;
+            left: calc(var(--bs-gutter-x, 1.5rem) * .5);
+            right: calc(var(--bs-gutter-x, 1.5rem) * .5);
+            z-index: 1050;
+            max-height: 280px;
+            margin: 4px 0 0;
+            padding: 6px 0;
+            overflow-y: auto;
+            list-style: none;
+            border: 1px solid rgba(0, 0, 0, .12);
+            border-radius: 10px;
+            background: var(--bs-white);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, .12);
+        }
+
+        .co-suggestions[hidden] {
+            display: none;
+        }
+
+        .co-suggestion {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
             cursor: pointer;
         }
 
-        .co-pay-input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
+        .co-suggestion i {
+            margin-top: 3px;
+            color: var(--bs-primary);
         }
 
-        .co-pay-body {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 16px 18px;
-            border: 1.5px solid rgba(0, 0, 0, .12);
-            border-radius: 12px;
-            background: var(--bs-white);
-            transition: .2s ease;
+        .co-suggestion.active,
+        .co-suggestion:hover {
+            background: rgba(129, 196, 8, .1);
         }
 
-        .co-pay:hover .co-pay-body {
-            border-color: var(--bs-primary);
-        }
-
-        .co-pay-input:checked+.co-pay-body {
-            border-color: var(--bs-primary);
-            background: rgba(129, 196, 8, .07);
-            box-shadow: 0 0 0 3px rgba(129, 196, 8, .15);
-        }
-
-        .co-pay-input:focus-visible+.co-pay-body {
-            outline: 2px solid var(--bs-secondary);
-            outline-offset: 2px;
-        }
-
-        .co-pay-radio {
-            position: relative;
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-            margin-top: 2px;
-            border: 2px solid rgba(0, 0, 0, .25);
-            border-radius: 50%;
-        }
-
-        .co-pay-input:checked+.co-pay-body .co-pay-radio {
-            border-color: var(--bs-primary);
-        }
-
-        .co-pay-input:checked+.co-pay-body .co-pay-radio::after {
-            position: absolute;
-            inset: 3px;
-            border-radius: 50%;
-            background: var(--bs-primary);
-            content: "";
-        }
-
-        .co-pay-icon {
-            display: flex;
-            width: 44px;
-            height: 44px;
-            flex-shrink: 0;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            background: rgba(255, 181, 36, .16);
-            color: var(--bs-secondary);
-            font-size: 1.2rem;
-        }
-
-        .co-pay-title {
+        .co-suggestion-main {
             display: block;
             color: var(--bs-dark);
-            font-weight: 700;
+            font-size: .92rem;
+            font-weight: 600;
         }
 
-        .co-pay-desc {
+        .co-suggestion-sub {
             display: block;
-            margin-top: 2px;
             color: var(--bs-gray);
-            font-size: .85rem;
-            line-height: 1.5;
+            font-size: .8rem;
+        }
+
+        .co-online-options {
+            margin: 8px 0 4px 28px;
+            padding: 14px 16px;
+            border-left: 3px solid var(--bs-primary);
+            background: rgba(129, 196, 8, .06);
         }
 
         /* ---------- order summary ---------- */
@@ -336,69 +313,45 @@
                                 <div class="col-md-6">
                                     <label class="form-label" for="phone">Mobile number <span class="text-danger">*</span></label>
                                     <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric" required
-                                        pattern="03[0-9]{2}-?[0-9]{7}" maxlength="12"
+                                        pattern="03[0-9]{9}" maxlength="11"
                                         value="{{ old('phone', $user->phone ?? '') }}"
-                                        class="form-control @error('phone') is-invalid @enderror" placeholder="0300-1234567">
-                                    <div class="invalid-feedback">@error('phone') {{ $message }} @else Enter a valid mobile number, for example 0300-1234567. @enderror</div>
+                                        class="form-control @error('phone') is-invalid @enderror" placeholder="03000000000">
+                                    <div class="invalid-feedback">@error('phone') {{ $message }} @else Enter 11 digits with no spaces or hyphens, e.g. 03000000000. @enderror</div>
                                 </div>
 
                                 <div class="col-12">
-                                    <label class="form-label" for="email">Email address <span class="text-danger">*</span> <small>(order updates are sent here)</small></label>
-                                    <input type="email" id="email" name="email" autocomplete="email" required maxlength="150"
+                                    <label class="form-label" for="email">Email address <small>(optional; order updates can be sent here)</small></label>
+                                    <input type="email" id="email" name="email" autocomplete="email" maxlength="150"
                                         value="{{ old('email', $user->email ?? '') }}"
                                         class="form-control @error('email') is-invalid @enderror" placeholder="you@example.com">
-                                    <div class="invalid-feedback">@error('email') {{ $message }} @else Please enter a valid email address. @enderror</div>
+                                    <div class="invalid-feedback">@error('email') {{ $message }} @else Enter a valid email address. @enderror</div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label class="form-label" for="province">Province <span class="text-danger">*</span></label>
-                                    @php $selectedProvince = old('province'); @endphp
-                                    <select id="province" name="province" autocomplete="address-level1" required
-                                        class="form-select @error('province') is-invalid @enderror">
-                                        <option value="" disabled {{ $selectedProvince ? '' : 'selected' }}>Select province</option>
-                                        @foreach ($provinces as $province)
-                                            <option value="{{ $province }}" {{ $selectedProvince === $province ? 'selected' : '' }}>{{ $province }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="invalid-feedback">@error('province') {{ $message }} @else Please select your province. @enderror</div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label" for="city">City <span class="text-danger">*</span></label>
-                                    <input type="text" id="city" name="city" list="pkCities" autocomplete="address-level2" required maxlength="80"
-                                        value="{{ old('city') }}"
-                                        class="form-control @error('city') is-invalid @enderror" placeholder="Start typing your city">
-                                    {{-- <datalist id="pkCities">
-                                        @foreach ($cities as $city)
-                                            <option value="{{ $city }}"></option>
-                                        @endforeach
-                                    </datalist> --}}
-                                    <div class="invalid-feedback">@error('city') {{ $message }} @else Please enter your city. @enderror</div>
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label" for="address">Complete address <span class="text-danger">*</span></label>
-                                    <input type="text" id="address" name="address" autocomplete="address-line1" required minlength="10" maxlength="255"
+                                <div class="col-12 position-relative">
+                                    <label class="form-label" for="address">Address <span class="text-danger">*</span></label>
+                                    {{-- autocomplete="off" so the browser's own autofill does not cover our suggestions --}}
+                                    <input type="text" id="address" name="address" autocomplete="off" required minlength="5" maxlength="255"
+                                        role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="addressSuggestions"
                                         value="{{ old('address') }}"
                                         class="form-control @error('address') is-invalid @enderror"
-                                        placeholder="House / flat no., street, area or society">
-                                    <div class="invalid-feedback">@error('address') {{ $message }} @else Please enter your full delivery address (at least 10 characters). @enderror</div>
-                                </div>
+                                        placeholder="Search for your address or enter it manually">
+                                    <ul id="addressSuggestions" class="co-suggestions" role="listbox" hidden></ul>
+                                    <div class="invalid-feedback">@error('address') {{ $message }} @else Please enter your delivery address. @enderror</div>
 
-                                <div class="col-md-8">
-                                    <label class="form-label" for="landmark">Nearby landmark <small>(optional)</small></label>
-                                    <input type="text" id="landmark" name="landmark" maxlength="150"
-                                        value="{{ old('landmark') }}"
-                                        class="form-control @error('landmark') is-invalid @enderror" placeholder="e.g. Near Jinnah Park">
-                                    <div class="invalid-feedback">@error('landmark') {{ $message }} @enderror</div>
-                                </div>
+                                    <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude') }}">
+                                    <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}">
 
-                                <div class="col-md-4">
-                                    <label class="form-label" for="postal_code">Postal code <small>(optional)</small></label>
-                                    <input type="text" id="postal_code" name="postal_code" autocomplete="postal-code" inputmode="numeric"
-                                        pattern="[0-9]{5}" maxlength="5" value="{{ old('postal_code') }}"
-                                        class="form-control @error('postal_code') is-invalid @enderror" placeholder="54000">
-                                    <div class="invalid-feedback">@error('postal_code') {{ $message }} @else Postal code must be 5 digits. @enderror</div>
+                                    <div class="d-flex flex-wrap align-items-center gap-2 mt-2">
+                                        <button type="button" id="useCurrentLocation" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-location-arrow me-1" aria-hidden="true"></i>Use my current location
+                                        </button>
+                                        <span id="addressStatus" class="small text-muted" role="status" aria-live="polite"></span>
+                                    </div>
+                                    @if (!empty($googleMapsApiKey))
+                                        <div id="checkoutAddressMap" class="co-address-map mt-3" aria-label="Map showing your delivery address"></div>
+                                    @else
+                                        <p class="small text-muted mt-2 mb-0">Address search and map location will be available after Google Maps is configured.</p>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -408,22 +361,44 @@
                             <div class="co-card-title"><span class="co-step">2</span> Payment method</div>
                             <p class="co-card-sub">Choose how you would like to pay.</p>
 
-                            @php $selectedPayment = old('payment_method', array_key_first($payments)); @endphp
+                            @php
+                                $selectedPayment = old('payment_method', 'cod');
+                                $selectedOnlineMethod = old('online_payment_method');
+                                $onlineMethods = [
+                                    'jazzcash' => 'JazzCash',
+                                    'easypaisa' => 'Easypaisa',
+                                    'gopayfast' => 'Gopayfast',
+                                    'bank_account' => 'Bank Account',
+                                ];
+                            @endphp
 
-                            @foreach ($payments as $key => $payment)
-                                <label class="co-pay">
-                                    <input type="radio" class="co-pay-input" name="payment_method" value="{{ $key }}"
-                                        {{ $selectedPayment === $key ? 'checked' : '' }} required>
-                                    <span class="co-pay-body">
-                                        <span class="co-pay-radio" aria-hidden="true"></span>
-                                        <span class="co-pay-icon" aria-hidden="true"><i class="fas {{ $payment['icon'] }}"></i></span>
-                                        <span>
-                                            <span class="co-pay-title">{{ $payment['label'] }}</span>
-                                            <span class="co-pay-desc">{{ $payment['description'] }}</span>
-                                        </span>
-                                    </span>
-                                </label>
-                            @endforeach
+                            <fieldset class="border-0 p-0 m-0">
+                                <legend class="visually-hidden">Choose a payment method</legend>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="paymentCod" value="cod"
+                                        {{ $selectedPayment === 'cod' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="paymentCod">Cash on Delivery</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="payment_method" id="paymentOnline" value="online"
+                                        {{ $selectedPayment === 'online' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="paymentOnline">Online Payment</label>
+                                </div>
+                            </fieldset>
+
+                            {{-- <fieldset id="onlinePaymentOptions" class="co-online-options rounded" {{ $selectedPayment === 'online' ? '' : 'hidden' }}>
+                                <legend class="fs-6 fw-semibold mb-2">Select online payment method</legend>
+                                @foreach ($onlineMethods as $key => $label)
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="online_payment_method" id="onlinePayment{{ ucfirst($key) }}"
+                                            value="{{ $key }}" {{ $selectedOnlineMethod === $key ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="onlinePayment{{ ucfirst($key) }}">{{ $label }}</label>
+                                    </div>
+                                @endforeach
+                                @error('online_payment_method')
+                                    <div class="text-danger small mt-2">{{ $message }}</div>
+                                @enderror
+                            </fieldset> --}}
 
                             @error('payment_method')
                                 <div class="text-danger small mt-2">{{ $message }}</div>
@@ -492,24 +467,408 @@
             var button = document.getElementById('placeOrderBtn');
             var buttonLabel = button.querySelector('span');
             var phone = document.getElementById('phone');
+            var address = document.getElementById('address');
+            var latInput = document.getElementById('latitude');
+            var lngInput = document.getElementById('longitude');
+            var suggestionsBox = document.getElementById('addressSuggestions');
+            var addressStatus = document.getElementById('addressStatus');
+            var currentLocationButton = document.getElementById('useCurrentLocation');
+            var onlinePaymentOptions = document.getElementById('onlinePaymentOptions');
+            var onlinePaymentRadios = onlinePaymentOptions.querySelectorAll('input[name="online_payment_method"]');
             var submitting = false;
 
-            // Mobile number: digits only, shown as 0300-1234567 (also understands +92 300 1234567)
+            // Keep the mobile number in the exact 11-digit format expected by validation.
             phone.addEventListener('input', function() {
-                var digits = phone.value.replace(/\D/g, '');
+                phone.value = phone.value.replace(/\D/g, '').slice(0, 11);
+            });
+            phone.value = phone.value.replace(/\D/g, '').slice(0, 11);
 
-                if (digits.indexOf('92') === 0 && digits.length > 10) {
-                    digits = '0' + digits.slice(2);
+            function updateOnlinePaymentOptions() {
+                var onlineSelected = document.getElementById('paymentOnline').checked;
+                onlinePaymentOptions.hidden = !onlineSelected;
+                onlinePaymentRadios.forEach(function(radio) {
+                    radio.disabled = !onlineSelected;
+                    radio.required = onlineSelected;
+                });
+            }
+
+            document.querySelectorAll('input[name="payment_method"]').forEach(function(radio) {
+                radio.addEventListener('change', updateOnlinePaymentOptions);
+            });
+            updateOnlinePaymentOptions();
+
+            /* =====================================================
+               Google Maps: address suggestions + map + current location
+               Uses the NEW Places API (Places API (New)) and Geocoding API.
+               ===================================================== */
+            var map = null;
+            var marker = null;
+            var geocoder = null;
+            var AutocompleteSuggestion = null;
+            var AutocompleteSessionToken = null;
+            var PlaceClass = null;
+            var RankPreference = null;
+            var sessionToken = null;
+            var debounceTimer = null;
+            var requestId = 0;
+            var currentItems = [];
+            var activeIndex = -1;
+
+            function setStatus(text) {
+                addressStatus.textContent = text;
+            }
+
+            function coord(value, key) {
+                return typeof value[key] === 'function' ? value[key]() : value[key];
+            }
+
+            function showOnMap(location, viewport) {
+                if (!map) return;
+
+                map.setCenter(location);
+                if (viewport) {
+                    map.fitBounds(viewport);
+                } else {
+                    map.setZoom(16);
                 }
 
-                digits = digits.slice(0, 11);
-                phone.value = digits.length > 4 ? digits.slice(0, 4) + '-' + digits.slice(4) : digits;
+                marker.position = location;
+                marker.map = map;
+
+                latInput.value = coord(location, 'lat');
+                lngInput.value = coord(location, 'lng');
+            }
+
+            function hideSuggestions() {
+                suggestionsBox.hidden = true;
+                suggestionsBox.innerHTML = '';
+                address.setAttribute('aria-expanded', 'false');
+                currentItems = [];
+                activeIndex = -1;
+            }
+
+            function setActive(index) {
+                var nodes = suggestionsBox.querySelectorAll('.co-suggestion');
+                nodes.forEach(function(node, i) {
+                    node.classList.toggle('active', i === index);
+                    node.setAttribute('aria-selected', i === index ? 'true' : 'false');
+                });
+                activeIndex = index;
+                if (nodes[index]) {
+                    nodes[index].scrollIntoView({ block: 'nearest' });
+                }
+            }
+
+            function renderSuggestions(items) {
+                suggestionsBox.innerHTML = '';
+                currentItems = items;
+                activeIndex = -1;
+
+                if (!items.length) {
+                    hideSuggestions();
+                    return;
+                }
+
+                items.forEach(function(item, index) {
+                    var prediction = item.placePrediction;
+                    var li = document.createElement('li');
+                    li.className = 'co-suggestion';
+                    li.setAttribute('role', 'option');
+
+                    var icon = document.createElement('i');
+                    icon.className = 'fas fa-map-marker-alt';
+                    icon.setAttribute('aria-hidden', 'true');
+
+                    var text = document.createElement('div');
+                    var main = document.createElement('span');
+                    main.className = 'co-suggestion-main';
+                    main.textContent = prediction.mainText ? prediction.mainText.text : prediction.text.text;
+                    text.appendChild(main);
+
+                    if (prediction.secondaryText && prediction.secondaryText.text) {
+                        var sub = document.createElement('span');
+                        sub.className = 'co-suggestion-sub';
+                        sub.textContent = prediction.secondaryText.text;
+                        text.appendChild(sub);
+                    }
+
+                    li.appendChild(icon);
+                    li.appendChild(text);
+
+                    // mousedown (not click) so the input does not lose focus first
+                    li.addEventListener('mousedown', function(event) {
+                        event.preventDefault();
+                        selectSuggestion(index);
+                    });
+                    li.addEventListener('mouseenter', function() {
+                        setActive(index);
+                    });
+
+                    suggestionsBox.appendChild(li);
+                });
+
+                suggestionsBox.hidden = false;
+                address.setAttribute('aria-expanded', 'true');
+            }
+
+            async function fetchSuggestions(query) {
+                var thisRequest = ++requestId;
+
+                if (!AutocompleteSuggestion) return;
+
+                if (!sessionToken) {
+                    sessionToken = new AutocompleteSessionToken();
+                }
+
+                try {
+                    var response = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+                        input: query,
+                        sessionToken: sessionToken,
+                        includedRegionCodes: ['pk']
+                    });
+
+                    // ignore out-of-date responses
+                    if (thisRequest !== requestId) return;
+
+                    renderSuggestions(response.suggestions || []);
+                } catch (error) {
+                    console.error('Address suggestions failed:', error);
+                    hideSuggestions();
+                    setStatus('Address suggestions are unavailable right now. You can type your address manually.');
+                }
+            }
+
+            async function selectSuggestion(index) {
+                var item = currentItems[index];
+                if (!item) return;
+
+                var place = item.placePrediction.toPlace();
+                var fallbackText = item.placePrediction.text.text;
+                hideSuggestions();
+                address.value = fallbackText;
+                setStatus('Loading address...');
+
+                try {
+                    await place.fetchFields({ fields: ['formattedAddress', 'location', 'viewport'] });
+                    address.value = place.formattedAddress || fallbackText;
+                    address.classList.remove('is-invalid');
+                    if (place.location) {
+                        showOnMap(place.location, place.viewport);
+                    }
+                    setStatus('Address selected.');
+                } catch (error) {
+                    console.error('Place details failed:', error);
+                    setStatus('Could not load that place on the map, but you can still use the address.');
+                }
+
+                // one session = one search + one selection
+                sessionToken = null;
+            }
+
+            address.addEventListener('input', function() {
+                // the typed text no longer matches the picked place
+                latInput.value = '';
+                lngInput.value = '';
+
+                clearTimeout(debounceTimer);
+                var query = address.value.trim();
+
+                if (query.length < 3) {
+                    requestId++;
+                    hideSuggestions();
+                    return;
+                }
+
+                debounceTimer = setTimeout(function() {
+                    fetchSuggestions(query);
+                }, 250);
             });
 
-            // Postal code: digits only
-            document.getElementById('postal_code').addEventListener('input', function() {
-                this.value = this.value.replace(/\D/g, '').slice(0, 5);
+            address.addEventListener('keydown', function(event) {
+                if (suggestionsBox.hidden) return;
+
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    setActive((activeIndex + 1) % currentItems.length);
+                } else if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    setActive((activeIndex - 1 + currentItems.length) % currentItems.length);
+                } else if (event.key === 'Enter' && activeIndex >= 0) {
+                    event.preventDefault(); // do not submit the checkout form
+                    selectSuggestion(activeIndex);
+                } else if (event.key === 'Escape') {
+                    hideSuggestions();
+                }
             });
+
+            address.addEventListener('blur', function() {
+                setTimeout(hideSuggestions, 150);
+            });
+
+            // Fallback when reverse geocoding is denied or finds nothing:
+            // use the nearest place of any kind (Places API New) and show its name + address.
+            async function nearestPlaceAddress(location) {
+                if (!PlaceClass || !RankPreference) return null;
+
+                var radii = [100, 500, 2000, 5000];
+
+                for (var i = 0; i < radii.length; i++) {
+                    try {
+                        var result = await PlaceClass.searchNearby({
+                            fields: ['displayName', 'formattedAddress'],
+                            locationRestriction: { center: location, radius: radii[i] },
+                            maxResultCount: 1,
+                            rankPreference: RankPreference.DISTANCE
+                        });
+
+                        var place = result.places && result.places[0];
+                        if (place) {
+                            var parts = [];
+                            if (place.displayName) parts.push(place.displayName);
+                            if (place.formattedAddress) parts.push(place.formattedAddress);
+                            return parts.join(', ');
+                        }
+                    } catch (error) {
+                        console.error('Nearby search failed:', error);
+                        return null;
+                    }
+                }
+
+                return null;
+            }
+
+            // Reverse geocoding often returns a Plus Code (e.g. "7MQ2+XX") or an unnamed road as the
+            // first result. Prefer a real street / area address instead.
+            function pickBestAddress(results) {
+                var wanted = [
+                    ['street_address', 'premise', 'subpremise'],
+                    ['route'],
+                    ['neighborhood', 'sublocality', 'sublocality_level_1'],
+                    ['locality']
+                ];
+
+                for (var i = 0; i < wanted.length; i++) {
+                    for (var j = 0; j < results.length; j++) {
+                        var types = results[j].types || [];
+                        var matches = wanted[i].some(function(type) { return types.indexOf(type) !== -1; });
+                        if (matches && !/^[A-Z0-9]{4}\+[A-Z0-9]{2,}/.test(results[j].formatted_address)) {
+                            return results[j];
+                        }
+                    }
+                }
+
+                // last resort: first result that is not a plus code
+                for (var k = 0; k < results.length; k++) {
+                    if ((results[k].types || []).indexOf('plus_code') === -1) {
+                        return results[k];
+                    }
+                }
+
+                return results[0] || null;
+            }
+
+            currentLocationButton.addEventListener('click', function() {
+                if (!map || !geocoder) {
+                    setStatus('Google Maps is not ready. Check that GOOGLE_MAPS_API_KEY is set in your .env file.');
+                    return;
+                }
+
+                if (!navigator.geolocation) {
+                    setStatus('Location is not supported by this browser.');
+                    return;
+                }
+
+                setStatus('Finding your location...');
+                currentLocationButton.disabled = true;
+
+                navigator.geolocation.getCurrentPosition(async function(position) {
+                    var location = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    showOnMap(location, null);
+
+                    var found = null;
+
+                    try {
+                        var response = await geocoder.geocode({ location: location });
+                        var best = pickBestAddress(response.results || []);
+                        found = best ? best.formatted_address : null;
+                    } catch (error) {
+                        console.warn('Geocoding failed, trying nearby places instead:', error);
+                    }
+
+                    if (!found) {
+                        found = await nearestPlaceAddress(location);
+                    }
+
+                    if (found) {
+                        address.value = found;
+                        address.classList.remove('is-invalid');
+                        hideSuggestions();
+                        setStatus('Your current location was added.');
+                    } else {
+                        setStatus('Location shown on the map, but no address was found nearby. Please type it manually.');
+                    }
+
+                    currentLocationButton.disabled = false;
+                }, function(error) {
+                    currentLocationButton.disabled = false;
+                    setStatus(error.code === 1
+                        ? 'Location permission was denied. Please allow it or enter your address manually.'
+                        : 'Could not get your location. Please enter your address manually.');
+                }, { enableHighAccuracy: true, timeout: 10000 });
+            });
+
+            @if (!empty($googleMapsApiKey))
+                // Called by Google if the key is rejected (billing off, wrong restrictions, API not enabled...)
+                window.gm_authFailure = function() {
+                    setStatus('Google Maps rejected the API key. Check billing, enabled APIs and key restrictions.');
+                };
+
+                window.initCheckoutAddressMap = async function() {
+                    try {
+                        var mapsLib = await google.maps.importLibrary('maps');
+                        var markerLib = await google.maps.importLibrary('marker');
+                        var placesLib = await google.maps.importLibrary('places');
+                        var geocodingLib = await google.maps.importLibrary('geocoding');
+
+                        AutocompleteSuggestion = placesLib.AutocompleteSuggestion;
+                        AutocompleteSessionToken = placesLib.AutocompleteSessionToken;
+                        PlaceClass = placesLib.Place;
+                        RankPreference = placesLib.SearchNearbyRankPreference;
+                        geocoder = new geocodingLib.Geocoder();
+
+                        map = new mapsLib.Map(document.getElementById('checkoutAddressMap'), {
+                            center: { lat: 30.3753, lng: 69.3451 },
+                            zoom: 5,
+                            mapId: 'DEMO_MAP_ID', // required by AdvancedMarkerElement
+                            mapTypeControl: false,
+                            streetViewControl: false,
+                            fullscreenControl: false
+                        });
+                        marker = new markerLib.AdvancedMarkerElement({ map: null });
+
+                        // restore the pin after a validation error (old input)
+                        if (latInput.value && lngInput.value) {
+                            showOnMap({ lat: parseFloat(latInput.value), lng: parseFloat(lngInput.value) }, null);
+                        }
+                    } catch (error) {
+                        console.error('Google Maps init failed:', error);
+                        setStatus('Google Maps could not start. You can still type your address manually.');
+                    }
+                };
+
+                var googleMapsScript = document.createElement('script');
+                googleMapsScript.src = 'https://maps.googleapis.com/maps/api/js?key={{ urlencode($googleMapsApiKey) }}&v=weekly&loading=async&callback=initCheckoutAddressMap';
+                googleMapsScript.async = true;
+                googleMapsScript.defer = true;
+                googleMapsScript.onerror = function() {
+                    setStatus('Google Maps could not be loaded. Check your internet connection and API key.');
+                };
+                document.head.appendChild(googleMapsScript);
+            @endif
 
             // The cart changed while the customer is on this page (for example in the cart drawer)
             $(document).on('cart:page-updated', function() {

@@ -175,7 +175,7 @@
 
                 <!-- Submit Button -->
                 <button type="submit" class="btn-login" id="btn-submit">
-                    <span>Sign In</span>
+                    <span>Register</span>
                     <i class="bi bi-arrow-right"></i>
                 </button>
 

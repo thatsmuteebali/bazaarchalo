@@ -34,12 +34,10 @@ class CustomerController extends Controller
         }
 
         return view('customer.checkout', [
-            'cart'      => $summary,
-            'totals'    => $checkout->totals($summary),
-            'provinces' => config('shop.provinces'),
-            'cities'    => config('shop.cities'),
-            'payments'  => config('shop.payment_methods'),
-            'user'      => auth()->user(),
+            'cart'             => $summary,
+            'totals'           => $checkout->totals($summary),
+            'googleMapsApiKey' => config('services.google_maps.key'),
+            'user'              => auth()->user(),
         ]);
     }
 
