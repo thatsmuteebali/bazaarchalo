@@ -386,7 +386,7 @@
                                 </div>
                             </fieldset>
 
-                            {{-- <fieldset id="onlinePaymentOptions" class="co-online-options rounded" {{ $selectedPayment === 'online' ? '' : 'hidden' }}>
+                            <fieldset id="onlinePaymentOptions" class="co-online-options rounded d-none" {{ $selectedPayment === 'online' ? '' : 'hidden' }}>
                                 <legend class="fs-6 fw-semibold mb-2">Select online payment method</legend>
                                 @foreach ($onlineMethods as $key => $label)
                                     <div class="form-check mb-2">
@@ -398,7 +398,7 @@
                                 @error('online_payment_method')
                                     <div class="text-danger small mt-2">{{ $message }}</div>
                                 @enderror
-                            </fieldset> --}}
+                            </fieldset>
 
                             @error('payment_method')
                                 <div class="text-danger small mt-2">{{ $message }}</div>
