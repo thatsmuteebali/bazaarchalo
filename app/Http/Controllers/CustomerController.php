@@ -18,11 +18,25 @@ class CustomerController extends Controller
     public function profile(){
         return view('customer.profile');
     }
-    public function orders(){
-        return view('customer.orders');
+    public function orders(Request $request)
+    {
+        $orders = Order::query()
+            ->where('user_id', $request->user()->id)
+            ->withSum('items', 'quantity')
+            ->latest()
+            ->paginate(10);
+
+        return view('customer.orders', compact('orders'));
     }
-    public function orderDetail(){
-        return view('customer.order-detail');
+
+    public function orderDetail(Request $request)
+    {
+        $order = $this->customerOrder($request, false);
+        if (! $order) {
+            return redirect()->route('customer.orders')->with('status', 'That order could not be found in your account.');
+        }
+
+        return view('customer.order-detail', compact('order'));
     }
     public function orderTracking(Request $request)
     {

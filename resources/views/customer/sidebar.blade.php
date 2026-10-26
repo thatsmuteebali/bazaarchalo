@@ -14,7 +14,7 @@
                 href="{{ route('customer.profile') }}"><i class="fas fa-user"></i>Profile</a>
             <a class="nav-link text-start {{ request()->routeIs('customer.orders') ? 'active' : '' }}"
                 href="{{ route('customer.orders') }}"><i class="fas fa-box"></i>My Orders <span
-                    class="account-tab-count">3</span></a>
+                    class="account-tab-count">{{ auth()->user()->placeOrders() }}</span></a>
             <a class="nav-link text-start {{ request()->routeIs('customer.wishlist') ? 'active' : '' }}"
                 href="{{ route('customer.wishlist') }}"><i class="fas fa-heart"></i>Wishlist <span
                     class="account-tab-count">4</span></a>

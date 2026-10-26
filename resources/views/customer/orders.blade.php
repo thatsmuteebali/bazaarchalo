@@ -26,6 +26,9 @@
                                 View and track all your Bazaar Chalo orders.
                             </p>
                         </div>
+                        @if (session('status'))
+                            <div class="alert alert-info" role="status">{{ session('status') }}</div>
+                        @endif
                         <div class="table-responsive">
                             <table class="table account-orders-table align-middle">
                                 <thead>
@@ -38,52 +41,44 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <strong>#BC-10482</strong><small class="d-block text-muted">3 items</small>
-                                        </td>
-                                        <td>Today</td>
-                                        <td>
-                                            <span class="badge bg-secondary text-dark rounded-pill px-3 py-2">Out for
-                                                delivery</span>
-                                        </td>
-                                        <td><strong>$414.00</strong></td>
-                                        <td>
-                                            <a href="{{ route('customer.order-detail') }}"
-                                                class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">View</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>#BC-10371</strong><small class="d-block text-muted">5 items</small>
-                                        </td>
-                                        <td>18 Aug 2026</td>
-                                        <td>
-                                            <span class="badge bg-primary rounded-pill px-3 py-2">Delivered</span>
-                                        </td>
-                                        <td><strong>$86.50</strong></td>
-                                        <td>
-                                            <a href="{{ route('customer.order-detail') }}"
-                                                class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">View</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <strong>#BC-10192</strong><small class="d-block text-muted">2 items</small>
-                                        </td>
-                                        <td>04 Aug 2026</td>
-                                        <td>
-                                            <span class="badge bg-primary rounded-pill px-3 py-2">Delivered</span>
-                                        </td>
-                                        <td><strong>$42.75</strong></td>
-                                        <td>
-                                            <a href="{{ route('customer.order-detail') }}"
-                                                class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">View</a>
-                                        </td>
-                                    </tr>
+                                    @forelse ($orders as $order)
+                                        @php
+                                            $itemQuantity = (int) ($order->items_sum_quantity ?? 0);
+                                            $statusClass = match ($order->status) {
+                                                'completed' => 'bg-success',
+                                                'cancelled' => 'bg-danger',
+                                                'processing' => 'bg-info text-dark',
+                                                default => 'bg-secondary text-dark',
+                                            };
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                <strong>{{ $order->order_number }}</strong>
+                                                <small class="d-block text-muted">{{ $itemQuantity }} {{ $itemQuantity === 1 ? 'item' : 'items' }}</small>
+                                            </td>
+                                            <td>{{ $order->created_at->format('M j, Y') }}</td>
+                                            <td><span class="badge {{ $statusClass }} rounded-pill px-3 py-2">{{ ucfirst($order->status) }}</span></td>
+                                            <td><strong>@money($order->payable_total)</strong></td>
+                                            <td>
+                                                <a href="{{ route('customer.order-detail', ['order' => $order->order_number]) }}"
+                                                    class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">View</a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center py-5">
+                                                <i class="fas fa-box-open fa-2x text-secondary mb-3" aria-hidden="true"></i>
+                                                <p class="text-muted mb-3">You haven’t placed an order yet.</p>
+                                                <a href="{{ route('frontend.shop') }}" class="btn btn-primary rounded-pill px-4">Start shopping</a>
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
+                        @if ($orders->hasPages())
+                            <div class="mt-4">{{ $orders->links() }}</div>
+                        @endif
                     </div>
                 </section>
             </div>

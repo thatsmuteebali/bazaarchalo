@@ -64,4 +64,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Collection::class, 'seller_id');
     }
+
+    public function placeOrders()
+    {
+        return Order::where('user_id', auth()->id())->count();
+    }
 }

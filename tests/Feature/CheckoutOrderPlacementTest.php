@@ -94,5 +94,38 @@ class CheckoutOrderPlacementTest extends TestCase
             ->assertSee('Order placed')
             ->assertSee('House 12, Main Road')
             ->assertSee('alt="Fresh Apples"', false);
+
+        $this->get(route('customer.orders'))
+            ->assertOk()
+            ->assertSee($order->order_number)
+            ->assertSee('2 items');
+
+        $this->get(route('customer.order-detail', ['order' => $order->order_number]))
+            ->assertOk()
+            ->assertSee($order->order_number)
+            ->assertSee('Fresh Apples')
+            ->assertSee('House 12, Main Road')
+            ->assertSee('alt="Fresh Apples"', false);
+
+        $anotherCustomer = User::factory()->create(['role' => 'customer']);
+        $anotherOrder = Order::create([
+            'user_id' => $anotherCustomer->id,
+            'customer_name' => 'Another Customer',
+            'customer_phone' => '03000000001',
+            'delivery_address' => 'Another address',
+            'payment_method' => 'cod',
+            'payment_status' => 'unpaid',
+            'subtotal' => 50,
+            'shipping_total' => 0,
+            'total' => 50,
+            'payable_total' => 50,
+            'status' => 'pending',
+        ]);
+
+        $this->get(route('customer.orders'))
+            ->assertDontSee($anotherOrder->order_number);
+
+        $this->get(route('customer.order-detail', ['order' => $anotherOrder->order_number]))
+            ->assertRedirect(route('customer.orders'));
     }
 }

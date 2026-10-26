@@ -32,7 +32,7 @@
                                 <div class="col-md-4">
                                     <div class="account-stat bg-light rounded p-4"><i
                                             class="fas fa-shopping-bag"></i><span>Orders
-                                            placed</span><strong>12</strong></div>
+                                            placed</span><strong>{{auth()->user()->placeOrders()}}</strong></div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="account-stat bg-light rounded p-4"><i
