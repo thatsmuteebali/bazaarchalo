@@ -56,6 +56,7 @@ Route::group(['middleware' => ['CustomerMiddleware']], function () {
             Route::get('/profile', 'profile')->name('profile');
 
             Route::get('/checkout', 'checkout')->name('checkout');
+            Route::post('/checkout', 'placeOrder')->name('checkout.place');
             Route::get('/order-success', 'orderSuccess')->name('order-success');
 
             Route::get('/orders', 'orders')->name('orders');

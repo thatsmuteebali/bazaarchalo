@@ -19,6 +19,8 @@ class CheckoutRequest extends FormRequest
             'phone'          => ['required', 'regex:/^03\d{9}$/'],
             'email'          => ['nullable', 'email', 'max:150'],
             'address'        => ['required', 'string', 'min:5', 'max:255'],
+            'latitude'       => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude'      => ['nullable', 'numeric', 'between:-180,180'],
             'notes'          => ['nullable', 'string', 'max:500'],
             'payment_method' => ['required', Rule::in(['cod', 'online'])],
             'online_payment_method' => [

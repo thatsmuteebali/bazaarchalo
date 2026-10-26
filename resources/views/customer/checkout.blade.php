@@ -291,6 +291,9 @@
         <div class="container py-4">
             <form method="POST" action="{{ $placeUrl }}" id="checkoutForm" novalidate data-wired="{{ $wired ? '1' : '0' }}">
                 @csrf
+                @error('cart')
+                    <div class="alert alert-danger" role="alert">{{ $message }}</div>
+                @enderror
 
                 <div class="row g-5">
                     {{-- LEFT: details --}}
