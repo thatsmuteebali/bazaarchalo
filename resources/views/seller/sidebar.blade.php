@@ -36,7 +36,13 @@
                         <span>Products</span>
                     </a>
                 </li>
-                
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('seller.orders.index') }}" class="sidebar-menu-link {{ request()->routeIs('seller.orders.*') ? 'active' : '' }}" id="menu-orders" title="Orders">
+                        <i class="bi bi-receipt"></i>
+                        <span>Orders</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>

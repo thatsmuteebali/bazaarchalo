@@ -40,7 +40,7 @@
                     $statusClass = match ($order->status) {
                         'completed' => 'bg-success',
                         'cancelled' => 'bg-danger',
-                        'processing' => 'bg-info text-dark',
+                        'processing' => 'bg-secondary text-dark',
                         default => 'bg-secondary text-dark',
                     };
                 @endphp
@@ -53,7 +53,7 @@
                         @foreach ($order->items as $item)
                             @php
                                 $itemStatusClass = match ($item->status) {
-                                    'accepted' => 'bg-info text-dark',
+                                    'accepted' => 'bg-success',
                                     'shipped' => 'bg-primary',
                                     'delivered' => 'bg-success',
                                     'rejected', 'cancelled' => 'bg-danger',

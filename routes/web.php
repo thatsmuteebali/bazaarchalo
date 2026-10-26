@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\SellerLoginController;
 use App\Http\Controllers\Auth\SellerRegisterController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Seller\CollectionController;
+use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\ProductStockController;
 use App\Http\Controllers\Seller\ShopController;
@@ -120,6 +121,10 @@ Route::group(['middleware' => ['SellerMiddleware']], function () {
         Route::resource('shops', ShopController::class);
         Route::resource('collections', CollectionController::class);
         Route::resource('products', ProductController::class);
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [OrderController::class, 'show'])->whereNumber('order')->name('orders.show');
+        Route::patch('order-items/{orderItem}/decision', [OrderController::class, 'decide'])
+            ->whereNumber('orderItem')->name('orders.items.decide');
         Route::post('products/{product}/stock', [ProductStockController::class, 'store'])->name('products.stock.store');
         Route::get('products/{product}/inventory', [ProductStockController::class, 'index'])->name('products.inventory');
 

@@ -47,7 +47,7 @@
                                             $statusClass = match ($order->status) {
                                                 'completed' => 'bg-success',
                                                 'cancelled' => 'bg-danger',
-                                                'processing' => 'bg-info text-dark',
+                                                'processing' => 'bg-secondary ',
                                                 default => 'bg-secondary text-dark',
                                             };
                                         @endphp
