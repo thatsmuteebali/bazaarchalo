@@ -26,20 +26,58 @@
                                 Keep your personal information up to date.
                             </p>
                         </div>
-                        <form>
+                        @if (session('status'))
+                            <div class="alert alert-success" role="status">{{ session('status') }}</div>
+                        @endif
+                        <form method="POST" action="{{ route('customer.profile.update') }}">
+                            @csrf
+                            @method('PUT')
                             <div class="row g-4">
                                 <div class="col-md-6">
-                                    <label class="form-label">Name</label><input type="text" class="form-control"
-                                        value="{{auth()->user()->name}}" />
+                                    <label for="profileName" class="form-label">Name</label>
+                                    <input type="text" id="profileName" name="name" class="form-control"
+                                        value="{{ old('name', auth()->user()->name) }}" required />
+                                    @error('name')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
                                 </div>
-
                                 <div class="col-md-6">
-                                    <label class="form-label">Email</label><input type="email"
-                                        class="form-control" value="{{auth()->user()->email}}" />
+                                    <label for="profileUsername" class="form-label">Username</label>
+                                    <input type="text" id="profileUsername" name="username" class="form-control"
+                                        value="{{ old('username', auth()->user()->username) }}" required />
+                                    @error('username')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Phone number</label><input type="tel" class="form-control"
-                                        value="{{auth()->user()->phone}}" />
+                                    <label for="profileEmail" class="form-label">Email</label>
+                                    <input type="email" id="profileEmail" name="email" class="form-control"
+                                        value="{{ old('email', auth()->user()->email) }}" />
+                                    @error('email')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="profilePhone" class="form-label">Phone number</label>
+                                    <input type="tel" id="profilePhone" name="phone" class="form-control"
+                                        value="{{ old('phone', auth()->user()->phone) }}" />
+                                    @error('phone')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="profilePassword" class="form-label">New password</label>
+                                    <input type="password" id="profilePassword" name="password" class="form-control"
+                                        autocomplete="new-password" />
+                                    <small class="form-text text-muted">Leave blank to keep your current password.</small>
+                                    @error('password')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="profilePasswordConfirmation" class="form-label">Confirm new password</label>
+                                    <input type="password" id="profilePasswordConfirmation" name="password_confirmation"
+                                        class="form-control" autocomplete="new-password" />
                                 </div>
 
                                 <div class="col-12">

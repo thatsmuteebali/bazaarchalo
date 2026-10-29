@@ -9,6 +9,7 @@ use App\Exceptions\CartException;
 use App\Http\Requests\CheckoutRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
@@ -18,6 +19,26 @@ class CustomerController extends Controller
     public function profile(){
         return view('customer.profile');
     }
+
+    public function updateProfile(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique('users')->ignore($request->user()->id)],
+            'email' => ['nullable', 'email', 'max:255', Rule::unique('users')->ignore($request->user()->id)],
+            'phone' => ['nullable', 'string', 'max:30'],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        if (blank($validated['password'] ?? null)) {
+            unset($validated['password']);
+        }
+
+        $request->user()->update($validated);
+
+        return redirect()->route('customer.profile')->with('status', 'Your profile has been updated.');
+    }
+
     public function orders(Request $request)
     {
         $orders = Order::query()
