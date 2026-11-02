@@ -88,13 +88,13 @@
                 </div>
 
                 <div class="login-form-group">
-                    <label for="phone_number" class="login-form-label">Phone Number</label>
+                    <label for="phone" class="login-form-label">Phone Number</label>
                     <div class="login-input-group">
                         <i class="bi bi-telephone  input-icon"></i>
-                        <input type="text" name="phone_number" id="phone_number" class="login-input" placeholder="+923000000000"
+                        <input type="text" name="phone" id="phone" class="login-input" placeholder="03000000000"
                             required>
                     </div>
-                    @error('phone_number')
+                    @error('phone')
                         <div class="form-feedback-custom invalid-custom">
                             <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
                         </div>

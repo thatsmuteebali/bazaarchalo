@@ -26,8 +26,10 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:50', 'alpha_dash', Rule::unique('users')->ignore($request->user()->id)],
             'email' => ['nullable', 'email', 'max:255', Rule::unique('users')->ignore($request->user()->id)],
-            'phone' => ['nullable', 'string', 'max:30'],
+            'phone' => ['nullable', 'regex:/^03\d{9}$/', Rule::unique('users')->ignore($request->user()->id)],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        ], [
+            'phone.regex' => 'Enter a Pakistani mobile number in the format 03000000000.',
         ]);
 
         if (blank($validated['password'] ?? null)) {

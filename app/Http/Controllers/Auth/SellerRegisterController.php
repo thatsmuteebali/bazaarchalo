@@ -29,9 +29,11 @@ class SellerRegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'phone_number' => ['required'],
+            'phone' => ['required', 'unique:users', 'regex:/^03\d{9}$/'],
             'shop_name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users'],
+        ], [
+            'phone.regex' => 'Enter a Pakistani mobile number in the format 03000000000.',
         ]);
     }
 
@@ -42,7 +44,7 @@ class SellerRegisterController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone_number,
+            'phone' => $request->phone,
             'role' => 'seller',
             'username' => $request->username,   // in SellerRegisterController use $request->username
             'password' => Hash::make($request->password),

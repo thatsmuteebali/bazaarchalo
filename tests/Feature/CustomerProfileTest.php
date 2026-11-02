@@ -58,6 +58,27 @@ class CustomerProfileTest extends TestCase
         $this->assertTrue(Hash::check('current-password', $customer->fresh()->password));
     }
 
+    public function test_customer_profile_rejects_phone_numbers_outside_pakistani_mobile_format(): void
+    {
+        $customer = User::factory()->create(['role' => 'customer']);
+
+        $this->actingAs($customer)
+            ->put(route('customer.profile.update'), [
+                'name' => $customer->name,
+                'username' => $customer->username,
+                'email' => $customer->email,
+                'phone' => '+923000000000',
+                'password' => '',
+                'password_confirmation' => '',
+            ])
+            ->assertSessionHasErrors('phone');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $customer->id,
+            'phone' => $customer->phone,
+        ]);
+    }
+
     public function test_customer_can_update_password_from_profile(): void
     {
         $customer = User::factory()->create(['role' => 'customer']);

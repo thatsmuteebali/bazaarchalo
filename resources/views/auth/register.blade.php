@@ -56,9 +56,9 @@
                         </div>
                         <div class="col-md-6">
                             <label for="registerPhone" class="form-label">Phone Number <sup>*</sup></label><input
-                                type="text" class="form-control py-3" value="{{ old('phone_number') }}" name="phone_number" id="registerPhone"
+                                type="text" class="form-control py-3" value="{{ old('phone') }}" name="phone" id="registerPhone"
                                 placeholder="Enter your phone number" required />
-                            @error('phone_number')
+                            @error('phone')
                                 <p class="text-danger">
                                     {{ $message }}
                                 </p>
