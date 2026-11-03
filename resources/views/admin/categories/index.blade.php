@@ -58,12 +58,9 @@
                                 <div class="table-user-cell">
                                     @if ($category->image)
                                     <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="table-user-avatar"
-                                        onerror="this.src='../assets/images/avatar.png'">
+                                        onerror="this.src='{{ asset('assets/images/no_image.png') }}'">
                                     @else
-                                        <span class="d-inline-flex align-items-center justify-content-center bg-light text-muted"
-                                            style="width: 56px; height: 44px;">
-                                            <i class="bi bi-category" aria-hidden="true"></i>
-                                        </span>
+                                        <img src="{{ asset('assets/images/no_image.png') }}" alt="{{ $category->name }}" class="table-user-avatar">
                                     @endif
                                 </div>
                             </td>

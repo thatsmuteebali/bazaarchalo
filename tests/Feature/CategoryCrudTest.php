@@ -22,7 +22,7 @@ class CategoryCrudTest extends TestCase
 
     public function test_category_can_be_created_updated_and_deleted(): void
     {
-        $this->post(route('admin.categories.store'), ['name' => '  Pantry  '])
+        $this->post(route('admin.categories.store'), ['name' => '  Pantry  ', 'status' => 'active'])
             ->assertRedirect(route('admin.categories.list'));
 
         $category = Category::where('name', 'Pantry')->firstOrFail();
@@ -31,7 +31,7 @@ class CategoryCrudTest extends TestCase
             ->assertOk()
             ->assertSee('value="Pantry"', false);
 
-        $this->put(route('admin.categories.update', $category), ['name' => 'Dry Goods'])
+        $this->put(route('admin.categories.update', $category), ['name' => 'Dry Goods', 'status' => 'active'])
             ->assertRedirect(route('admin.categories.list'));
 
         $this->assertDatabaseHas('categories', ['id' => $category->id, 'name' => 'Dry Goods']);
@@ -56,6 +56,41 @@ class CategoryCrudTest extends TestCase
             ->assertSessionHasErrors('name');
     }
 
+    public function test_category_slugs_are_generated_unique_and_readonly(): void
+    {
+        $this->get(route('admin.categories.create'))
+            ->assertOk()
+            ->assertSee('name="slug"', false)
+            ->assertSee('readonly', false);
+
+        $this->post(route('admin.categories.store'), [
+            'name' => 'Home & Garden',
+            'slug' => 'user-provided-slug',
+            'status' => 'active',
+        ])->assertRedirect(route('admin.categories.list'));
+
+        $category = Category::where('name', 'Home & Garden')->firstOrFail();
+        $this->assertSame('home-garden', $category->slug);
+
+        $this->post(route('admin.categories.store'), ['name' => 'Home Garden', 'status' => 'active'])
+            ->assertRedirect(route('admin.categories.list'));
+        $this->assertDatabaseHas('categories', ['name' => 'Home Garden', 'slug' => 'home-garden-2']);
+
+        $this->put(route('admin.categories.update', $category), [
+            'name' => 'Outdoor Living',
+            'slug' => 'another-user-provided-slug',
+            'status' => 'active',
+        ])->assertRedirect(route('admin.categories.list'));
+
+        $category->refresh();
+        $this->assertSame('outdoor-living', $category->slug);
+
+        $this->get(route('admin.categories.edit', $category))
+            ->assertOk()
+            ->assertSee('value="outdoor-living"', false)
+            ->assertSee('readonly', false);
+    }
+
     public function test_category_image_can_be_uploaded_replaced_and_displayed(): void
     {
         Storage::fake('public');
@@ -63,6 +98,7 @@ class CategoryCrudTest extends TestCase
         $this->post(route('admin.categories.store'), [
             'name' => 'Illustrated Category',
             'image' => UploadedFile::fake()->image('category.jpg'),
+            'status' => 'active',
         ])->assertRedirect(route('admin.categories.list'));
 
         $category = Category::where('name', 'Illustrated Category')->firstOrFail();
@@ -76,6 +112,7 @@ class CategoryCrudTest extends TestCase
         $this->put(route('admin.categories.update', $category), [
             'name' => 'Illustrated Category',
             'image' => UploadedFile::fake()->image('replacement.jpg'),
+            'status' => 'active',
         ])->assertRedirect(route('admin.categories.list'));
 
         $category->refresh();

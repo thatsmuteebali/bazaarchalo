@@ -49,7 +49,7 @@
                                 <div class="table-user-cell">
                                     @if ($collection->image)
                                     <img src="{{ asset('storage/' . $collection->image) }}" alt="{{ $collection->name }}" class="table-user-avatar"
-                                        onerror="this.src='../assets/images/avatar.png'">
+                                        onerror="this.src='{{ asset('assets/images/no_image.png') }}'">
                                     @else
                                         <span class="d-inline-flex align-items-center justify-content-center bg-light text-muted"
                                             style="width: 56px; height: 44px;">

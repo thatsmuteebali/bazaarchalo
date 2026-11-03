@@ -487,3 +487,11 @@ $(document).ready(function () {
         height: 200,
     });
 });
+
+$(document).on("change", ".image", function (e) {
+    let reader = new FileReader();
+    reader.onload = function (e) {
+        $(".image-preview").attr("src", e.target.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
+});
