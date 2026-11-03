@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('customCss')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 @endsection
 
 @section('content')
@@ -20,27 +21,17 @@
     <div class="table-card-custom">
         <!-- Header Controls -->
         <div class="table-header-control">
-            <form method="GET" action="{{ route('admin.categories.list') }}" class="table-search-box search-form">
-                <i class="bi bi-search table-search-icon" aria-hidden="true"></i>
-                <input type="search" name="search" class="table-search-input" value="{{ $search }}"
-                    placeholder="Search categories..." aria-label="Search categories">
-                @if ($search !== '')
-                    <a href="{{ route('admin.categories.list') }}" class="table-btn-action" title="Clear search"
-                        aria-label="Clear search">
-                        <i class="bi bi-x-lg"></i>
-                    </a>
-                @endif
-                <button type="submit" class="btn-quick-action">
-                    <i class="bi bi-search" aria-hidden="true"></i>
-                    <span>Search</span>
-                </button>
-            </form>
-
+            <label for="category-status-filter" class="form-label-custom mb-0">Filter by status</label>
+            <select id="category-status-filter" class="form-select-custom" aria-label="Filter categories by status">
+                <option value="">All statuses</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
         </div>
 
         <!-- Responsive Table Wrapper -->
         <div class="table-responsive">
-            <table class="table-custom">
+            <table id="category-table" class="table-custom table w-100">
                 <thead>
                     <tr>
                         <th>Sr</th>
@@ -48,72 +39,58 @@
                         <th>Category</th>
                         <th>Status</th>
                         <th class="text-center">Actions</th>
+                        <th class="d-none">Sort</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse ($categories as $category)
-                        <tr>
-                            <td>{{ $categories->firstItem() + $loop->index }}</td>
-                            <td>
-                                <div class="table-user-cell">
-                                    @if ($category->image)
-                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="table-user-avatar"
-                                        onerror="this.src='{{ asset('assets/images/no_image.png') }}'">
-                                    @else
-                                        <img src="{{ asset('assets/images/no_image.png') }}" alt="{{ $category->name }}" class="table-user-avatar">
-                                    @endif
-                                </div>
-                            </td>
-                            <td>{{ $category->name }}</td>
-                            @php
-                                $status_label = match ($category->status) {
-                                    'active' => 'success',
-                                    'inactive' => 'failed',
-                                    default => 'pending',
-                                };
-                            @endphp
-                            <td><span class="badge-table {{ $status_label }}">{{ucfirst($category->status)}}</span></td>
-                            <td>
-                                <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('admin.categories.show', $category) }}" class="table-btn-action" title="View category" aria-label="View {{ $category->name }}">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="{{ route('admin.categories.edit', ['category' => $category, 'search' => $search, 'page' => $categories->currentPage()]) }}"
-                                        class="table-btn-action" title="Edit category"
-                                        aria-label="Edit {{ $category->name }}">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form method="POST"
-                                        action="{{ route('admin.categories.destroy', ['category' => $category, 'search' => $search, 'page' => $categories->currentPage()]) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="table-btn-action delete" title="Delete category"
-                                            aria-label="Delete {{ $category->name }}" data-bs-toggle="modal"
-                                            data-bs-target="#confirmDeleteModal" data-confirm-delete
-                                            data-item-name="{{ $category->name }}" data-item-type="category">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">
-                                {{ $search !== '' ? 'No categories match your search.' : 'No categories have been added yet.' }}
-                            </td>
-                        </tr>
-                    @endforelse
-
-                </tbody>
+                <tbody></tbody>
             </table>
-        </div>
-
-        <!-- Footer Controls / Pagination -->
-        <div class="table-footer-control">
-            {{ $categories->links() }}
         </div>
     </div>
 
     <!-- END: Basic Table Card Container -->
+@endsection
+
+@section('customjs')
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(function () {
+            const table = $('#category-table').DataTable({
+                processing: true,
+                serverSide: true,
+                stateSave: true,
+                ajax: {
+                    url: @json(route('admin.categories.list')),
+                    data: function (request) {
+                        request.status = $('#category-status-filter').val();
+                    }
+                },
+                columns: [
+                    { data: 'DT_RowIndex', name: 'id', orderable: false, searchable: false },
+                    { data: 'image', name: 'image', orderable: false, searchable: false },
+                    { data: 'name', name: 'categories.name' },
+                    { data: 'status', name: 'categories.status' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false },
+                    { data: 'sort_id', name: 'categories.id', visible: false, searchable: false }
+                ],
+                order: [[5, 'desc']],
+                pageLength: 10,
+                lengthMenu: [10, 25, 50, 100],
+                stateSaveParams: function (settings, data) {
+                    data.categoryStatus = $('#category-status-filter').val();
+                },
+                stateLoadParams: function (settings, data) {
+                    $('#category-status-filter').val(data.categoryStatus || '');
+                },
+                language: {
+                    emptyTable: 'No categories have been added yet.',
+                    zeroRecords: 'No categories match your search or filters.'
+                }
+            });
+
+            $('#category-status-filter').on('change', function () {
+                table.draw();
+            });
+        });
+    </script>
 @endsection

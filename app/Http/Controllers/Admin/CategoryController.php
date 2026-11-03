@@ -7,20 +7,68 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
     public function list(Request $request)
     {
-        $search = trim((string) $request->query('search', ''));
+        $query = Category::query()->select(['id', 'name', 'image', 'status']);
 
-        $categories = Category::query()
-            ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
-            ->orderByDesc('id')
-            ->paginate(10)
-            ->withQueryString();
+        if ($request->ajax()) {
+            $status = $request->input('status');
 
-        return view('admin.categories.index', compact('categories', 'search'));
+            return DataTables::eloquent($query)
+                ->filter(function ($query) use ($status) {
+                    if (in_array($status, ['active', 'inactive'], true)) {
+                        $query->where('status', $status);
+                    }
+                }, true)
+                ->addIndexColumn()
+                ->editColumn('image', function (Category $category) {
+                    $imageUrl = $category->image
+                        ? asset('storage/' . $category->image)
+                        : asset('assets/images/no_image.png');
+                    $name = e($category->name);
+
+                    return '<div class="table-user-cell"><img src="' . e($imageUrl) . '" alt="' . $name
+                        . '" class="table-user-avatar" onerror="this.src=\''
+                        . e(asset('assets/images/no_image.png')) . '\'"></div>';
+                })
+                ->editColumn('status', function (Category $category) {
+                    $statusLabel = match ($category->status) {
+                        'active' => 'success',
+                        'inactive' => 'failed',
+                        default => 'pending',
+                    };
+
+                    return '<span class="badge-table ' . $statusLabel . '">'
+                        . e(ucfirst($category->status)) . '</span>';
+                })
+                ->addColumn('actions', function (Category $category) {
+                    $name = e($category->name);
+                    $showUrl = route('admin.categories.show', $category);
+                    $editUrl = route('admin.categories.edit', $category);
+                    $deleteUrl = route('admin.categories.destroy', $category);
+
+                    return '<div class="d-flex justify-content-center gap-1">'
+                        . '<a href="' . e($showUrl) . '" class="table-btn-action" title="View category" aria-label="View '
+                        . $name . '"><i class="bi bi-eye"></i></a>'
+                        . '<a href="' . e($editUrl) . '" class="table-btn-action" title="Edit category" aria-label="Edit '
+                        . $name . '"><i class="bi bi-pencil"></i></a>'
+                        . '<form method="POST" action="' . e($deleteUrl) . '">'
+                        . csrf_field() . method_field('DELETE')
+                        . '<button type="button" class="table-btn-action delete" title="Delete category" aria-label="Delete '
+                        . $name . '" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-confirm-delete'
+                        . ' data-item-name="' . $name . '" data-item-type="category">'
+                        . '<i class="bi bi-trash"></i></button></form></div>';
+                })
+                ->addColumn('sort_id', fn (Category $category) => $category->id)
+                ->rawColumns(['image', 'status', 'actions'])
+                ->toJson();
+        }
+
+        return view('admin.categories.index');
     }
 
     public function create()

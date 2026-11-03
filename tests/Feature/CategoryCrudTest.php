@@ -22,7 +22,13 @@ class CategoryCrudTest extends TestCase
 
     public function test_category_can_be_created_updated_and_deleted(): void
     {
-        $this->post(route('admin.categories.store'), ['name' => '  Pantry  ', 'status' => 'active'])
+        Storage::fake('public');
+
+        $this->post(route('admin.categories.store'), [
+            'name' => '  Pantry  ',
+            'status' => 'active',
+            'image' => UploadedFile::fake()->image('pantry.jpg'),
+        ])
             ->assertRedirect(route('admin.categories.list'));
 
         $category = Category::where('name', 'Pantry')->firstOrFail();
@@ -58,6 +64,8 @@ class CategoryCrudTest extends TestCase
 
     public function test_category_slugs_are_generated_unique_and_readonly(): void
     {
+        Storage::fake('public');
+
         $this->get(route('admin.categories.create'))
             ->assertOk()
             ->assertSee('name="slug"', false)
@@ -67,12 +75,17 @@ class CategoryCrudTest extends TestCase
             'name' => 'Home & Garden',
             'slug' => 'user-provided-slug',
             'status' => 'active',
+            'image' => UploadedFile::fake()->image('home-garden.jpg'),
         ])->assertRedirect(route('admin.categories.list'));
 
         $category = Category::where('name', 'Home & Garden')->firstOrFail();
         $this->assertSame('home-garden', $category->slug);
 
-        $this->post(route('admin.categories.store'), ['name' => 'Home Garden', 'status' => 'active'])
+        $this->post(route('admin.categories.store'), [
+            'name' => 'Home Garden',
+            'status' => 'active',
+            'image' => UploadedFile::fake()->image('home-garden-2.jpg'),
+        ])
             ->assertRedirect(route('admin.categories.list'));
         $this->assertDatabaseHas('categories', ['name' => 'Home Garden', 'slug' => 'home-garden-2']);
 
@@ -105,9 +118,10 @@ class CategoryCrudTest extends TestCase
         $originalImage = $category->image;
         Storage::disk('public')->assertExists($originalImage);
 
-        $this->get(route('admin.categories.list'))
-            ->assertOk()
-            ->assertSee($originalImage);
+        $tableResponse = $this->get(route('admin.categories.list', ['draw' => 1, 'start' => 0, 'length' => 10]), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->assertOk();
+        $this->assertStringContainsString($originalImage, $tableResponse->json('data.0.image'));
 
         $this->put(route('admin.categories.update', $category), [
             'name' => 'Illustrated Category',
@@ -120,22 +134,33 @@ class CategoryCrudTest extends TestCase
         Storage::disk('public')->assertExists($category->image);
     }
 
-    public function test_category_search_and_pagination_work(): void
+    public function test_category_table_filters_searches_and_sorts_without_page_reload(): void
     {
-        Category::create(['name' => 'Fresh Produce']);
+        Category::create(['name' => 'Banana', 'status' => 'active']);
+        Category::create(['name' => 'Apple', 'status' => 'active']);
+        Category::create(['name' => 'Apricot', 'status' => 'inactive']);
 
-        foreach (range(1, 11) as $number) {
-            Category::create(['name' => "Category {$number}"]);
-        }
-
-        $this->get(route('admin.categories.list', ['search' => 'Produce']))
+        $this->get(route('admin.categories.list', [
+            'draw' => 1,
+            'start' => 0,
+            'length' => 10,
+            'status' => 'active',
+            'search' => ['value' => 'a', 'regex' => 'false'],
+            'order' => [['column' => 2, 'dir' => 'asc']],
+            'columns' => [
+                ['data' => 'DT_RowIndex', 'name' => 'id', 'searchable' => 'false', 'orderable' => 'false'],
+                ['data' => 'image', 'name' => 'image', 'searchable' => 'false', 'orderable' => 'false'],
+                ['data' => 'name', 'name' => 'categories.name', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'status', 'name' => 'categories.status', 'searchable' => 'true', 'orderable' => 'true'],
+                ['data' => 'actions', 'name' => 'actions', 'searchable' => 'false', 'orderable' => 'false'],
+                ['data' => 'sort_id', 'name' => 'categories.id', 'searchable' => 'false', 'orderable' => 'true'],
+            ],
+        ]), ['X-Requested-With' => 'XMLHttpRequest'])
             ->assertOk()
-            ->assertSee('Fresh Produce')
-            ->assertDontSee('Category 1</td>');
-
-        $this->get(route('admin.categories.list', ['page' => 2]))
-            ->assertOk()
-            ->assertSee('Category 1')
-            ->assertSee('page=2');
+            ->assertJsonPath('recordsTotal', 3)
+            ->assertJsonPath('recordsFiltered', 2)
+            ->assertJsonPath('data.0.name', 'Apple')
+            ->assertJsonPath('data.1.name', 'Banana')
+            ->assertJsonPath('data.0.status', '<span class="badge-table success">Active</span>');
     }
 }
