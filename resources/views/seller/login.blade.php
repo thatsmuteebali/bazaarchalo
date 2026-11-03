@@ -53,7 +53,7 @@
 
                 <!-- login Input Group -->
                 <div class="login-form-group">
-                    <label for="login" class="login-form-label">Email or Username</label>
+                    <label for="login" class="login-form-label">Email or Username or Phone Number</label>
                     <div class="login-input-group">
                         <i class="bi bi-envelope input-icon"></i>
                         <input type="login" name="login" id="login" class="login-input"

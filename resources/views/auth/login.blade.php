@@ -23,7 +23,7 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="form-item mb-4">
-                        <label for="login" class="form-label">Email or Username <sup class="text-danger">*</sup></label>
+                        <label for="login" class="form-label">Email or Username or Phone Number <sup class="text-danger">*</sup></label>
                         <input type="login" name="login" class="form-control py-3" id="login"
                             placeholder="Enter your login" required />
                         @error('login')
