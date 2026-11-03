@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Auth\LoginController;
@@ -81,6 +82,11 @@ Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
 Route::group(['middleware' => ['AdminMiddleware']], function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('logout', [AdminLoginController::class, 'logout'])->name('logout');
+
+        Route::controller(AdminController::class)->group(function () {
+            Route::get('/profile', 'profile')->name('profile');
+            Route::put('/profile', 'updateProfile')->name('profile.update');
+        });
 
         Route::controller(Dashboard::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');

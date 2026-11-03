@@ -72,6 +72,7 @@
 
     <!-- Local dashboard interactions controller -->
     <script src="{{ asset('assets/js/dashboard.js') }}"></script>
+    <script src="{{ asset('assets/js/auth.js') }}"></script>
     @yield('customjs')
 </body>
 

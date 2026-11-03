@@ -10,7 +10,7 @@
             <i class="bi bi-list"></i>
         </button>
 
-        <h1 class="page-title">Admin</h1>
+        {{-- <h1 class="page-title">Admin</h1> --}}
     </div>
 
     <!-- Mid navbar: search pill -->
@@ -83,9 +83,7 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-profile" aria-labelledby="profile-dropdown">
                 <li class="dropdown-header">Welcome !</li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> My Account</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-lock"></i> Lock Screen</a></li>
+                <li><a class="dropdown-item" href="{{ route('admin.profile') }}"><i class="bi bi-person"></i> My Profile</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
