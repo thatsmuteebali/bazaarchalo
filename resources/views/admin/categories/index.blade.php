@@ -17,52 +17,68 @@
     </div>
     <!-- END: Page Header Banner -->
 
-    <!-- START: Basic Table Card Container -->
     <div class="table-card-custom">
         <!-- Header Controls -->
         <div class="table-header-control">
-            <label for="category-status-filter" class="form-label-custom mb-0">Filter by status</label>
-            <select id="category-status-filter" class="form-select-custom" aria-label="Filter categories by status">
-                <option value="">All statuses</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-            </select>
+            <form id="category-search-form" class="table-search-box search-form" role="search" autocomplete="off">
+                <i class="bi bi-search table-search-icon" aria-hidden="true"></i>
+                <input type="search" id="category-search" class="table-search-input"
+                    placeholder="Search categories..." aria-label="Search categories">
+            </form>
+
+            <div class="table-filter-group">
+                <select id="category-status-filter" class="form-select-custom form-select-inline"
+                    aria-label="Filter categories by status">
+                    <option value="">All statuses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+                <select id="category-length" class="form-select-custom form-select-inline"
+                    aria-label="Rows per page">
+                    <option value="10">10 / page</option>
+                    <option value="25">25 / page</option>
+                    <option value="50">50 / page</option>
+                    <option value="100">100 / page</option>
+                </select>
+            </div>
         </div>
 
-        <!-- Responsive Table Wrapper -->
-        <div class="table-responsive">
-            <table id="category-table" class="table-custom table w-100">
-                <thead>
-                    <tr>
-                        <th>Sr</th>
-                        <th>Image</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th class="text-center">Actions</th>
-                        <th class="d-none">Sort</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+        <!-- DataTable renders the table, info and pagination here -->
+        <table id="category-table" class="table-custom w-100">
+            <thead>
+                <tr>
+                    <th>Sr</th>
+                    <th>Image</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                    <th class="d-none">Sort</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-
-    <!-- END: Basic Table Card Container -->
 @endsection
 
 @section('customjs')
-    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
     <script>
         $(function () {
-            const table = $('#category-table').DataTable({
+            const $table = $('#category-table');
+            const $search = $('#category-search');
+            const $status = $('#category-status-filter');
+            const $length = $('#category-length');
+            let searchTimer = null;
+
+            const table = $table.DataTable({
                 processing: true,
                 serverSide: true,
-                stateSave: true,
+                // Only the table, processing box, info and pagination are drawn by DataTables.
+                // Search + page length are our own controls above.
+                dom: '<"dt-body"<"table-responsive"t>r><"table-footer-control dt-footer"ip>',
                 ajax: {
                     url: @json(route('admin.categories.list')),
                     data: function (request) {
-                        request.status = $('#category-status-filter').val();
+                        request.status = $status.val();
                     }
                 },
                 columns: [
@@ -75,21 +91,53 @@
                 ],
                 order: [[5, 'desc']],
                 pageLength: 10,
-                lengthMenu: [10, 25, 50, 100],
-                stateSaveParams: function (settings, data) {
-                    data.categoryStatus = $('#category-status-filter').val();
-                },
-                stateLoadParams: function (settings, data) {
-                    $('#category-status-filter').val(data.categoryStatus || '');
+                
+                initComplete: function () {
+                    const api = this.api();
+                    $search.val(api.search());
+                    $length.val(String(api.page.len()));
                 },
                 language: {
+                    processing: '<span class="dt-processing-box"><span class="dt-spinner" aria-hidden="true"></span><span>Loading...</span></span>',
                     emptyTable: 'No categories have been added yet.',
-                    zeroRecords: 'No categories match your search or filters.'
+                    zeroRecords: 'No categories match your search or filters.',
+                    info: 'Showing _START_ to _END_ of _TOTAL_ results',
+                    infoEmpty: 'Showing 0 results',
+                    infoFiltered: '',
+                    paginate: { previous: '&lsaquo;', next: '&rsaquo;' }
                 }
             });
 
-            $('#category-status-filter').on('change', function () {
+            // Dim the rows while a request is running
+            $table.on('processing.dt', function (e, settings, isProcessing) {
+                $table.closest('.dt-body').toggleClass('is-loading', isProcessing);
+            });
+
+            // Search (debounced while typing, instant on button/Enter)
+            function applySearch() {
+                const value = $search.val().trim();
+                if (table.search() !== value) {
+                    table.search(value).draw();
+                }
+            }
+
+            $search.on('input', function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(applySearch, 400);
+            });
+
+            $('#category-search-form').on('submit', function (event) {
+                event.preventDefault();
+                clearTimeout(searchTimer);
+                applySearch();
+            });
+
+            $status.on('change', function () {
                 table.draw();
+            });
+
+            $length.on('change', function () {
+                table.page.len(parseInt(this.value, 10)).draw();
             });
         });
     </script>

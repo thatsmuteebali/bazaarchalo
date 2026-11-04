@@ -23,7 +23,7 @@
     </div>
 
     <!-- Column 1: Basic controls -->
-    <form method="POST" action="{{ route('admin.categories.store') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('admin.categories.store') }}" enctype="multipart/form-data" id="category-form">
         @csrf
         <div class="card border-light shadow-sm p-4 h-100">
             <!-- Text input -->
@@ -120,5 +120,13 @@
 
         categoryNameInput.addEventListener('input', updateCategorySlug);
         updateCategorySlug();
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $("#category-form").on("submit", function() {
+                $('button[type="submit"]').prop('disabled', true);
+            });
+        });
     </script>
 @endsection

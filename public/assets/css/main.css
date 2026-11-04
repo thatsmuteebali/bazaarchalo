@@ -3203,5 +3203,138 @@ span.flatpickr-weekday {
     white-space: nowrap;
 }
 
+/* ---------------------------------------------------------------------
+   25. DataTables Integration
+--------------------------------------------------------------------- */
+.table-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.form-select-inline {
+    width: auto;
+    min-width: 150px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* Table body wrapper (also the positioning parent for the processing box) */
+.table-card-custom .dt-body {
+    position: relative;
+    min-height: 140px;
+}
+
+.table-card-custom div.dataTables_wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Reset DataTables / Bootstrap table defaults so .table-custom wins */
+.table-card-custom table.table-custom.dataTable {
+    margin: 0 !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border-bottom: none !important;
+}
+
+.table-card-custom table.table-custom.dataTable > thead > tr > th,
+.table-card-custom table.table-custom.dataTable > tbody > tr > td {
+    padding: 1rem 1.25rem;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(11, 19, 15, 0.05);
+}
+
+.table-card-custom table.table-custom.dataTable > thead > tr > th {
+    background-color: #F8FAF9;
+    border-bottom: 1px solid rgba(11, 19, 15, 0.08);
+}
+
+.table-card-custom table.table-custom.dataTable > thead > tr > th:not(.sorting_disabled) {
+    padding-right: 2rem;
+}
+
+.table-card-custom table.table-custom.dataTable > tbody > tr:last-child > td {
+    border-bottom: none;
+}
+
+/* Footer: info + pagination */
+.table-footer-control.dt-footer {
+    display: flex;
+}
+
+.table-footer-control .dataTables_info {
+    padding: 0 !important;
+    font-size: 0.85rem;
+    color: var(--text-muted-green);
+}
+
+.table-footer-control .dataTables_paginate {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.table-footer-control .dataTables_paginate ul.pagination {
+    margin: 0 !important;
+}
+
+/* Loading state: dim rows */
+.dt-body tbody {
+    transition: opacity 0.2s ease;
+}
+
+.dt-body.is-loading tbody {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+/* Processing box */
+.table-card-custom div.dataTables_wrapper div.dataTables_processing,
+.table-card-custom div.dataTables_wrapper div.dataTables_processing.card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    min-width: 140px;
+    margin: 0;
+    padding: 0.7rem 1.15rem;
+    transform: translate(-50%, -50%);
+    background-color: #FFFFFF;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+    z-index: 5;
+}
+
+.dt-processing-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+}
+
+.dt-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(7, 47, 31, 0.15);
+    border-top-color: var(--brand-forest-medium);
+    animation: dtSpin 0.7s linear infinite;
+}
+
+/* Hide DataTables' default blue dots, keep our own spinner */
+.table-card-custom div.dataTables_processing > div {
+    display: none !important;
+}
+
+@keyframes dtSpin {
+    to { transform: rotate(360deg); }
+}
+
 
 

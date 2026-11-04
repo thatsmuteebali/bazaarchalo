@@ -15,7 +15,7 @@
     <div class="row g-4 mb-4">
 
         <!-- Column 1: Basic controls -->
-        <form method="POST" action="{{ route('admin.profile.update') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('admin.profile.update') }}" enctype="multipart/form-data" id="profile-form">
             @csrf
             @method('PUT')
             <div class="card border-light shadow-sm p-4 h-100">
@@ -112,4 +112,11 @@
 @endsection
 
 @section('customjs')
+<script>
+    $(document).ready(function () {
+        $("#profile-form").on("submit", function () {
+            $('button[type="submit"]').prop('disabled', true);
+        });
+    });
+</script>
 @endsection

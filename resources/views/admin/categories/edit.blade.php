@@ -22,7 +22,7 @@
 
     <form method="POST"
         action="{{ route('admin.categories.update', array_merge(['category' => $category], array_filter(['search' => $search, 'page' => $page], fn($value) => $value !== null && $value !== ''))) }}"
-        enctype="multipart/form-data">
+        enctype="multipart/form-data" id="category-form">
         @csrf
         @method('PUT')
         <div class="card border-light shadow-sm p-4 h-100">
@@ -69,8 +69,8 @@
                     <label for="image" class="form-label-custom">Category Image</label>
                     @if ($category->image)
                         <div class="mb-2">
-                            <img class="image-preview" src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
-                                style="width: 96px; height: 72px; object-fit: cover;">
+                            <img class="image-preview" src="{{ asset('storage/' . $category->image) }}"
+                                alt="{{ $category->name }}" style="width: 96px; height: 72px; object-fit: cover;">
                         </div>
                     @endif
                     <input type="file" name="image" id="image" accept="image/*"
@@ -125,5 +125,13 @@
 
         categoryNameInput.addEventListener('input', updateCategorySlug);
         updateCategorySlug();
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $("#category-form").on("submit", function() {
+                $('button[type="submit"]').prop('disabled', true);
+            });
+        });
     </script>
 @endsection
