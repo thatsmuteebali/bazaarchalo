@@ -101,6 +101,9 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
                 Route::get('/{category}/edit', 'edit')->name('edit');
                 Route::put('/{category}', 'update')->name('update');
                 Route::delete('/{category}', 'destroy')->name('destroy');
+
+                Route::patch('/{category}/restore', 'restore')->withTrashed()->name('restore');
+                Route::delete('/{category}/force', 'forceDelete')->withTrashed()->name('force-delete');
             });
         });
 

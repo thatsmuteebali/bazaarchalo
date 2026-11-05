@@ -13,10 +13,15 @@ class CategoryController extends Controller
 {
     public function list(Request $request)
     {
-        $query = Category::query()->select(['id', 'name', 'image', 'status']);
-
         if ($request->ajax()) {
             $status = $request->input('status');
+
+            // deleted_at must be selected so $category->trashed() works
+            $query = Category::query()->select(['id', 'name', 'image', 'status', 'deleted_at']);
+
+            if ($status === 'trashed') {
+                $query->onlyTrashed();
+            }
 
             return DataTables::eloquent($query)
                 ->filter(function ($query) use ($status) {
@@ -47,6 +52,25 @@ class CategoryController extends Controller
                 })
                 ->addColumn('actions', function (Category $category) {
                     $name = e($category->name);
+
+                    // Trashed rows: Restore + Delete permanently
+                    if ($category->trashed()) {
+                        $restoreUrl = route('admin.categories.restore', $category);
+                        $forceUrl = route('admin.categories.force-delete', $category);
+
+                        return '<div class="d-flex justify-content-center gap-1">'
+                            . '<form method="POST" action="' . e($restoreUrl) . '">'
+                            . csrf_field() . method_field('PATCH')
+                            . '<button type="submit" class="table-btn-action restore" title="Restore category" aria-label="Restore '
+                            . $name . '"><i class="bi bi-arrow-counterclockwise"></i></button></form>'
+                            . '<form method="POST" action="' . e($forceUrl) . '">'
+                            . csrf_field() . method_field('DELETE')
+                            . '<button type="button" class="table-btn-action delete" title="Delete permanently" aria-label="Delete '
+                            . $name . ' permanently" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-confirm-delete'
+                            . ' data-item-name="' . $name . '" data-item-type="category">'
+                            . '<i class="bi bi-trash"></i></button></form></div>';
+                    }
+
                     $showUrl = route('admin.categories.show', $category);
                     $editUrl = route('admin.categories.edit', $category);
                     $deleteUrl = route('admin.categories.destroy', $category);
@@ -63,7 +87,7 @@ class CategoryController extends Controller
                         . ' data-item-name="' . $name . '" data-item-type="category">'
                         . '<i class="bi bi-trash"></i></button></form></div>';
                 })
-                ->addColumn('sort_id', fn (Category $category) => $category->id)
+                ->removeColumn('id', 'deleted_at')   // never send the real id to the browser
                 ->rawColumns(['image', 'status', 'actions'])
                 ->toJson();
         }
@@ -107,7 +131,6 @@ class CategoryController extends Controller
         ]);
     }
 
-
     public function edit(Request $request, Category $category)
     {
         return view('admin.categories.edit', [
@@ -149,16 +172,36 @@ class CategoryController extends Controller
             ->with('success', 'Category updated successfully');
     }
 
+    /** Soft delete: the image is kept so the category can be restored. */
     public function destroy(Request $request, Category $category)
     {
-        if ($category->image) {
-            Storage::disk('public')->delete($category->image);
-        }
         $category->delete();
 
         return redirect()
             ->route('admin.categories.list', $request->only('search', 'page'))
             ->with('success', 'Category deleted successfully');
+    }
+
+    public function restore(Category $category)
+    {
+        $category->restore();
+
+        return redirect()
+            ->route('admin.categories.list')
+            ->with('success', 'Category restored successfully');
+    }
+
+    /** Permanent delete: removes the row and its image. */
+    public function forceDelete(Category $category)
+    {
+        if ($category->image) {
+            Storage::disk('public')->delete($category->image);
+        }
+        $category->forceDelete();
+
+        return redirect()
+            ->route('admin.categories.list')
+            ->with('success', 'Category permanently deleted');
     }
 
     private function trimName(Request $request): void

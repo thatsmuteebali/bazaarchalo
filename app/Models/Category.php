@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasEncryptedRouteKey;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Category extends Model
 {
+    use HasEncryptedRouteKey, SoftDeletes;
+
     protected $fillable = [
         'name',
         'image',
@@ -34,7 +38,7 @@ class Category extends Model
                 ? $baseSlug
                 : substr($baseSlug, 0, 255 - strlen('-' . $suffix)) . '-' . $suffix;
 
-            $query = static::query()->where('slug', $candidate);
+            $query = static::withTrashed()->where('slug', $candidate);
             if ($this->exists) {
                 $query->where($this->getKeyName(), '!=', $this->getKey());
             }

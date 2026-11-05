@@ -32,6 +32,7 @@
                     <option value="">All statuses</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
+                    <option value="trashed">Trashed</option>
                 </select>
                 <select id="category-length" class="form-select-custom form-select-inline"
                     aria-label="Rows per page">
@@ -52,7 +53,6 @@
                     <th>Category</th>
                     <th>Status</th>
                     <th class="text-center">Actions</th>
-                    <th class="d-none">Sort</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -72,8 +72,6 @@
             const table = $table.DataTable({
                 processing: true,
                 serverSide: true,
-                // Only the table, processing box, info and pagination are drawn by DataTables.
-                // Search + page length are our own controls above.
                 dom: '<"dt-body"<"table-responsive"t>r><"table-footer-control dt-footer"ip>',
                 ajax: {
                     url: @json(route('admin.categories.list')),
@@ -82,21 +80,15 @@
                     }
                 },
                 columns: [
-                    { data: 'DT_RowIndex', name: 'id', orderable: false, searchable: false },
+                    // Sorts by the real id on the server; the id itself is never sent to the browser
+                    { data: 'DT_RowIndex', name: 'categories.id', orderable: true, searchable: false },
                     { data: 'image', name: 'image', orderable: false, searchable: false },
                     { data: 'name', name: 'categories.name' },
                     { data: 'status', name: 'categories.status' },
-                    { data: 'actions', name: 'actions', orderable: false, searchable: false },
-                    { data: 'sort_id', name: 'categories.id', visible: false, searchable: false }
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false }
                 ],
-                order: [[5, 'desc']],
+                order: [[0, 'desc']],   // newest first
                 pageLength: 10,
-                
-                initComplete: function () {
-                    const api = this.api();
-                    $search.val(api.search());
-                    $length.val(String(api.page.len()));
-                },
                 language: {
                     processing: '<span class="dt-processing-box"><span class="dt-spinner" aria-hidden="true"></span><span>Loading...</span></span>',
                     emptyTable: 'No categories have been added yet.',
@@ -113,7 +105,7 @@
                 $table.closest('.dt-body').toggleClass('is-loading', isProcessing);
             });
 
-            // Search (debounced while typing, instant on button/Enter)
+            // Search (debounced while typing, instant on Enter)
             function applySearch() {
                 const value = $search.val().trim();
                 if (table.search() !== value) {

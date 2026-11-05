@@ -3336,5 +3336,9 @@ span.flatpickr-weekday {
     to { transform: rotate(360deg); }
 }
 
-
+.table-btn-action.restore:hover {
+    background-color: var(--sys-green);
+    color: #FFFFFF;
+    border-color: var(--sys-green);
+}
 
