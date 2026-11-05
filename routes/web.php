@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\Dashboard;
+use App\Http\Controllers\Admin\ManagedUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
@@ -108,6 +109,19 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
             });
         });
 
+        Route::prefix('sellers')->name('sellers.')->controller(ManagedUserController::class)->group(function () {
+            Route::get('/', 'sellers')->name('index');
+            Route::get('/{userKey}/show', 'showSeller')->name('show');
+            Route::get('/{userKey}/edit', 'editSeller')->name('edit');
+            Route::put('/{userKey}', 'updateSeller')->name('update');
+        });
+
+        Route::prefix('customers')->name('customers.')->controller(ManagedUserController::class)->group(function () {
+            Route::get('/', 'customers')->name('index');
+            Route::get('/{userKey}/show', 'showCustomer')->name('show');
+            Route::get('/{userKey}/edit', 'editCustomer')->name('edit');
+            Route::put('/{userKey}', 'updateCustomer')->name('update');
+        });
     });
 });
 

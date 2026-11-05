@@ -23,12 +23,21 @@
                         <span>Categories</span>
                     </a>
                 </li>
-                {{-- <li class="sidebar-menu-item">
-                    <a href="dashboard.html" class="sidebar-menu-link" id="menu-overview" title="Overview">
-                        <i class="bi bi-cart-check-fill"></i>
-                        <span>Orders</span>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.customers.index') }}" class="sidebar-menu-link {{ request()->routeIs('admin.customers.*') ? 'active' : '' }}" id="menu-customers" title="Customers">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Customers</span>
                     </a>
-                </li> --}}
+                </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.sellers.index') }}" class="sidebar-menu-link {{ request()->routeIs('admin.sellers.*') ? 'active' : '' }}" id="menu-sellers" title="Sellers">
+                        <i class="bi bi-shop-window"></i>
+                        <span>Sellers</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>
