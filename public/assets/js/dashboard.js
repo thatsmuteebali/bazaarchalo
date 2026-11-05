@@ -486,6 +486,10 @@ $(document).ready(function () {
     $(".summernote").summernote({
         height: 200,
     });
+
+    $("#confirmDeleteButton").on("click", function() {
+        $(this).prop('disabled', true);
+    });
 });
 
 $(document).on("change", ".image", function (e) {
