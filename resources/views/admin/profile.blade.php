@@ -21,7 +21,32 @@
             <div class="card border-light shadow-sm p-4 h-100">
                 <!-- Text input -->
                 <div class="row">
-                    
+                    @if ($errors->any())
+                        <div class="alert alert-danger py-2 mt-3">
+                            <strong>There are errors with some fields. Please fix them and try again.</strong>
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li class="small">{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                    <div class="col-md-12 mb-3">
+                        <label for="image" class="form-label-custom">Profile Image</label>
+                        <div class="mb-2">
+                            <img src="{{ auth()->user()->image ? asset('storage/' . auth()->user()->image) : asset('assets/images/no_image.png') }}" alt="Current profile image" class="image-preview"
+                                style="width: 96px; height: 96px; object-fit: cover; border-radius: 50%;">
+                        </div>
+                        <input type="file" name="image" id="image" accept="image/*"
+                            class="form-control-custom image @error('image') is-invalid-custom @enderror">
+                        <small class="text-muted">Leave empty to keep the current image. Maximum file size: 4 MB.</small>
+                        @error('image')
+                            <div class="form-feedback-custom invalid-custom">
+                                <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
                     <div class="col-md-6 mb-3">
                         <label for="name" class="form-label-custom">Name</label>
                         <input type="text" name="name"
@@ -99,30 +124,13 @@
                         </div>
                     </div>
 
-                    <div class="col-md-12 mb-3">
-                        <label for="image" class="form-label-custom">Profile Image</label>
-                        @if (auth()->user()->image)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="Current profile image"
-                                    style="width: 96px; height: 96px; object-fit: cover; border-radius: 50%;">
-                            </div>
-                        @endif
-                        <input type="file" name="image" id="image" accept="image/*"
-                            class="form-control-custom @error('image') is-invalid-custom @enderror">
-                        <small class="text-muted">Leave empty to keep the current image. Maximum file size: 4 MB.</small>
-                        @error('image')
-                            <div class="form-feedback-custom invalid-custom">
-                                <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
-                            </div>
-                        @enderror
-                    </div>
                 </div>
 
 
 
                 <div class="d-flex flex-wrap gap-2 mb-4">
                     <button class="btn-custom btn-custom-primary" type="submit">Save</button>
-                    <a href="{{ route('admin.categories.list') }}" class="btn-custom btn-custom-light">Cancel</a>
+                    <a href="{{ route('admin.dashboard') }}" class="btn-custom btn-custom-light">Cancel</a>
                 </div>
             </div>
         </form>

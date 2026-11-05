@@ -14,6 +14,7 @@ use App\Http\Controllers\Seller\CollectionController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductController;
 use App\Http\Controllers\Seller\ProductStockController;
+use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -126,6 +127,11 @@ Route::group(['middleware' => ['SellerMiddleware']], function () {
     Route::prefix('seller')->name('seller.')->group(function () {
         Route::controller(\App\Http\Controllers\Seller\Dashboard::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
+        });
+
+        Route::controller(SellerController::class)->group(function () {
+            Route::get('/profile', 'profile')->name('profile');
+            Route::put('/profile', 'updateProfile')->name('profile.update');
         });
 
         Route::resource('shops', ShopController::class);

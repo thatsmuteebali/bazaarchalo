@@ -10,7 +10,7 @@
             <i class="bi bi-list"></i>
         </button>
 
-        <h1 class="page-title">Seller</h1>
+        {{-- <h1 class="page-title">Seller</h1> --}}
     </div>
 
     <!-- Mid navbar: search pill -->
@@ -77,15 +77,13 @@
         <div class="dropdown ms-2">
             <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false" id="profile-dropdown">
-                <img src="{{ asset('assets/images/avatar.png')}}" alt="Profile Image" class="navbar-profile-img">
+                <img src="{{ auth()->user()->image ? asset('storage/' . auth()->user()->image) : asset('assets/images/no_image.png') }}" alt="Profile Image" class="navbar-profile-img">
                 <span class="navbar-profile-name d-none d-md-inline">{{auth()->user()->name}}</span>
                 <i class="bi bi-chevron-down navbar-profile-caret"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-profile" aria-labelledby="profile-dropdown">
                 <li class="dropdown-header">Welcome !</li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> My Account</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-lock"></i> Lock Screen</a></li>
+                <li><a class="dropdown-item" href="{{ route('seller.profile') }}"><i class="bi bi-person"></i> My Profile</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
