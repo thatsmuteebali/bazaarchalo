@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CustomerProfileTest extends TestCase
@@ -16,6 +18,7 @@ class CustomerProfileTest extends TestCase
         $customer = User::factory()->create([
             'role' => 'customer',
             'username' => 'profile-customer',
+            'image' => 'profiles/customer.jpg',
         ]);
 
         $this->actingAs($customer)
@@ -27,6 +30,8 @@ class CustomerProfileTest extends TestCase
             ->assertSee('name="phone"', false)
             ->assertSee('name="password"', false)
             ->assertSee('name="password_confirmation"', false)
+            ->assertSee('name="image"', false)
+            ->assertSee('storage/profiles/customer.jpg', false)
             ->assertSee('profile-customer');
     }
 
@@ -94,5 +99,33 @@ class CustomerProfileTest extends TestCase
 
         $response->assertRedirect(route('customer.profile'));
         $this->assertTrue(Hash::check('new-password', $customer->fresh()->password));
+    }
+
+    public function test_customer_can_upload_and_replace_profile_image(): void
+    {
+        Storage::fake('public');
+        $previousImage = 'profiles/previous.jpg';
+        Storage::disk('public')->put($previousImage, 'old image');
+        $customer = User::factory()->create([
+            'role' => 'customer',
+            'username' => 'profile-image-customer',
+            'image' => $previousImage,
+        ]);
+
+        $response = $this->actingAs($customer)->put(route('customer.profile.update'), [
+            'name' => $customer->name,
+            'username' => $customer->username,
+            'email' => $customer->email,
+            'phone' => $customer->phone,
+            'password' => '',
+            'password_confirmation' => '',
+            'image' => UploadedFile::fake()->image('profile.jpg'),
+        ]);
+
+        $response->assertRedirect(route('customer.profile'));
+        $newImage = $customer->fresh()->image;
+        $this->assertNotSame($previousImage, $newImage);
+        Storage::disk('public')->assertExists($newImage);
+        Storage::disk('public')->assertMissing($previousImage);
     }
 }

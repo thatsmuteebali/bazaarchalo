@@ -1,10 +1,17 @@
 <div class="col-lg-4 col-xl-3">
     <div class="account-sidebar bg-light rounded p-4">
         <div class="text-center border-bottom pb-4 mb-3">
-            <div class="account-avatar rounded-circle bg-secondary mx-auto mb-3"><i class="fas fa-user text-white"></i>
+            <div class="account-avatar rounded-circle bg-secondary mx-auto mb-3"
+                style="width: 96px; height: 96px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                @if (auth()->user()->image)
+                    <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="{{ auth()->user()->name }}"
+                        class="rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                @else
+                    <i class="fas fa-user text-white"></i>
+                @endif
             </div>
-            <h4 class="mb-1">Sarah Johnson</h4>
-            <p class="account-email text-muted mb-0">sarah.johnson@example.com</p>
+            <h4 class="mb-1">{{ auth()->user()->name }}</h4>
+            <p class="account-email text-muted mb-0">{{ auth()->user()->email }}</p>
         </div>
         <div class="nav flex-column nav-pills account-tabs" id="account-tab" role="tablist" aria-orientation="vertical">
             <a class="nav-link text-start {{ request()->routeIs('customer.account') ? 'active' : '' }}"

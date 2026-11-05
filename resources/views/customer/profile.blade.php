@@ -29,7 +29,7 @@
                         @if (session('status'))
                             <div class="alert alert-success" role="status">{{ session('status') }}</div>
                         @endif
-                        <form method="POST" action="{{ route('customer.profile.update') }}">
+                        <form method="POST" action="{{ route('customer.profile.update') }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="row g-4">
@@ -62,6 +62,21 @@
                                     <input type="tel" id="profilePhone" name="phone" class="form-control"
                                         value="{{ old('phone', auth()->user()->phone) }}" />
                                     @error('phone')
+                                        <p class="text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="profileImage" class="form-label">Profile image</label>
+                                    @if (auth()->user()->image)
+                                        <div class="mb-2">
+                                            <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="Current profile image"
+                                                style="width: 96px; height: 96px; object-fit: cover; border-radius: 50%;">
+                                        </div>
+                                    @endif
+                                    <input type="file" id="profileImage" name="image" class="form-control"
+                                        accept="image/*" />
+                                    <small class="form-text text-muted">Leave empty to keep the current image. Maximum file size: 4 MB.</small>
+                                    @error('image')
                                         <p class="text-danger">{{ $message }}</p>
                                     @enderror
                                 </div>

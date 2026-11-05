@@ -9,6 +9,7 @@ use App\Exceptions\CartException;
 use App\Http\Requests\CheckoutRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
@@ -28,6 +29,7 @@ class CustomerController extends Controller
             'email' => ['nullable', 'email', 'max:255', Rule::unique('users')->ignore($request->user()->id)],
             'phone' => ['nullable', 'regex:/^03\d{9}$/', Rule::unique('users')->ignore($request->user()->id)],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'image' => ['nullable', 'image', 'max:4096'],
         ], [
             'phone.regex' => 'Enter a Pakistani mobile number in the format 03000000000.',
         ]);
@@ -36,7 +38,17 @@ class CustomerController extends Controller
             unset($validated['password']);
         }
 
-        $request->user()->update($validated);
+        $user = $request->user();
+        $oldImage = $user->image;
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('profiles', 'public');
+        }
+
+        $user->update($validated);
+
+        if ($request->hasFile('image') && $oldImage) {
+            Storage::disk('public')->delete($oldImage);
+        }
 
         return redirect()->route('customer.profile')->with('status', 'Your profile has been updated.');
     }
