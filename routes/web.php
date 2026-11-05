@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Admin\ManagedUserController;
+use App\Http\Controllers\Admin\ShopController as AdminShopController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
@@ -121,6 +122,13 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
             Route::get('/{userKey}/show', 'showCustomer')->name('show');
             Route::get('/{userKey}/edit', 'editCustomer')->name('edit');
             Route::put('/{userKey}', 'updateCustomer')->name('update');
+        });
+
+        Route::prefix('shops')->name('shops.')->controller(AdminShopController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{shop}/show', 'show')->name('show');
+            Route::get('/{shop}/edit', 'edit')->name('edit');
+            Route::put('/{shop}', 'update')->name('update');
         });
     });
 });

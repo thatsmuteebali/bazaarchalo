@@ -38,6 +38,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.shops.index') }}" class="sidebar-menu-link {{ request()->routeIs('admin.shops.*') ? 'active' : '' }}" id="menu-shops" title="Shops">
+                        <i class="bi bi-shop-window"></i>
+                        <span>Shops</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>
