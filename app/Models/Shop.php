@@ -14,6 +14,8 @@ class Shop extends Model
         'address',
         'status',
         'is_primary',
+        'slug',
+        'is_feature_shop',
     ];
 
     public function seller()

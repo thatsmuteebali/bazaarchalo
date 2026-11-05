@@ -27,6 +27,16 @@
         @method('PUT')
         <div class="card border-light shadow-sm p-4 h-100">
             <div class="row">
+                @if ($errors->any())
+                    <div class="alert alert-danger py-2 mt-3">
+                        <strong>There are errors with some fields. Please fix them and try again.</strong>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li class="small">{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <div class="col-md-6 mb-3">
                     <label for="name" class="form-label-custom">Category Name</label>

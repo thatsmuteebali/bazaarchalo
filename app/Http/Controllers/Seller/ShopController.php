@@ -32,7 +32,14 @@ class ShopController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate($this->rules());
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:5000'],
+            'banner' => ['required', 'image', 'max:4096'],
+            'address' => ['required', 'string', 'max:5000'],
+            'is_primary' => ['nullable', 'boolean'],
+            'slug' => ['required', 'string', 'unique:shops,slug'],
+        ]);
 
         if ($request->hasFile('banner')) {
             $validated['banner'] = $request->file('banner')->store('shops', 'public');
@@ -60,7 +67,14 @@ class ShopController extends Controller
     public function update(Request $request, Shop $shop)
     {
         $this->ensureOwnership($shop);
-        $validated = $request->validate($this->rules());
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:5000'],
+            'banner' => ['nullable', 'image', 'max:4096'],
+            'address' => ['nullable', 'string', 'max:5000'],
+            'is_primary' => ['nullable', 'boolean'],
+            'slug' => ['required', 'string', 'unique:shops,slug' . $shop->id],
+        ]);
 
         if ($request->hasFile('banner')) {
             if ($shop->banner) {
@@ -85,18 +99,6 @@ class ShopController extends Controller
         return redirect()
             ->route('seller.shops.index', $request->only('search', 'status', 'page'))
             ->with('success', 'Shop deleted successfully.');
-    }
-
-    private function rules(): array
-    {
-        return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:5000'],
-            'banner' => ['nullable', 'image', 'max:4096'],
-            'address' => ['nullable', 'string', 'max:5000'],
-            'status' => ['required', Rule::in(['active', 'inactive'])],
-            'is_primary' => ['nullable', 'boolean'],
-        ];
     }
 
     private function ensureOwnership(Shop $shop): void
