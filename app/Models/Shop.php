@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasEncryptedRouteKey;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Shop extends Model
 {
+    use HasEncryptedRouteKey, SoftDeletes;
+
     protected $fillable = [
         'seller_id',
         'name',
@@ -30,9 +34,10 @@ class Shop extends Model
 
     public function getBannerUrlAttribute(): string
     {
-        if($this->banner){
-            return asset('storage/' . ltrim($this->banner, '/'));
+        if ($this->banner) {
+            return asset('storage/'.ltrim($this->banner, '/'));
         }
+
         return asset('img/baner-1.png');
     }
 }

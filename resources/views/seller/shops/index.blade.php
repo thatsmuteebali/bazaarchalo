@@ -1,5 +1,9 @@
 @extends('layouts.seller')
 
+@section('customCss')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+@endsection
+
 @section('content')
     <div class="page-header">
         <div>
@@ -14,96 +18,115 @@
 
     <div class="table-card-custom">
         <div class="table-header-control">
-            <form method="GET" action="{{ route('seller.shops.index') }}" class="table-search-box search-form">
+            <form id="shop-search-form" class="table-search-box search-form" role="search" autocomplete="off">
                 <i class="bi bi-search table-search-icon" aria-hidden="true"></i>
-                <input type="search" name="search" class="table-search-input" value="{{ $search }}"
+                <input type="search" id="shop-search" class="table-search-input"
                     placeholder="Search shops..." aria-label="Search shops">
-                @if ($search !== '')
-                    <a href="{{ route('seller.shops.index') }}" class="table-btn-action" title="Clear search" aria-label="Clear search">
-                        <i class="bi bi-x-lg"></i>
-                    </a>
-                @endif
-                <button type="submit" class="btn-quick-action">
-                    <i class="bi bi-search" aria-hidden="true"></i>
-                    <span>Search</span>
-                </button>
             </form>
+
+            <div class="table-filter-group">
+                <select id="shop-status-filter" class="form-select-custom form-select-inline"
+                    aria-label="Filter shops by status">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="trashed">Trashed</option>
+                </select>
+                <select id="shop-length" class="form-select-custom form-select-inline" aria-label="Rows per page">
+                    <option value="10">10 / page</option>
+                    <option value="25">25 / page</option>
+                    <option value="50">50 / page</option>
+                    <option value="100">100 / page</option>
+                </select>
+            </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table-custom">
-                <thead>
-                    <tr>
-                        <th>Sr</th>
-                        <th>Shop</th>
-                        <th>Address</th>
-                        <th>Status</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($shops as $shop)
-                        <tr>
-                            <td>{{ $shops->firstItem() + $loop->index }}</td>
-                            <td>
-                                <div class="table-user-cell">
-                                    @if ($shop->banner)
-                                    <img src="{{ asset('storage/' . $shop->banner) }}" alt="{{ $shop->name }}" class="table-user-avatar"
-                                        onerror="this.src='{{ asset('assets/images/no_image.png') }}'">
-                                    @else
-                                        <span class="d-inline-flex align-items-center justify-content-center bg-light text-muted"
-                                            style="width: 56px; height: 44px;">
-                                            <i class="bi bi-shop" aria-hidden="true"></i>
-                                        </span>
-                                    @endif
-                                    <div>
-                                        <div class="table-user-name">{{ $shop->name }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>{{ $shop->address ?: '—' }}</td>
-                            @php
-                                $status_label = match ($shop->status) {
-                                    'active' => 'success',
-                                    'inactive' => 'failed',
-                                    default => 'pending',
-                                };
-                            @endphp
-                            <td><span class="badge-table {{ $status_label }}">{{ucfirst($shop->status)}}</span></td>
-                            <td>
-                                <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ route('seller.shops.show', $shop) }}" class="table-btn-action" title="View shop" aria-label="View {{ $shop->name }}">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="{{ route('seller.shops.edit', $shop) }}" class="table-btn-action" title="Edit shop" aria-label="Edit {{ $shop->name }}">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form method="POST" action="{{ route('seller.shops.destroy', ['shop' => $shop, 'search' => $search, 'status' => $status, 'page' => $shops->currentPage()]) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="table-btn-action delete" title="Delete shop" aria-label="Delete {{ $shop->name }}"
-                                            data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-confirm-delete
-                                            data-item-name="{{ $shop->name }}" data-item-type="shop">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">
-                                {{ $search !== '' || $status !== '' ? 'No shops match these filters.' : 'You have not added any shops yet.' }}
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <div class="table-footer-control">
-            {{ $shops->links() }}
-        </div>
+        <table id="shop-table" class="table-custom w-100">
+            <thead>
+                <tr>
+                    <th>Sr</th>
+                    <th>Image</th>
+                    <th>Shop</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
+@endsection
 
+@section('customjs')
+    <script>
+        $(function () {
+            const $table = $('#shop-table');
+            const $search = $('#shop-search');
+            const $status = $('#shop-status-filter');
+            const $length = $('#shop-length');
+            let searchTimer = null;
+
+            const table = $table.DataTable({
+                processing: true,
+                serverSide: true,
+                dom: '<"dt-body"<"table-responsive"t>r><"table-footer-control dt-footer"ip>',
+                ajax: {
+                    url: @json(route('seller.shops.index')),
+                    data: function (request) {
+                        request.status = $status.val();
+                    }
+                },
+                columns: [
+                    { data: 'DT_RowIndex', name: 'shops.id', orderable: true, searchable: false },
+                    { data: 'banner', name: 'banner', orderable: false, searchable: false },
+                    { data: 'name', name: 'shops.name' },
+                    { data: 'address', name: 'shops.address' },
+                    { data: 'status', name: 'shops.status' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false }
+                ],
+                order: [[0, 'desc']],
+                pageLength: 10,
+                language: {
+                    processing: '<span class="dt-processing-box"><span class="dt-spinner" aria-hidden="true"></span><span>Loading...</span></span>',
+                    emptyTable: 'You have not added any shops yet.',
+                    zeroRecords: 'No shops match your search or filters.',
+                    info: 'Showing _START_ to _END_ of _TOTAL_ results',
+                    infoEmpty: 'Showing 0 results',
+                    infoFiltered: '',
+                    paginate: { previous: '&lsaquo;', next: '&rsaquo;' }
+                }
+            });
+
+            $table.on('processing.dt', function (e, settings, isProcessing) {
+                $table.closest('.dt-body').toggleClass('is-loading', isProcessing);
+            });
+
+            function applySearch() {
+                const value = $search.val().trim();
+                if (table.search() !== value) {
+                    table.search(value).draw();
+                }
+            }
+
+            $search.on('input', function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(applySearch, 400);
+            });
+
+            $('#shop-search-form').on('submit', function (event) {
+                event.preventDefault();
+                clearTimeout(searchTimer);
+                applySearch();
+            });
+
+            $status.on('change', function () {
+                table.draw();
+            });
+
+            $length.on('change', function () {
+                table.page.len(parseInt(this.value, 10)).draw();
+            });
+        });
+    </script>
 @endsection

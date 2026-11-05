@@ -79,23 +79,6 @@
 
 @section('customjs')
     <script>
-        const categoryNameInput = document.getElementById('name');
-        const categorySlugInput = document.getElementById('slug');
-
-        function updateCategorySlug() {
-            categorySlugInput.value = categoryNameInput.value
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-|-$/g, '')
-                .slice(0, 255);
-        }
-
-        categoryNameInput.addEventListener('input', updateCategorySlug);
-    </script>
-
-    <script>
         $(document).ready(function() {
             $("#shop-form").on("submit", function() {
                 $('button[type="submit"]').prop('disabled', true);

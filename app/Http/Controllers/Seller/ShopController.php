@@ -7,22 +7,90 @@ use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Yajra\DataTables\Facades\DataTables;
 
 class ShopController extends Controller
 {
     public function index(Request $request)
     {
-        $search = trim((string) $request->query('search', ''));
-        $status = $request->query('status', '');
+        if ($request->ajax()) {
+            $status = $request->input('status');
+            $query = auth()->user()->shops()
+                ->select(['id', 'name', 'banner', 'address', 'status', 'deleted_at']);
 
-        $shops = auth()->user()->shops()
-            ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%"))
-            ->when(in_array($status, ['active', 'inactive'], true), fn ($query) => $query->where('status', $status))
-            ->orderByDesc('id')
-            ->paginate(10)
-            ->withQueryString();
+            if ($status === 'trashed') {
+                $query->onlyTrashed();
+            }
 
-        return view('seller.shops.index', compact('shops', 'search', 'status'));
+            return DataTables::eloquent($query)
+                ->filter(function ($query) use ($status) {
+                    if (in_array($status, ['pending', 'active', 'inactive'], true)) {
+                        $query->where('status', $status);
+                    }
+                }, true)
+                ->addIndexColumn()
+                ->editColumn('banner', function (Shop $shop) {
+                    $imageUrl = $shop->banner
+                        ? asset('storage/'.$shop->banner)
+                        : asset('assets/images/no_image.png');
+                    $name = e($shop->name);
+
+                    return '<div class="table-user-cell"><img src="'.e($imageUrl).'" alt="'.$name
+                        .'" class="table-user-avatar" onerror="this.src=\''
+                        .e(asset('assets/images/no_image.png')).'\'"></div>';
+                })
+                ->editColumn('status', function (Shop $shop) {
+                    $statusLabel = match ($shop->status) {
+                        'active' => 'success',
+                        'inactive' => 'failed',
+                        default => 'pending',
+                    };
+
+                    return '<span class="badge-table '.$statusLabel.'">'
+                        .e(ucfirst($shop->status)).'</span>';
+                })
+                ->addColumn('actions', function (Shop $shop) {
+                    $name = e($shop->name);
+
+                    if ($shop->trashed()) {
+                        $restoreUrl = route('seller.shops.restore', $shop);
+                        $forceUrl = route('seller.shops.force-delete', $shop);
+
+                        return '<div class="d-flex justify-content-center gap-1">'
+                            .'<form method="POST" action="'.e($restoreUrl).'">'
+                            .csrf_field().method_field('PATCH')
+                            .'<button type="submit" class="table-btn-action restore" title="Restore shop" aria-label="Restore '
+                            .$name.'"><i class="bi bi-arrow-counterclockwise"></i></button></form>'
+                            .'<form method="POST" action="'.e($forceUrl).'">'
+                            .csrf_field().method_field('DELETE')
+                            .'<button type="button" class="table-btn-action delete" title="Delete permanently" aria-label="Delete '
+                            .$name.' permanently" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-confirm-delete'
+                            .' data-item-name="'.$name.'" data-item-type="shop">'
+                            .'<i class="bi bi-trash"></i></button></form></div>';
+                    }
+
+                    $showUrl = route('seller.shops.show', $shop);
+                    $editUrl = route('seller.shops.edit', $shop);
+                    $deleteUrl = route('seller.shops.destroy', $shop);
+
+                    return '<div class="d-flex justify-content-center gap-1">'
+                        .'<a href="'.e($showUrl).'" class="table-btn-action" title="View shop" aria-label="View '
+                        .$name.'"><i class="bi bi-eye"></i></a>'
+                        .'<a href="'.e($editUrl).'" class="table-btn-action" title="Edit shop" aria-label="Edit '
+                        .$name.'"><i class="bi bi-pencil"></i></a>'
+                        .'<form method="POST" action="'.e($deleteUrl).'">'
+                        .csrf_field().method_field('DELETE')
+                        .'<button type="button" class="table-btn-action delete" title="Delete shop" aria-label="Delete '
+                        .$name.'" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-confirm-delete'
+                        .' data-item-name="'.$name.'" data-item-type="shop">'
+                        .'<i class="bi bi-trash"></i></button></form></div>';
+                })
+                ->removeColumn('id', 'deleted_at')
+                ->rawColumns(['banner', 'status', 'actions'])
+                ->toJson();
+        }
+
+        return view('seller.shops.index');
     }
 
     public function create()
@@ -73,7 +141,7 @@ class ShopController extends Controller
             'banner' => ['nullable', 'image', 'max:4096'],
             'address' => ['nullable', 'string', 'max:5000'],
             'is_primary' => ['nullable', 'boolean'],
-            'slug' => ['required', 'string', 'unique:shops,slug' . $shop->id],
+            'slug' => ['required', 'string', Rule::unique('shops', 'slug')->ignore($shop->id)],
         ]);
 
         if ($request->hasFile('banner')) {
@@ -91,14 +159,36 @@ class ShopController extends Controller
     public function destroy(Request $request, Shop $shop)
     {
         $this->ensureOwnership($shop);
-        if ($shop->banner) {
-            Storage::disk('public')->delete($shop->banner);
-        }
         $shop->delete();
 
         return redirect()
             ->route('seller.shops.index', $request->only('search', 'status', 'page'))
             ->with('success', 'Shop deleted successfully.');
+    }
+
+    public function restore(Shop $shop)
+    {
+        $this->ensureOwnership($shop);
+        $shop->restore();
+
+        return redirect()
+            ->route('seller.shops.index')
+            ->with('success', 'Shop restored successfully.');
+    }
+
+    public function forceDelete(Shop $shop)
+    {
+        $this->ensureOwnership($shop);
+        $banner = $shop->banner;
+        $shop->forceDelete();
+
+        if ($banner) {
+            Storage::disk('public')->delete($banner);
+        }
+
+        return redirect()
+            ->route('seller.shops.index')
+            ->with('success', 'Shop permanently deleted.');
     }
 
     private function ensureOwnership(Shop $shop): void

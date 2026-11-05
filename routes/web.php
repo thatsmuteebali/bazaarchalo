@@ -135,6 +135,10 @@ Route::group(['middleware' => ['SellerMiddleware']], function () {
         });
 
         Route::resource('shops', ShopController::class);
+        Route::patch('shops/{shop}/restore', [ShopController::class, 'restore'])
+            ->withTrashed()->name('shops.restore');
+        Route::delete('shops/{shop}/force', [ShopController::class, 'forceDelete'])
+            ->withTrashed()->name('shops.force-delete');
         Route::resource('collections', CollectionController::class);
         Route::resource('products', ProductController::class);
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
