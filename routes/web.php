@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CollectionController as AdminCollectionController;
 use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Admin\ManagedUserController;
 use App\Http\Controllers\Admin\ShopController as AdminShopController;
@@ -130,6 +131,13 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
             Route::get('/{shop}/edit', 'edit')->name('edit');
             Route::put('/{shop}', 'update')->name('update');
         });
+
+        Route::prefix('collections')->name('collections.')->controller(AdminCollectionController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{collection}/show', 'show')->name('show');
+            Route::get('/{collection}/edit', 'edit')->name('edit');
+            Route::put('/{collection}', 'update')->name('update');
+        });
     });
 });
 
@@ -162,6 +170,10 @@ Route::group(['middleware' => ['SellerMiddleware']], function () {
         Route::delete('shops/{shop}/force', [ShopController::class, 'forceDelete'])
             ->withTrashed()->name('shops.force-delete');
         Route::resource('collections', CollectionController::class);
+        Route::patch('collections/{collection}/restore', [CollectionController::class, 'restore'])
+            ->withTrashed()->name('collections.restore');
+        Route::delete('collections/{collection}/force', [CollectionController::class, 'forceDelete'])
+            ->withTrashed()->name('collections.force-delete');
         Route::resource('products', ProductController::class);
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->whereNumber('order')->name('orders.show');

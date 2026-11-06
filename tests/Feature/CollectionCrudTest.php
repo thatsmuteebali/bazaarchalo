@@ -31,19 +31,29 @@ class CollectionCrudTest extends TestCase
         $this->post(route('seller.collections.store'), [
             'name' => 'Autumn Picks',
             'description' => 'Seasonal favorites.',
-            'start_date' => '2026-10-01',
-            'end_date' => '2026-10-31',
+            'slug' => 'autumn-picks',
+            'status' => 'active',
+            'is_featured' => '1',
             'image' => UploadedFile::fake()->image('collection.jpg'),
         ])->assertRedirect(route('seller.collections.index'));
 
         $collection = Collection::where('name', 'Autumn Picks')->firstOrFail();
         $this->assertSame(auth()->id(), $collection->seller_id);
+        $this->assertSame('pending', $collection->status);
+        $this->assertFalse($collection->is_featured);
         $originalImage = $collection->image;
         Storage::disk('public')->assertExists($originalImage);
 
-        $this->get(route('seller.collections.index', ['search' => 'Autumn']))
+        $this->get(route('seller.collections.index'))->assertOk()->assertSee('collection-table');
+        $this->get(route('seller.collections.index', [
+            'draw' => 1,
+            'start' => 0,
+            'length' => 10,
+        ]), ['X-Requested-With' => 'XMLHttpRequest'])
             ->assertOk()
-            ->assertSee('Autumn Picks');
+            ->assertJsonPath('recordsTotal', 1)
+            ->assertJsonPath('data.0.name', 'Autumn Picks')
+            ->assertJsonPath('data.0.status', '<span class="badge-table pending">Pending</span>');
 
         $this->get(route('seller.collections.show', $collection))
             ->assertOk()
@@ -60,19 +70,21 @@ class CollectionCrudTest extends TestCase
         ]), [
             'name' => 'Autumn Favorites',
             'description' => 'Updated seasonal favorites.',
-            'start_date' => '2026-10-02',
-            'end_date' => '2026-11-01',
+            'slug' => 'autumn-favorites',
+            'status' => 'active',
+            'is_featured' => '1',
             'image' => UploadedFile::fake()->image('replacement.jpg'),
         ])->assertRedirect(route('seller.collections.index', ['search' => 'Autumn', 'page' => 2]));
 
         $collection->refresh();
         Storage::disk('public')->assertMissing($originalImage);
         Storage::disk('public')->assertExists($collection->image);
-        $this->assertSame('2026-10-02', $collection->start_date->format('Y-m-d'));
-        $this->assertSame('2026-11-01', $collection->end_date->format('Y-m-d'));
         $this->assertDatabaseHas('collections', [
             'id' => $collection->id,
             'name' => 'Autumn Favorites',
+            'slug' => 'autumn-favorites',
+            'status' => 'pending',
+            'is_featured' => false,
         ]);
 
         $this->delete(route('seller.collections.destroy', [
@@ -81,22 +93,40 @@ class CollectionCrudTest extends TestCase
             'page' => 2,
         ]))->assertRedirect(route('seller.collections.index', ['search' => 'Autumn', 'page' => 2]));
 
+        Storage::disk('public')->assertExists($collection->image);
+        $this->assertSoftDeleted('collections', ['id' => $collection->id]);
+        $this->get(route('seller.collections.show', $collection))->assertNotFound();
+
+        $this->patch(route('seller.collections.restore', $collection))
+            ->assertRedirect(route('seller.collections.index'));
+        $this->assertDatabaseHas('collections', ['id' => $collection->id, 'deleted_at' => null]);
+
+        $this->delete(route('seller.collections.destroy', $collection))
+            ->assertRedirect(route('seller.collections.index'));
+        $this->delete(route('seller.collections.force-delete', $collection))
+            ->assertRedirect(route('seller.collections.index'));
         Storage::disk('public')->assertMissing($collection->image);
         $this->assertDatabaseMissing('collections', ['id' => $collection->id]);
     }
 
-    public function test_collection_end_date_cannot_be_before_start_date(): void
+    public function test_collection_slug_must_be_unique(): void
     {
+        Storage::fake('public');
+        auth()->user()->collections()->create([
+            'name' => 'Existing Collection',
+            'slug' => 'existing-collection',
+        ]);
+
         $this->from(route('seller.collections.create'))
             ->post(route('seller.collections.store'), [
-                'name' => 'Invalid Date Range',
-                'start_date' => '2026-10-10',
-                'end_date' => '2026-10-09',
+                'name' => 'Duplicate Collection',
+                'slug' => 'existing-collection',
+                'image' => UploadedFile::fake()->image('collection.jpg'),
             ])
             ->assertRedirect(route('seller.collections.create'))
-            ->assertSessionHasErrors('end_date');
+            ->assertSessionHasErrors('slug');
 
-        $this->assertDatabaseMissing('collections', ['name' => 'Invalid Date Range']);
+        $this->assertDatabaseMissing('collections', ['name' => 'Duplicate Collection']);
     }
 
     public function test_seller_cannot_access_another_sellers_collection(): void
@@ -110,7 +140,71 @@ class CollectionCrudTest extends TestCase
             'name' => 'Changed Collection',
         ])->assertNotFound();
         $this->delete(route('seller.collections.destroy', $collection))->assertNotFound();
+        $this->patch(route('seller.collections.restore', $collection))->assertNotFound();
+        $this->delete(route('seller.collections.force-delete', $collection))->assertNotFound();
 
         $this->assertDatabaseHas('collections', ['id' => $collection->id, 'name' => 'Private Collection']);
+    }
+
+    public function test_collection_routes_and_datatable_do_not_expose_database_ids(): void
+    {
+        $collection = auth()->user()->collections()->create([
+            'name' => 'Encrypted Route Collection',
+            'slug' => 'encrypted-route-collection',
+            'status' => 'active',
+        ]);
+        $showUrl = route('seller.collections.show', $collection);
+
+        $this->assertStringNotContainsString('/'.$collection->id, $showUrl);
+        $this->get($showUrl)->assertOk()->assertSee('Encrypted Route Collection');
+        $this->get('/seller/collections/not-a-valid-encrypted-id')->assertNotFound();
+
+        $response = $this->get(route('seller.collections.index', [
+            'draw' => 1,
+            'start' => 0,
+            'length' => 10,
+        ]), ['X-Requested-With' => 'XMLHttpRequest'])->assertOk();
+
+        $this->assertArrayNotHasKey('id', $response->json('data.0'));
+        preg_match('#/seller/collections/([^/"]+)#', $response->json('data.0.actions'), $routeMatch);
+        $this->assertNotEmpty($routeMatch[1] ?? null);
+        $this->assertNotSame((string) $collection->id, $routeMatch[1]);
+    }
+
+    public function test_collection_table_filters_trashed_collections(): void
+    {
+        $seller = auth()->user();
+        $activeCollection = $seller->collections()->create([
+            'name' => 'Active Collection',
+            'slug' => 'active-collection',
+            'status' => 'active',
+        ]);
+        $trashedCollection = $seller->collections()->create([
+            'name' => 'Trashed Collection',
+            'slug' => 'trashed-collection',
+            'status' => 'active',
+        ]);
+        $trashedCollection->delete();
+
+        $request = [
+            'draw' => 1,
+            'start' => 0,
+            'length' => 10,
+        ];
+
+        $activeResponse = $this->get(route('seller.collections.index', $request), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->assertOk();
+        $activeResponse->assertJsonPath('recordsTotal', 1)
+            ->assertJsonPath('data.0.name', $activeCollection->name);
+
+        $trashedResponse = $this->get(route('seller.collections.index', $request + ['status' => 'trashed']), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ])->assertOk();
+        $trashedResponse->assertJsonPath('recordsTotal', 1)
+            ->assertJsonPath('data.0.name', $trashedCollection->name);
+        preg_match('#/seller/collections/([^/]+)/restore#', $trashedResponse->json('data.0.actions'), $routeMatch);
+        $this->assertNotEmpty($routeMatch[1] ?? null);
+        $this->assertNotSame((string) $trashedCollection->id, $routeMatch[1]);
     }
 }

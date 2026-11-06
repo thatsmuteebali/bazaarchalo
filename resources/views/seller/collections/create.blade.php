@@ -9,18 +9,16 @@
         <a href="{{ route('seller.collections.index') }}" class="btn-custom btn-custom-light">Back to Collections</a>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-12">
-            <form method="POST" action="{{ route('seller.collections.store') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="card border-light shadow-sm p-4">
+        <form method="POST" action="{{ route('seller.collections.store') }}" enctype="multipart/form-data" id="collection-form">
+            @csrf
+            <div class="card border-light shadow-sm p-4">
+                <div class="row">
                     @include('seller.collections._form')
                     <div class="d-flex flex-wrap gap-2">
                         <button class="btn-custom btn-custom-primary" type="submit">Create Collection</button>
                         <a href="{{ route('seller.collections.index') }}" class="btn-custom btn-custom-light">Cancel</a>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
+            </div>
+        </form>
 @endsection

@@ -59,6 +59,15 @@
                     </a>
                 </li>
 
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.collections.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.collections.*') ? 'active' : '' }}"
+                        id="menu-collections" title="Collections">
+                        <i class="bi bi-collection"></i>
+                        <span>Collections</span>
+                    </a>
+                </li>
+
                 {{-- <li class="sidebar-menu-item">
                     <a href="#menu-catalog" data-bs-toggle="collapse" role="button"
                         class="sidebar-menu-link {{ $catalogActive ? 'active' : '' }}"
