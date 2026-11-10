@@ -31,7 +31,6 @@
                     <option value="pending">Pending</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
-                    <option value="draft">Draft</option>
                     <option value="trashed">Trashed</option>
                 </select>
                 <select id="product-length" class="form-select-custom form-select-inline" aria-label="Rows per page">

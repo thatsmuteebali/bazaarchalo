@@ -132,6 +132,7 @@
         // Don't submit empty file inputs
         form.addEventListener('submit', () => {
             grid.querySelectorAll('.image-tile:not(.filled) input').forEach(i => i.disabled = true);
+            $('button[type="submit"]').prop('disabled', true);
         });
 
         refreshCover();
