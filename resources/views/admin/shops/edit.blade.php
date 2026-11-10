@@ -22,10 +22,7 @@
                     <label class="form-label-custom">Seller</label>
                     <input type="text" class="form-control-custom" value="{{ $shop->seller?->name ?: 'N/A' }}" readonly>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label-custom">Seller Email</label>
-                    <input type="text" class="form-control-custom" value="{{ $shop->seller?->email ?: 'N/A' }}" readonly>
-                </div>
+
                 <div class="col-md-6 mb-3">
                     <label class="form-label-custom">Slug</label>
                     <input type="text" class="form-control-custom" value="{{ $shop->slug ?: 'N/A' }}" readonly>
@@ -81,16 +78,7 @@
                     <label class="form-label-custom">Primary Shop</label>
                     <input type="text" class="form-control-custom" value="{{ $shop->is_primary ? 'Yes' : 'No' }}" readonly>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label-custom">Created</label>
-                    <input type="text" class="form-control-custom"
-                        value="{{ $shop->created_at?->format('M d, Y H:i') ?: 'N/A' }}" readonly>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label-custom">Last Updated</label>
-                    <input type="text" class="form-control-custom"
-                        value="{{ $shop->updated_at?->format('M d, Y H:i') ?: 'N/A' }}" readonly>
-                </div>
+                
             </div>
             <div class="d-flex flex-wrap gap-2">
                 <button class="btn-custom btn-custom-primary" type="submit">Update Shop Settings</button>

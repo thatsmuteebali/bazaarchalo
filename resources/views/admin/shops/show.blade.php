@@ -25,8 +25,6 @@
             <dd class="col-sm-9 mb-2">{{ $shop->name ?: 'N/A' }}</dd>
             <dt class="col-sm-3 mb-2">Seller</dt>
             <dd class="col-sm-9 mb-2">{{ $shop->seller?->name ?: 'N/A' }}</dd>
-            <dt class="col-sm-3 mb-2">Seller Email</dt>
-            <dd class="col-sm-9 mb-2">{{ $shop->seller?->email ?: 'N/A' }}</dd>
             <dt class="col-sm-3 mb-2">Slug</dt>
             <dd class="col-sm-9 mb-2">{{ $shop->slug ?: 'N/A' }}</dd>
             <dt class="col-sm-3 mb-2">Address</dt>
@@ -48,8 +46,7 @@
             <dd class="col-sm-9 mb-2">{{ $shop->is_primary ? 'Yes' : 'No' }}</dd>
             <dt class="col-sm-3 mb-2">Featured Shop</dt>
             <dd class="col-sm-9 mb-2">{{ $shop->is_feature_shop ? 'Yes' : 'No' }}</dd>
-            <dt class="col-sm-3 mb-2">Created</dt>
-            <dd class="col-sm-9 mb-2">{{ $shop->created_at?->format('M d, Y') ?: 'N/A' }}</dd>
+
         </dl>
     </div>
 @endsection

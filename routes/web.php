@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CollectionController as AdminCollectionController;
 use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Admin\ManagedUserController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ShopController as AdminShopController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CartController;
@@ -138,6 +139,13 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
             Route::get('/{collection}/edit', 'edit')->name('edit');
             Route::put('/{collection}', 'update')->name('update');
         });
+
+        Route::prefix('products')->name('products.')->controller(AdminProductController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{product}/show', 'show')->name('show');
+            Route::get('/{product}/edit', 'edit')->name('edit');
+            Route::put('/{product}', 'update')->name('update');
+        });
     });
 });
 
@@ -175,6 +183,10 @@ Route::group(['middleware' => ['SellerMiddleware']], function () {
         Route::delete('collections/{collection}/force', [CollectionController::class, 'forceDelete'])
             ->withTrashed()->name('collections.force-delete');
         Route::resource('products', ProductController::class);
+        Route::patch('products/{product}/restore', [ProductController::class, 'restore'])
+            ->withTrashed()->name('products.restore');
+        Route::delete('products/{product}/force', [ProductController::class, 'forceDelete'])
+            ->withTrashed()->name('products.force-delete');
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->whereNumber('order')->name('orders.show');
         Route::patch('order-items/{orderItem}/decision', [OrderController::class, 'decide'])

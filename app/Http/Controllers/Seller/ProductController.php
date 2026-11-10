@@ -15,6 +15,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
 {
@@ -23,38 +24,133 @@ class ProductController extends Controller
         'category_id',
         'collection_id',
         'name',
+        'slug',
         'short_description',
         'description',
         'price',
         'compare_price',
-        'status',
     ];
 
     /* ------------------------------------------------------------------ */
-    /*  LIST                                                              */
+    /*  LIST */
     /* ------------------------------------------------------------------ */
     public function index(Request $request)
     {
-        $search = trim((string) $request->query('q', ''));
-        $status = (string) $request->query('status', '');
-        $perPage = in_array((int) $request->query('per_page'), [10, 20, 50], true) ? (int) $request->query('per_page') : 10;
+        if ($request->ajax()) {
+            $status = $request->input('status');
+            $query = Product::query()
+                ->where('products.seller_id', auth()->id())
+                ->with(['shop:id,name', 'collection:id,name', 'category:id,name', 'coverImage'])
+                ->withCount('variants')
+                ->withMin('variants', 'price')
+                ->select([
+                    'products.id',
+                    'products.name',
+                    'products.slug',
+                    'products.shop_id',
+                    'products.collection_id',
+                    'products.category_id',
+                    'products.price',
+                    'products.stock',
+                    'products.status',
+                    'products.has_variants',
+                    'products.is_featured',
+                    'products.deleted_at',
+                ]);
 
-        $products = Product::query()
-            ->where('seller_id', auth()->id())
-            ->with(['shop:id,name', 'category:id,name', 'coverImage'])
-            ->withCount('variants')
-            ->withMin('variants', 'price') // -> $product->variants_min_price (no extra query per row)
-            ->when($search !== '', fn($q) => $q->where('name', 'like', "%{$search}%"))
-            ->when(in_array($status, ['active', 'draft', 'inactive'], true), fn($q) => $q->where('status', $status))
-            ->latest()
-            ->paginate($perPage)
-            ->withQueryString();
+            if ($status === 'trashed') {
+                $query->onlyTrashed();
+            }
 
-        return view('seller.products.index', compact('products'));
+            return DataTables::eloquent($query)
+                ->filter(function ($query) use ($status) {
+                    if (in_array($status, ['pending', 'active', 'inactive', 'draft'], true)) {
+                        $query->where('products.status', $status);
+                    }
+                }, true)
+                ->addIndexColumn()
+                ->addColumn('image', function (Product $product) {
+                    $imageUrl = $product->coverImage?->url ?: asset('assets/images/no_image.png');
+
+                    return '<div class="table-user-cell"><img src="'.e($imageUrl).'" alt="'.e($product->name)
+                        .'" class="table-user-avatar" onerror="this.src=\''
+                        .e(asset('assets/images/no_image.png')).'\'"></div>';
+                })
+                ->addColumn('shop_name', fn (Product $product) => $product->shop?->name ?: 'N/A')
+                ->addColumn('collection_name', fn (Product $product) => $product->collection?->name ?: 'N/A')
+                ->addColumn('category_name', fn (Product $product) => $product->category?->name ?: 'N/A')
+                ->editColumn('name', function (Product $product) {
+                    $name = e($product->name);
+                    $featured = $product->is_featured
+                        ? ' <i class="bi bi-star-fill text-warning" title="Featured"></i>'
+                        : '';
+                    $variants = $product->has_variants
+                        ? '<div class="table-user-sub">'.$product->variants()->count().' variants</div>'
+                        : '';
+
+                    return '<div class="table-user-name">'.$name.$featured.$variants.'</div>';
+                })
+                ->editColumn('price', function (Product $product) {
+                    $price = $product->has_variants ? $product->variants()->min('price') : $product->price;
+
+                    return $price === null ? 'N/A' : number_format((float) $price, 2);
+                })
+                ->orderColumn('price', 'CASE WHEN products.has_variants = 1 THEN (SELECT MIN(product_variants.price) FROM product_variants WHERE product_variants.product_id = products.id) ELSE products.price END $1')
+                ->editColumn('status', function (Product $product) {
+                    $statusClass = match ($product->status) {
+                        'active' => 'success',
+                        'inactive' => 'failed',
+                        default => 'pending',
+                    };
+
+                    return '<span class="badge-table '.$statusClass.'">'.e(ucfirst($product->status)).'</span>';
+                })
+                ->addColumn('actions', function (Product $product) {
+                    $name = e($product->name);
+
+                    if ($product->trashed()) {
+                        $restoreUrl = route('seller.products.restore', $product);
+                        $forceUrl = route('seller.products.force-delete', $product);
+
+                        return '<div class="d-flex justify-content-center gap-1">'
+                            .'<form method="POST" action="'.e($restoreUrl).'">'
+                            .csrf_field().method_field('PATCH')
+                            .'<button type="submit" class="table-btn-action restore" title="Restore product" aria-label="Restore '
+                            .$name.'"><i class="bi bi-arrow-counterclockwise"></i></button></form>'
+                            .'<form method="POST" action="'.e($forceUrl).'">'
+                            .csrf_field().method_field('DELETE')
+                            .'<button type="button" class="table-btn-action delete" title="Delete permanently" aria-label="Delete '
+                            .$name.' permanently" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-confirm-delete'
+                            .' data-item-name="'.$name.'" data-item-type="product">'
+                            .'<i class="bi bi-trash"></i></button></form></div>';
+                    }
+
+                    $showUrl = route('seller.products.show', $product);
+                    $editUrl = route('seller.products.edit', $product);
+                    $deleteUrl = route('seller.products.destroy', $product);
+
+                    return '<div class="d-flex justify-content-center gap-1">'
+                        .'<a href="'.e($showUrl).'" class="table-btn-action" title="View product" aria-label="View '
+                        .$name.'"><i class="bi bi-eye"></i></a>'
+                        .'<a href="'.e($editUrl).'" class="table-btn-action" title="Edit product" aria-label="Edit '
+                        .$name.'"><i class="bi bi-pencil"></i></a>'
+                        .'<form method="POST" action="'.e($deleteUrl).'">'
+                        .csrf_field().method_field('DELETE')
+                        .'<button type="button" class="table-btn-action delete" title="Delete product" aria-label="Delete '
+                        .$name.'" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-confirm-delete'
+                        .' data-item-name="'.$name.'" data-item-type="product">'
+                        .'<i class="bi bi-trash"></i></button></form></div>';
+                })
+                ->removeColumn('id', 'deleted_at', 'is_featured')
+                ->rawColumns(['image', 'name', 'status', 'actions'])
+                ->toJson();
+        }
+
+        return view('seller.products.index');
     }
 
     /* ------------------------------------------------------------------ */
-    /*  CREATE                                                            */
+    /*  CREATE */
     /* ------------------------------------------------------------------ */
     public function create()
     {
@@ -71,7 +167,8 @@ class ProductController extends Controller
             DB::transaction(function () use ($request, $data, $hasVariants, $stock, &$stored) {
                 $product = Product::create($this->attributes($data) + [
                     'seller_id' => auth()->id(),
-                    'is_featured' => (bool) ($data['is_featured'] ?? false),
+                    'status' => 'pending',
+                    'is_featured' => false,
                     'has_variants' => $hasVariants,
                     'stock' => 0, // stock is only ever changed through StockService
                 ]);
@@ -108,7 +205,7 @@ class ProductController extends Controller
     }
 
     /* ------------------------------------------------------------------ */
-    /*  VIEW                                                              */
+    /*  VIEW */
     /* ------------------------------------------------------------------ */
     public function show(Product $product)
     {
@@ -118,9 +215,9 @@ class ProductController extends Controller
             'shop:id,name',
             'category:id,name',
             'collection:id,name',
-            'images' => fn($q) => $q->orderBy('sort_order')->orderBy('id'),
-            'options' => fn($q) => $q->orderBy('position'),
-            'variants' => fn($q) => $q->orderBy('id'),
+            'images' => fn ($q) => $q->orderBy('sort_order')->orderBy('id'),
+            'options' => fn ($q) => $q->orderBy('position'),
+            'variants' => fn ($q) => $q->orderBy('id'),
         ]);
 
         $movements = $product->movements()
@@ -133,16 +230,16 @@ class ProductController extends Controller
     }
 
     /* ------------------------------------------------------------------ */
-    /*  EDIT                                                              */
+    /*  EDIT */
     /* ------------------------------------------------------------------ */
     public function edit(Product $product)
     {
         $this->ownProduct($product);
 
         $product->load([
-            'images' => fn($q) => $q->orderBy('sort_order')->orderBy('id'),
-            'options' => fn($q) => $q->orderBy('position'),
-            'variants' => fn($q) => $q->orderBy('id'),
+            'images' => fn ($q) => $q->orderBy('sort_order')->orderBy('id'),
+            'options' => fn ($q) => $q->orderBy('position'),
+            'variants' => fn ($q) => $q->orderBy('id'),
         ]);
 
         $movements = $product->movements()
@@ -165,9 +262,7 @@ class ProductController extends Controller
         try {
             DB::transaction(function () use ($request, $data, $product, $stock, &$newPaths, &$oldPaths) {
                 // has_variants and stock are never changed here
-                $product->update($this->attributes($data) + [
-                    'is_featured' => (bool) ($data['is_featured'] ?? false),
-                ]);
+                $product->update($this->attributes($data));
 
                 // ---- images: remove, add, re-number ----
                 $removeIds = array_map('intval', Arr::wrap($data['remove_images'] ?? []));
@@ -203,25 +298,36 @@ class ProductController extends Controller
     }
 
     /* ------------------------------------------------------------------ */
-    /*  DELETE                                                            */
+    /*  DELETE */
     /* ------------------------------------------------------------------ */
-    public function destroy(Request $request, Product $product)
+    public function destroy(Product $product)
     {
         $this->ownProduct($product);
-
-        $paths = $product->images()->pluck('path')->all();
-
-        // images, options, variants and stock history are removed by the database (cascade)
         $product->delete();
 
+        return redirect()->route('seller.products.index')->with('success', 'Product deleted successfully.');
+    }
+
+    public function restore(Product $product)
+    {
+        $this->ownProduct($product);
+        $product->restore();
+
+        return redirect()->route('seller.products.index')->with('success', 'Product restored successfully.');
+    }
+
+    public function forceDelete(Product $product)
+    {
+        $this->ownProduct($product);
+        $paths = $product->images()->pluck('path')->all();
+        $product->forceDelete();
         Storage::disk('public')->delete($paths);
 
-        return redirect()->route('seller.products.index', $request->only(['q', 'status', 'page', 'per_page']))
-            ->with('success', 'Product deleted.');
+        return redirect()->route('seller.products.index')->with('success', 'Product permanently deleted.');
     }
 
     /* ------------------------------------------------------------------ */
-    /*  HELPERS                                                           */
+    /*  HELPERS */
     /* ------------------------------------------------------------------ */
     private function ownProduct(Product $product): void
     {
@@ -292,6 +398,7 @@ class ProductController extends Controller
 
             if ($variant = $existing->get($v['title'])) {
                 $variant->update($this->variantAttributes($v)); // stock untouched
+
                 continue;
             }
 

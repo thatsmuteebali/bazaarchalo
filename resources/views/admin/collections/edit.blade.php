@@ -22,10 +22,7 @@
                     <label class="form-label-custom">Seller</label>
                     <input type="text" class="form-control-custom" value="{{ $collection->seller?->name ?: 'N/A' }}" readonly>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label-custom">Seller Email</label>
-                    <input type="text" class="form-control-custom" value="{{ $collection->seller?->email ?: 'N/A' }}" readonly>
-                </div>
+                
                 <div class="col-md-6 mb-3">
                     <label class="form-label-custom">Slug</label>
                     <input type="text" class="form-control-custom" value="{{ $collection->slug ?: 'N/A' }}" readonly>
@@ -71,16 +68,6 @@
                             <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
                         </div>
                     @enderror
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label-custom">Created</label>
-                    <input type="text" class="form-control-custom"
-                        value="{{ $collection->created_at?->format('M d, Y H:i') ?: 'N/A' }}" readonly>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label-custom">Last Updated</label>
-                    <input type="text" class="form-control-custom"
-                        value="{{ $collection->updated_at?->format('M d, Y H:i') ?: 'N/A' }}" readonly>
                 </div>
             </div>
             <div class="d-flex flex-wrap gap-2">

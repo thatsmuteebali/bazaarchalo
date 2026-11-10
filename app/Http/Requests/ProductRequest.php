@@ -39,6 +39,13 @@ class ProductRequest extends FormRequest
 
         $rules = [
             'name'              => ['required', 'string', 'max:255'],
+            'slug'              => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('products', 'slug')->ignore($isUpdate ? $product->id : null),
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+            ],
             'category_id'       => ['required', Rule::exists('categories', 'id')->where('status', 'active')],
             'shop_id'           => ['required', Rule::exists('shops', 'id')->where('seller_id', $sellerId)->where('status', 'active')],
             'collection_id'     => ['nullable', Rule::exists('collections', 'id')->where('seller_id', $sellerId)->where('status', 'active')],
@@ -46,9 +53,6 @@ class ProductRequest extends FormRequest
             'description'       => ['nullable', 'string'],
             'price'             => ['required', 'numeric', 'min:0', 'max:99999999.99'],
             'compare_price'     => ['nullable', 'numeric', 'min:0', 'max:99999999.99', 'gt:price'],
-            'status'            => ['required', Rule::in(['active', 'draft', 'inactive'])],
-            'is_featured'       => ['boolean'],
-
             'images'            => ['nullable', 'array', 'max:' . self::MAX_IMAGES],
             'images.*'          => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'remove_images'     => ['nullable', 'array'],
@@ -101,6 +105,13 @@ class ProductRequest extends FormRequest
         return $rules;
     }
 
+    public function messages(): array
+    {
+        return [
+            'slug.regex' => 'Slug must contain only lowercase letters, numbers, and single hyphens (e.g. apple-iphone-15).',
+        ];
+    }
+
     public function withValidator($validator): void
     {
         $validator->after(function ($v) {
@@ -123,6 +134,7 @@ class ProductRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'slug'                     => 'slug',
             'category_id'              => 'category',
             'shop_id'                  => 'shop',
             'collection_id'            => 'collection',

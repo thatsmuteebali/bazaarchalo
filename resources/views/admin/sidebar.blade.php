@@ -68,6 +68,15 @@
                     </a>
                 </li>
 
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.products.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}"
+                        id="menu-products" title="Products">
+                        <i class="bi bi-box-seam"></i>
+                        <span>Products</span>
+                    </a>
+                </li>
+
                 {{-- <li class="sidebar-menu-item">
                     <a href="#menu-catalog" data-bs-toggle="collapse" role="button"
                         class="sidebar-menu-link {{ $catalogActive ? 'active' : '' }}"

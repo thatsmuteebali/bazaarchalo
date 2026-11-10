@@ -103,7 +103,9 @@ class CollectionController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:10000'],
             'image' => ['required', 'image', 'max:4096'],
-            'slug' => ['required', 'string', 'max:255', 'unique:collections,slug'],
+            'slug' => ['required', 'string', 'max:255', 'unique:collections,slug','regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+        ],[
+            'slug.regex' => 'Slug must contain only lowercase letters, numbers, and single hyphens (e.g. apple-iphone-15).',
         ]);
 
         if ($request->hasFile('image')) {
@@ -147,7 +149,9 @@ class CollectionController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:10000'],
             'image' => ['nullable', 'image', 'max:4096'],
-            'slug' => ['required', 'string', 'max:255', Rule::unique('collections', 'slug')->ignore($collection->id)],
+            'slug' => ['required', 'string', 'max:255', Rule::unique('collections', 'slug')->ignore($collection->id),'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+        ],[
+            'slug.regex' => 'Slug must contain only lowercase letters, numbers, and single hyphens (e.g. apple-iphone-15).',
         ]);
         $oldImage = $collection->image;
 

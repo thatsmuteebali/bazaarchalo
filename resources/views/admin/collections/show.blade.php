@@ -25,8 +25,6 @@
             <dd class="col-sm-9 mb-2">{{ $collection->name ?: 'N/A' }}</dd>
             <dt class="col-sm-3 mb-2">Seller</dt>
             <dd class="col-sm-9 mb-2">{{ $collection->seller?->name ?: 'N/A' }}</dd>
-            <dt class="col-sm-3 mb-2">Seller Email</dt>
-            <dd class="col-sm-9 mb-2">{{ $collection->seller?->email ?: 'N/A' }}</dd>
             <dt class="col-sm-3 mb-2">Slug</dt>
             <dd class="col-sm-9 mb-2">{{ $collection->slug ?: 'N/A' }}</dd>
             <dt class="col-sm-3 mb-2">Description</dt>
@@ -44,8 +42,6 @@
             </dd>
             <dt class="col-sm-3 mb-2">Featured Collection</dt>
             <dd class="col-sm-9 mb-2">{{ $collection->is_featured ? 'Yes' : 'No' }}</dd>
-            <dt class="col-sm-3 mb-2">Created</dt>
-            <dd class="col-sm-9 mb-2">{{ $collection->created_at?->format('M d, Y') ?: 'N/A' }}</dd>
         </dl>
     </div>
 @endsection

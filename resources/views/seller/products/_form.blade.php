@@ -7,7 +7,6 @@
     $variantErrors = collect($errors->getMessages())
         ->filter(fn ($m, $k) => str_starts_with($k, 'variants') || str_starts_with($k, 'options'))
         ->flatten()->unique();
-    $featured = filter_var(old('is_featured', $isEdit ? $product->is_featured : false), FILTER_VALIDATE_BOOLEAN);
     $hasVariantsOn = $isEdit ? $product->has_variants : (bool) old('has_variants');
 @endphp
 
@@ -19,6 +18,17 @@
         @method('PUT')
     @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger py-2 mt-3">
+            <strong>There are errors with some fields. Please fix them and try again.</strong>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li class="small">{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     {{-- BASIC INFO --}}
     <div class="card border-light shadow-sm p-4 mb-4">
         <div class="section-title">Basic Information</div>
@@ -28,6 +38,16 @@
                 <input type="text" name="name" id="name" value="{{ old('name', $product->name ?? '') }}"
                     class="form-control-custom @error('name') is-invalid-custom @enderror">
                 @include('seller.products._error', ['field' => 'name'])
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="slug" class="form-label-custom">Slug</label>
+                <input type="text" name="slug" id="slug" maxlength="255"
+                    value="{{ old('slug', $product->slug ?? '') }}"
+                    class="form-control-custom @error('slug') is-invalid-custom @enderror" placeholder="eg: product-name">
+                @error('slug')
+                    <div class="form-feedback-custom invalid-custom"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</div>
+                @enderror
             </div>
 
             <div class="col-md-6 mb-3">
@@ -221,28 +241,17 @@
     {{-- VISIBILITY --}}
     <div class="card border-light shadow-sm p-4 mb-4">
         <div class="section-title">Visibility</div>
-        <div class="row align-items-end">
-            <div class="col-md-6 mb-3">
-                <label for="status" class="form-label-custom">Status</label>
-                @php $selStatus = old('status', $product->status ?? 'active'); @endphp
-                <select name="status" id="status"
-                    class="form-select-custom @error('status') is-invalid-custom @enderror">
-                    <option value="active" {{ $selStatus === 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="draft" {{ $selStatus === 'draft' ? 'selected' : '' }}>Draft</option>
-                    <option value="inactive" {{ $selStatus === 'inactive' ? 'selected' : '' }}>Inactive</option>
-                </select>
-                @include('seller.products._error', ['field' => 'status'])
+        <div class="image-hint">
+            Product status and featured visibility are managed by the admin.
+            @if ($isEdit)
+                Current status: <strong>{{ ucfirst($product->status) }}</strong>.
+                @if ($product->is_featured)
+                    This product is featured.
+                @endif
+            @else
+                New products are submitted as pending for admin review.
+            @endif
             </div>
-
-            <div class="col-md-6 mb-3">
-                <input type="hidden" name="is_featured" value="0">
-                <div class="form-switch-custom">
-                    <input name="is_featured" value="1" class="form-switch-input-custom" type="checkbox"
-                        id="is_featured" {{ $featured ? 'checked' : '' }}>
-                    <label class="form-switch-label" for="is_featured">Feature this product</label>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="d-flex flex-wrap gap-2 mb-4">

@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasEncryptedRouteKey;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    use HasEncryptedRouteKey, SoftDeletes;
+
     protected $fillable = [
         'seller_id', 'shop_id', 'category_id', 'collection_id',
-        'name', 'short_description', 'description',
+        'name', 'slug', 'short_description', 'description',
         'price', 'compare_price', 'stock',
         'status', 'is_featured', 'has_variants',
     ];

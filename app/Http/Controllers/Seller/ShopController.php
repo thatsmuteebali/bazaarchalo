@@ -106,7 +106,9 @@ class ShopController extends Controller
             'banner' => ['required', 'image', 'max:4096'],
             'address' => ['required', 'string', 'max:5000'],
             'is_primary' => ['nullable', 'boolean'],
-            'slug' => ['required', 'string', 'unique:shops,slug'],
+            'slug' => ['required', 'string', 'unique:shops,slug','regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+        ],[
+            'slug.regex' => 'Slug must contain only lowercase letters, numbers, and single hyphens (e.g. apple-iphone-15).',
         ]);
 
         if ($request->hasFile('banner')) {
@@ -141,7 +143,9 @@ class ShopController extends Controller
             'banner' => ['nullable', 'image', 'max:4096'],
             'address' => ['nullable', 'string', 'max:5000'],
             'is_primary' => ['nullable', 'boolean'],
-            'slug' => ['required', 'string', Rule::unique('shops', 'slug')->ignore($shop->id)],
+            'slug' => ['required', 'string', Rule::unique('shops', 'slug')->ignore($shop->id),'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+        ],[
+            'slug.regex' => 'Slug must contain only lowercase letters, numbers, and single hyphens (e.g. apple-iphone-15).',
         ]);
 
         if ($request->hasFile('banner')) {
