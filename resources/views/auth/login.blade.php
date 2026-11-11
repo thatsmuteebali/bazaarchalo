@@ -55,7 +55,16 @@
                         </div>
                         <a href="#" class="text-primary">Forgot password?</a>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill text-white">
+
+                    @if (config('services.recaptcha.enabled'))
+                        <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
+                        @error('g-recaptcha-response')
+                            <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    @endif
+
+                    <button type="submit" id="btn-submit" class="btn btn-primary w-100 py-3 rounded-pill text-white">
                         Sign In
                     </button>
 
@@ -103,4 +112,32 @@
                 });
             });
     </script>
+
+    @if (config('services.recaptcha.enabled'))
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form[action="{{ route('login') }}"]');
+            const btn = document.getElementById('btn-submit');
+            if (!form) return;
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (btn) btn.disabled = true;
+
+                grecaptcha.ready(function () {
+                    grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', { action: 'customer_login' })
+                        .then(function (token) {
+                            document.getElementById('g-recaptcha-response').value = token;
+                            form.submit();
+                        })
+                        .catch(function () {
+                            if (btn) btn.disabled = false;
+                            alert('reCAPTCHA failed to load. Please refresh and try again.');
+                        });
+                });
+            });
+        });
+    </script>
+@endif
 @endsection

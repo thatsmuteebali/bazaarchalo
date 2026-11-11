@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Auth\Concerns\LoginWithUsernameOrEmail;
 use App\Http\Controllers\Controller;
+use App\Rules\Recaptcha;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\Concerns\HandlesSocialLogin;
 
 class LoginController extends Controller
@@ -25,5 +27,21 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function validateLogin(Request $request)
+    {
+        $rules = [
+            $this->username() => 'required|string',
+            'password'        => 'required|string',
+        ];
+
+        if (config('services.recaptcha.enabled')) {
+            $rules['g-recaptcha-response'] = ['required', new Recaptcha('customer_login')];
+        }
+
+        $request->validate($rules, [
+            'g-recaptcha-response.required' => 'reCAPTCHA verification failed. Please refresh and try again.',
+        ]);
     }
 }
