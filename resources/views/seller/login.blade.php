@@ -98,6 +98,15 @@
                     <a href="#" class="forgot-password-link">Forgot Password?</a>
                 </div>
 
+                @if (config('services.recaptcha.enabled'))
+                    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
+                    @error('g-recaptcha-response')
+                        <div class="form-feedback-custom invalid-custom mb-3">
+                            <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
+                        </div>
+                    @enderror
+                @endif
                 <!-- Submit Button -->
                 <button type="submit" class="btn-login" id="btn-submit">
                     <span>Sign In</span>
@@ -144,6 +153,34 @@
 
     <!-- Custom Authentication interactions script -->
     <script src="{{ asset('assets/js/auth.js') }}"></script>
+
+    @if (config('services.recaptcha.enabled'))
+        <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form[action="{{ route('seller.login') }}"]');
+                const btn = document.getElementById('btn-submit');
+                if (!form) return;
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    if (btn) btn.disabled = true;
+
+                    grecaptcha.ready(function () {
+                        grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', { action: 'seller_login' })
+                            .then(function (token) {
+                                document.getElementById('g-recaptcha-response').value = token;
+                                form.submit();
+                            })
+                            .catch(function () {
+                                if (btn) btn.disabled = false;
+                                alert('reCAPTCHA failed to load. Please refresh and try again.');
+                            });
+                    });
+                });
+            });
+        </script>
+    @endif
 </body>
 
 </html>

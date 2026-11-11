@@ -63,4 +63,11 @@ return [
         'redirect' => env('FACEBOOK_SELLER_REDIRECT_URI'),
     ],
 
+    'recaptcha' => [
+        'enabled'    => filter_var(env('ENABLE_RECAPTCHA', false), FILTER_VALIDATE_BOOLEAN),
+        'site_key'   => env('RECAPTCHA_SITE_KEY'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+        'min_score'  => (float) env('RECAPTCHA_MIN_SCORE', 0.5),
+    ],
+
 ];
