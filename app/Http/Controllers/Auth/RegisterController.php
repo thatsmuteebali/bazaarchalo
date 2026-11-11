@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\Recaptcha;
 
 class RegisterController extends Controller
 {
@@ -50,15 +51,22 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone' => ['required', 'unique:users', 'regex:/^03\d{9}$/'],
             'term' => ['required'],
             'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users'],
-        ], [
+        ];
+
+        if (config('services.recaptcha.enabled')) {
+            $rules['g-recaptcha-response'] = ['required', new Recaptcha('customer_register')];
+        }
+
+        return Validator::make($data, $rules, [
             'phone.regex' => 'Enter a Pakistani mobile number in the format 03000000000.',
+            'g-recaptcha-response.required' => 'reCAPTCHA verification failed. Please refresh and try again.',
         ]);
     }
 

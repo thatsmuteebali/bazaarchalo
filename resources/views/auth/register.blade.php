@@ -27,7 +27,8 @@
                     <div class="row g-4">
                         <div class="col-md-6">
                             <label for="name" class="form-label">Name <sup>*</sup></label><input type="text"
-                                class="form-control py-3" name="name" id="name" value="{{ old('name') }}" placeholder="Enter your name" required />
+                                class="form-control py-3" name="name" id="name" value="{{ old('name') }}"
+                                placeholder="Enter your name" required />
                             @error('name')
                                 <p class="text-danger">
                                     {{ $message }}
@@ -37,7 +38,8 @@
 
                         <div class="col-md-6">
                             <label for="username" class="form-label">username <sup>*</sup></label><input type="text"
-                                class="form-control py-3" name="username" id="username" value="{{ old('username') }}" placeholder="Enter your username" required />
+                                class="form-control py-3" name="username" id="username" value="{{ old('username') }}"
+                                placeholder="Enter your username" required />
                             @error('username')
                                 <p class="text-danger">
                                     {{ $message }}
@@ -47,7 +49,8 @@
 
                         <div class="col-md-6">
                             <label for="registerEmail" class="form-label">Email <sup>*</sup></label><input type="email"
-                                class="form-control py-3" name="email" value="{{ old('email') }}" id="registerEmail" placeholder="Enter your email" required />
+                                class="form-control py-3" name="email" value="{{ old('email') }}" id="registerEmail"
+                                placeholder="Enter your email" required />
                             @error('email')
                                 <p class="text-danger">
                                     {{ $message }}
@@ -56,8 +59,8 @@
                         </div>
                         <div class="col-md-6">
                             <label for="registerPhone" class="form-label">Phone Number <sup>*</sup></label><input
-                                type="text" class="form-control py-3" value="{{ old('phone') }}" name="phone" id="registerPhone"
-                                placeholder="Enter your phone number" required />
+                                type="text" class="form-control py-3" value="{{ old('phone') }}" name="phone"
+                                id="registerPhone" placeholder="Enter your phone number" required />
                             @error('phone')
                                 <p class="text-danger">
                                     {{ $message }}
@@ -83,8 +86,8 @@
                         <div class="col-md-6">
                             <label for="confirmPassword" class="form-label">Confirm Password <sup>*</sup></label>
                             <div class="input-group">
-                                <input type="password" name="password_confirmation" class="form-control py-3" id="confirmPassword"
-                                    placeholder="confirm password" required /><button
+                                <input type="password" name="password_confirmation" class="form-control py-3"
+                                    id="confirmPassword" placeholder="confirm password" required /><button
                                     class="btn border border-start-0 bg-white px-3" type="button"
                                     data-toggle-confirm="confirmPassword" aria-label="Show password">
                                     <i class="fas fa-eye text-primary"></i>
@@ -98,9 +101,10 @@
                         </div>
                         <div class="col-12">
                             <div class="form-check">
-                                <input class="form-check-input" name="term" type="checkbox" id="terms" required /><label
-                                    class="form-check-label" for="terms">I agree to the
-                                    <a href="{{ route('frontend.terms-and-conditions') }}" class="text-primary">Terms & Conditions</a>.</label>
+                                <input class="form-check-input" name="term" type="checkbox" id="terms"
+                                    required /><label class="form-check-label" for="terms">I agree to the
+                                    <a href="{{ route('frontend.terms-and-conditions') }}" class="text-primary">Terms &
+                                        Conditions</a>.</label>
                                 @error('term')
                                     <p class="text-danger">
                                         {{ $message }}
@@ -109,21 +113,33 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill text-white">
+
+                            @if (config('services.recaptcha.enabled'))
+                                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
+                                @error('g-recaptcha-response')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            @endif
+                            <button type="submit" id="btn-submit"
+                                class="btn btn-primary w-100 py-3 rounded-pill text-white">
                                 Create Account
                             </button>
 
-                            <a href="{{ route('social.redirect', 'google') }}" class="btn btn-outline-danger w-100  mt-2 py-3 rounded-pill">
-                        <i class="fab fa-google"></i> Sign in with Google
-                    </a>
+                            <a href="{{ route('social.redirect', 'google') }}"
+                                class="btn btn-outline-danger w-100  mt-2 py-3 rounded-pill">
+                                <i class="fab fa-google"></i> Sign in with Google
+                            </a>
 
-                    <a href="{{ route('social.redirect', 'facebook') }}" class="btn btn-outline-danger w-100  mt-2 py-3 rounded-pill">
-                        <i class="fab fa-facebook"></i> Sign in with Facebook
-                    </a>
+                            <a href="{{ route('social.redirect', 'facebook') }}"
+                                class="btn btn-outline-danger w-100  mt-2 py-3 rounded-pill">
+                                <i class="fab fa-facebook"></i> Sign in with Facebook
+                            </a>
                         </div>
                     </div>
                 </form>
-                <p id="registerMessage" class="text-center text-primary mt-4 mb-0" role="status" aria-live="polite"></p>
+                <p id="registerMessage" class="text-center text-primary mt-4 mb-0" role="status" aria-live="polite">
+                </p>
                 <p class="text-center mt-4 mb-0">
                     <a href="{{ route('seller.register') }}" class="text-primary">Seller Register</a>
                 </p>
@@ -174,4 +190,34 @@
                 });
             });
     </script>
+
+    @if (config('services.recaptcha.enabled'))
+        <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.querySelector('form[action="{{ route('register') }}"]');
+                const btn = document.getElementById('btn-submit');
+                if (!form) return;
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (btn) btn.disabled = true;
+
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {
+                                action: 'customer_register'
+                            })
+                            .then(function(token) {
+                                document.getElementById('g-recaptcha-response').value = token;
+                                form.submit();
+                            })
+                            .catch(function() {
+                                if (btn) btn.disabled = false;
+                                alert('reCAPTCHA failed to load. Please refresh and try again.');
+                            });
+                    });
+                });
+            });
+        </script>
+    @endif
 @endsection
