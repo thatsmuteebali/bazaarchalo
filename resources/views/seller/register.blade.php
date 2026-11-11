@@ -91,8 +91,8 @@
                     <label for="phone" class="login-form-label">Phone Number</label>
                     <div class="login-input-group">
                         <i class="bi bi-telephone  input-icon"></i>
-                        <input type="text" name="phone" id="phone" class="login-input" placeholder="03000000000"
-                            required>
+                        <input type="text" name="phone" id="phone" class="login-input"
+                            placeholder="03000000000" required>
                     </div>
                     @error('phone')
                         <div class="form-feedback-custom invalid-custom">
@@ -105,8 +105,8 @@
                     <label for="shop_name" class="login-form-label">Shop Name</label>
                     <div class="login-input-group">
                         <i class="bi bi-shop  input-icon"></i>
-                        <input type="text" name="shop_name" id="shop_name" class="login-input" placeholder="stylish garments"
-                            required>
+                        <input type="text" name="shop_name" id="shop_name" class="login-input"
+                            placeholder="stylish garments" required>
                     </div>
                     @error('shop_name')
                         <div class="form-feedback-custom invalid-custom">
@@ -173,6 +173,15 @@
                     <a href="#" class="forgot-password-link">Forgot Password?</a>
                 </div>
 
+                @if (config('services.recaptcha.enabled'))
+                    <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+
+                    @error('g-recaptcha-response')
+                        <div class="form-feedback-custom invalid-custom mb-3">
+                            <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
+                        </div>
+                    @enderror
+                @endif
                 <!-- Submit Button -->
                 <button type="submit" class="btn-login" id="btn-submit">
                     <span>Register</span>
@@ -195,12 +204,14 @@
                     <span>GitHub</span>
                 </button>
             </div> --}}
-            <a href="{{ route('seller.social.redirect', 'google') }}" class="btn-social w-100 mb-3" type="button" id="btn-google">
+            <a href="{{ route('seller.social.redirect', 'google') }}" class="btn-social w-100 mb-3" type="button"
+                id="btn-google">
                 <i class="bi bi-google text-danger"></i>
                 <span>Google</span>
             </a>
 
-            <a href="{{ route('seller.social.redirect', 'facebook') }}" class="btn-social w-100 mb-3" type="button" id="btn-facebook">
+            <a href="{{ route('seller.social.redirect', 'facebook') }}" class="btn-social w-100 mb-3" type="button"
+                id="btn-facebook">
                 <i class="bi bi-facebook text-primary"></i>
                 <span>Facebook</span>
             </a>
@@ -219,6 +230,36 @@
 
     <!-- Custom Authentication interactions script -->
     <script src="{{ asset('assets/js/auth.js') }}"></script>
+
+    @if (config('services.recaptcha.enabled'))
+        <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.querySelector('form[action="{{ route('seller.register') }}"]');
+                const btn = document.getElementById('btn-submit');
+                if (!form) return;
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (btn) btn.disabled = true;
+
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {
+                                action: 'seller_register'
+                            })
+                            .then(function(token) {
+                                document.getElementById('g-recaptcha-response').value = token;
+                                form.submit();
+                            })
+                            .catch(function() {
+                                if (btn) btn.disabled = false;
+                                alert('reCAPTCHA failed to load. Please refresh and try again.');
+                            });
+                    });
+                });
+            });
+        </script>
+    @endif
 </body>
 
 </html>
