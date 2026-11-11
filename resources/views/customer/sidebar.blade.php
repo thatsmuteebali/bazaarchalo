@@ -19,13 +19,21 @@
                 Account</a>
             <a class="nav-link text-start {{ request()->routeIs('customer.profile') ? 'active' : '' }}"
                 href="{{ route('customer.profile') }}"><i class="fas fa-user"></i>Profile</a>
+            @php($unreadNotifications = auth()->user()->unreadNotifications()->count())
+            <a class="nav-link text-start {{ request()->routeIs('customer.notifications.*') ? 'active' : '' }}"
+                href="{{ route('customer.notifications.index') }}"><i class="fas fa-bell"></i>Notifications
+                @if ($unreadNotifications)
+                    <span class="account-tab-count">{{ $unreadNotifications }}</span>
+                @endif
+            </a>
             <a class="nav-link text-start {{ request()->routeIs('customer.orders') ? 'active' : '' }}"
                 href="{{ route('customer.orders') }}"><i class="fas fa-box"></i>My Orders <span
                     class="account-tab-count">{{ auth()->user()->placeOrders() }}</span></a>
             <a class="nav-link text-start {{ request()->routeIs('customer.wishlist') ? 'active' : '' }}"
                 href="{{ route('customer.wishlist') }}"><i class="fas fa-heart"></i>Wishlist <span
                     class="account-tab-count">4</span></a>
-            <a class="nav-link text-start {{ request()->routeIs('customer.addresses') ? 'active' : '' }}" href="{{ route('customer.addresses') }}"><i class="fas fa-map-marker-alt"></i>Addresses</a>
+            <a class="nav-link text-start {{ request()->routeIs('customer.addresses') ? 'active' : '' }}"
+                href="{{ route('customer.addresses') }}"><i class="fas fa-map-marker-alt"></i>Addresses</a>
             <a href="{{ route('logout') }}" class="nav-link text-start text-danger mt-3"
                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                     class="fas fa-sign-out-alt"></i>Sign out</a>

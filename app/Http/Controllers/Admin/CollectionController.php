@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
+use App\Services\MarketplaceNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
@@ -79,14 +80,30 @@ class CollectionController extends Controller
         return view('admin.collections.edit', compact('collection'));
     }
 
-    public function update(Request $request, Collection $collection)
+    public function update(
+        Request $request,
+        Collection $collection,
+        MarketplaceNotificationService $notifications,
+    )
     {
         $validated = $request->validate([
             'status' => ['required', Rule::in(['pending', 'active', 'inactive'])],
             'is_featured' => ['required', 'boolean'],
         ]);
 
+        $previousStatus = $collection->status;
         $collection->update($validated);
+
+        if ($previousStatus !== $collection->status && $collection->status !== 'pending') {
+            $notifications->notifySellerOfStatus(
+                $collection->seller,
+                'collection',
+                $collection->name,
+                $collection->status,
+                route('seller.collections.show', $collection, false),
+                'bi bi-collection',
+            );
+        }
 
         return redirect()->route('admin.collections.index')->with('success', 'Collection settings updated successfully.');
     }

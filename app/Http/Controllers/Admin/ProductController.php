@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Services\MarketplaceNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
@@ -117,14 +118,30 @@ class ProductController extends Controller
         return view('admin.products.edit', compact('product'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(
+        Request $request,
+        Product $product,
+        MarketplaceNotificationService $notifications,
+    )
     {
         $validated = $request->validate([
             'status' => ['required', Rule::in(['pending', 'active', 'inactive'])],
             'is_featured' => ['required', 'boolean'],
         ]);
 
+        $previousStatus = $product->status;
         $product->update($validated);
+
+        if ($previousStatus !== $product->status && $product->status !== 'pending') {
+            $notifications->notifySellerOfStatus(
+                $product->seller,
+                'product',
+                $product->name,
+                $product->status,
+                route('seller.products.show', $product, false),
+                'bi bi-box-seam',
+            );
+        }
 
         return redirect()->route('admin.products.index')->with('success', 'Product settings updated successfully.');
     }

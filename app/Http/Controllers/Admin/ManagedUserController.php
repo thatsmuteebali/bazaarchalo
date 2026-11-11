@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AccountStatusMail;
 use App\Models\User;
+use App\Notifications\AccountStatusNotification;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -125,7 +128,13 @@ class ManagedUserController extends Controller
             'status' => ['required', Rule::in(['Active', 'Inactive'])],
         ]);
 
+        $previousStatus = $user->status;
         $user->update($validated);
+
+        if ($previousStatus !== $user->status) {
+            $user->notify(new AccountStatusNotification($user->status));
+            Mail::to($user->email)->queue((new AccountStatusMail($user, $user->status))->afterCommit());
+        }
 
         return redirect()->route($indexRoute)->with('success', "{$title} status updated successfully.");
     }

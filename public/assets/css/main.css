@@ -637,13 +637,19 @@ body.sidebar-minimized .sidebar-profile {
     position: absolute;
     top: -2px;
     right: -2px;
-    width: 11px;
-    height: 11px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
     background-color: var(--sys-green);
     border-radius: 50rem;
     border: 2px solid #FFFFFF;
     box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
     animation: statusPulse 2s infinite;
+    color: #FFFFFF;
+    font-size: 0.6rem;
+    font-weight: 700;
+    line-height: 13px;
+    text-align: center;
 }
 
 .navbar-actions .dropdown-toggle::after {
@@ -715,10 +721,29 @@ body.sidebar-minimized .sidebar-profile {
     border-bottom: 1px solid var(--border-light);
     transition: background-color 0.2s ease;
     text-decoration: none;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    cursor: pointer;
 }
 
 .notification-item:hover {
     background-color: var(--bs-body-bg);
+}
+
+.notification-item.is-read .notification-text {
+    color: var(--text-muted-green);
+}
+
+.notification-empty {
+    color: var(--text-muted-green);
+    font-size: 0.8rem;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    text-align: center;
 }
 
 .notification-icon {

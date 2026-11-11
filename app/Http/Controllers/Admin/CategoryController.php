@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Services\MarketplaceNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -100,7 +101,7 @@ class CategoryController extends Controller
         return view('admin.categories.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, MarketplaceNotificationService $notifications)
     {
         $this->trimName($request);
 
@@ -117,7 +118,11 @@ class CategoryController extends Controller
             $validated['image'] = $request->file('image')->store('categories', 'public');
         }
 
-        Category::create($validated);
+        $category = Category::create($validated);
+
+        if ($category->status === 'active') {
+            $notifications->notifyActiveSellersOfCategory($category);
+        }
 
         return redirect()
             ->route('admin.categories.list')
@@ -140,7 +145,11 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function update(Request $request, Category $category)
+    public function update(
+        Request $request,
+        Category $category,
+        MarketplaceNotificationService $notifications,
+    )
     {
         $this->trimName($request);
 
@@ -165,7 +174,12 @@ class CategoryController extends Controller
             $validated['image'] = $request->file('image')->store('categories', 'public');
         }
 
+        $wasActive = $category->status === 'active';
         $category->update($validated);
+
+        if (! $wasActive && $category->status === 'active') {
+            $notifications->notifyActiveSellersOfCategory($category);
+        }
 
         return redirect()
             ->route('admin.categories.list', $request->only('search', 'page'))

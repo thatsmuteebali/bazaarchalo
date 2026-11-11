@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
+use App\Services\MarketplaceNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -98,7 +99,7 @@ class ShopController extends Controller
         return view('seller.shops.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, MarketplaceNotificationService $notifications)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -115,7 +116,14 @@ class ShopController extends Controller
             $validated['banner'] = $request->file('banner')->store('shops', 'public');
         }
 
-        auth()->user()->shops()->create($validated);
+        $shop = auth()->user()->shops()->create($validated + ['status' => 'pending']);
+        $notifications->notifyAdminsOfPendingSubmission(
+            'shop',
+            $shop->name,
+            auth()->user(),
+            route('admin.shops.show', $shop, false),
+            'bi bi-shop',
+        );
 
         return redirect()->route('seller.shops.index')->with('success', 'Shop created successfully.');
     }

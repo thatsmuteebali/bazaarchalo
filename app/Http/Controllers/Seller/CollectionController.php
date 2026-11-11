@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
+use App\Services\MarketplaceNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -97,7 +98,7 @@ class CollectionController extends Controller
         return view('seller.collections.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, MarketplaceNotificationService $notifications)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -112,10 +113,17 @@ class CollectionController extends Controller
             $validated['image'] = $request->file('image')->store('collections', 'public');
         }
 
-        auth()->user()->collections()->create($validated + [
+        $collection = auth()->user()->collections()->create($validated + [
             'status' => 'pending',
             'is_featured' => false,
         ]);
+        $notifications->notifyAdminsOfPendingSubmission(
+            'collection',
+            $collection->name,
+            auth()->user(),
+            route('admin.collections.show', $collection, false),
+            'bi bi-collection',
+        );
 
         return redirect()->route('seller.collections.index')->with('success', 'Collection created successfully.');
     }

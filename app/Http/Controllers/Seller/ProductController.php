@@ -9,6 +9,7 @@ use App\Models\Collection;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Shop;
+use App\Services\MarketplaceNotificationService;
 use App\Services\StockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -157,14 +158,18 @@ class ProductController extends Controller
         return view('seller.products.create', $this->formData());
     }
 
-    public function store(ProductRequest $request, StockService $stock)
+    public function store(
+        ProductRequest $request,
+        StockService $stock,
+        MarketplaceNotificationService $notifications,
+    )
     {
         $data = $request->validated();
         $hasVariants = (bool) ($data['has_variants'] ?? false);
         $stored = []; // uploaded files, deleted again if something fails
 
         try {
-            DB::transaction(function () use ($request, $data, $hasVariants, $stock, &$stored) {
+            $product = DB::transaction(function () use ($request, $data, $hasVariants, $stock, &$stored) {
                 $product = Product::create($this->attributes($data) + [
                     'seller_id' => auth()->id(),
                     'status' => 'pending',
@@ -195,11 +200,21 @@ class ProductController extends Controller
                         $stock->adjust($product, null, $qty, 'initial', null, auth()->id());
                     }
                 }
+
+                return $product;
             });
         } catch (Throwable $e) {
             Storage::disk('public')->delete($stored);
             throw $e;
         }
+
+        $notifications->notifyAdminsOfPendingSubmission(
+            'product',
+            $product->name,
+            auth()->user(),
+            route('admin.products.show', $product, false),
+            'bi bi-box-seam',
+        );
 
         return redirect()->route('seller.products.index')->with('success', 'Product created successfully.');
     }

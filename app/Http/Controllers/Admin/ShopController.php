@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
+use App\Services\MarketplaceNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
@@ -78,14 +79,30 @@ class ShopController extends Controller
         return view('admin.shops.edit', compact('shop'));
     }
 
-    public function update(Request $request, Shop $shop)
+    public function update(
+        Request $request,
+        Shop $shop,
+        MarketplaceNotificationService $notifications,
+    )
     {
         $validated = $request->validate([
             'status' => ['required', Rule::in(['pending', 'active', 'inactive'])],
             'is_feature_shop' => ['required', 'boolean'],
         ]);
 
+        $previousStatus = $shop->status;
         $shop->update($validated);
+
+        if ($previousStatus !== $shop->status && $shop->status !== 'pending') {
+            $notifications->notifySellerOfStatus(
+                $shop->seller,
+                'shop',
+                $shop->name,
+                $shop->status,
+                route('seller.shops.show', $shop, false),
+                'bi bi-shop',
+            );
+        }
 
         return redirect()->route('admin.shops.index')->with('success', 'Shop settings updated successfully.');
     }

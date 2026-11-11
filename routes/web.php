@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Auth\SellerLoginController;
 use App\Http\Controllers\Auth\SellerRegisterController;
 use App\Http\Controllers\Auth\AdminLoginController;
@@ -75,6 +76,11 @@ Route::group(['middleware' => ['CustomerMiddleware']], function () {
 
             Route::get('/addresses', 'addresses')->name('addresses');
         });
+        Route::controller(NotificationController::class)->prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', 'index')->defaults('panel', 'customer')->name('index');
+            Route::post('/read-all', 'readAll')->defaults('panel', 'customer')->name('read-all');
+            Route::post('/{notification}/read', 'read')->defaults('panel', 'customer')->name('read');
+        });
     });
 });
 
@@ -95,6 +101,12 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
 
         Route::controller(Dashboard::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
+        });
+
+        Route::controller(NotificationController::class)->prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', 'index')->defaults('panel', 'admin')->name('index');
+            Route::post('/read-all', 'readAll')->defaults('panel', 'admin')->name('read-all');
+            Route::post('/{notification}/read', 'read')->defaults('panel', 'admin')->name('read');
         });
 
         Route::controller(CategoryController::class)->group(function () {
@@ -165,6 +177,12 @@ Route::group(['middleware' => ['SellerMiddleware']], function () {
     Route::prefix('seller')->name('seller.')->group(function () {
         Route::controller(\App\Http\Controllers\Seller\Dashboard::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard');
+        });
+
+        Route::controller(NotificationController::class)->prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', 'index')->defaults('panel', 'seller')->name('index');
+            Route::post('/read-all', 'readAll')->defaults('panel', 'seller')->name('read-all');
+            Route::post('/{notification}/read', 'read')->defaults('panel', 'seller')->name('read');
         });
 
         Route::controller(SellerController::class)->group(function () {
