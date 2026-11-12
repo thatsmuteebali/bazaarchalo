@@ -198,11 +198,14 @@
                         {{-- <a href="{{ route('frontend.about') }}" class="nav-item nav-link {{ request()->routeIs('frontend.about') ? 'active' : '' }}">About</a> --}}
                     </div>
                     <div class="d-flex align-items-center m-3 me-0">
-                        <div class="nav-search-box" id="navSearchBox">
-                            <i class="fas fa-search nav-search-icon"></i>
-                            <input type="search" class="nav-search-input" id="navSearchInput"
-                                placeholder="Search for a product..." aria-label="Search for a product" />
-                        </div>
+                        <form action="{{ route('frontend.shop') }}" method="GET">
+                            <div class="nav-search-box" id="navSearchBox">
+                                <i class="fas fa-search nav-search-icon"></i>
+                                <input type="search" name="q" class="nav-search-input" id="navSearchInput"
+                                    placeholder="Search for a product..." aria-label="Search for a product" />
+                                <button type="submit" class="btn btn-primary rounde" style="border-radius: 30px; height: stretch;">search</button>
+                            </div>
+                        </form>
                         <button
                             class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
                             id="navSearchToggle" aria-expanded="false" aria-controls="navSearchBox"
