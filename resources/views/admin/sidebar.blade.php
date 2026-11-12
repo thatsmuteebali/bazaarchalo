@@ -1,8 +1,8 @@
 <div class="sidebar-wrapper" id="sidebar">
 
-    {{-- @php
-        $catalogActive = request()->routeIs('admin.categories*');
-    @endphp --}}
+    @php
+        $catalogActive = request()->routeIs('admin.website*');
+    @endphp
     <!-- Brand Logo / Identity -->
     <a href="dashboard.html" class="sidebar-brand">
         <i class="bi bi-asterisk"></i>
@@ -77,38 +77,26 @@
                     </a>
                 </li>
 
-                {{-- <li class="sidebar-menu-item">
+                <li class="sidebar-menu-item">
                     <a href="#menu-catalog" data-bs-toggle="collapse" role="button"
                         class="sidebar-menu-link {{ $catalogActive ? 'active' : '' }}"
                         aria-expanded="{{ $catalogActive ? 'true' : 'false' }}" aria-controls="menu-catalog"
                         title="Catalog">
                         <i class="bi bi-box-seam-fill"></i>
-                        <span>Catalog</span>
+                        <span>Website Content</span>
                         <i class="bi bi-chevron-down dropdown-caret"></i>
                     </a>
                     <div class="collapse {{ $catalogActive ? 'show' : '' }}" id="menu-catalog">
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="{{ route('admin.categories.list') }}"
-                                    class="sidebar-submenu-link {{ request()->routeIs('admin.categories.list', 'admin.categories.show', 'admin.categories.edit') ? 'active' : '' }}">
-                                    Categories
+                                <a href="{{ route('admin.website.setting', ['page' => 'setting']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') ? 'active' : '' }}">
+                                    Setting
                                 </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.categories.create') }}"
-                                    class="sidebar-submenu-link {{ request()->routeIs('admin.categories.create') ? 'active' : '' }}">
-                                    Add Category
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="sidebar-submenu-link">Products</a>
-                            </li>
-                            <li>
-                                <a href="#" class="sidebar-submenu-link">Brands</a>
                             </li>
                         </ul>
                     </div>
-                </li> --}}
+                </li>
 
             </ul>
         </div>

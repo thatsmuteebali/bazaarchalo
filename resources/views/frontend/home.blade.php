@@ -150,7 +150,7 @@
         <!-- Popular Products End -->
 
         <!-- Today's Deals / Offers Start -->
-        <section class="container-fluid py-5 bg-light bazaar-section">
+        {{-- <section class="container-fluid py-5 bg-light bazaar-section">
             <div class="container py-4">
                 <div class="text-center mx-auto mb-5" style="max-width: 700px" data-aos="fade-up">
                     <p class="text-secondary fw-bold text-uppercase mb-2">
@@ -191,11 +191,11 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
         <!-- Today's Deals / Offers End -->
 
         <!-- How Bazaar Chalo Works Start -->
-        <section class="container-fluid py-5 bazaar-section">
+        {{-- <section class="container-fluid py-5 bazaar-section">
             <div class="container py-4">
                 <div class="text-center mx-auto mb-5" style="max-width: 700px" data-aos="fade-up">
                     <p class="text-secondary fw-bold text-uppercase mb-2">
@@ -236,7 +236,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> --}}
         <!-- How Bazaar Chalo Works End -->
 
         <!-- Become a Seller Start -->

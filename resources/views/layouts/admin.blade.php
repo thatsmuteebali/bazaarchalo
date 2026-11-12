@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="{{ asset('assets/libs/apexcharts/apexcharts.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}">
 
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.css" rel="stylesheet">
+
     <!-- Main Design System & Custom Stylesheet -->
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
     @yield('customCss')
@@ -74,6 +76,8 @@
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.9.0/dist/summernote.min.js"></script>
+    
     <!-- Local dashboard interactions controller -->
     <script src="{{ asset('assets/js/dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/auth.js') }}"></script>

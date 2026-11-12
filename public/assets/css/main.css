@@ -329,6 +329,10 @@ a:hover {
     color: #FFFFFF;
 }
 
+.sidebar-submenu-link.active {
+    color: #FFFFFF;
+}
+
 /* Bottom Profile Card in Sidebar */
 .sidebar-profile {
     margin-top: auto;

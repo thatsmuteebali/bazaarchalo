@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Admin\ManagedUserController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ShopController as AdminShopController;
+use App\Http\Controllers\Admin\WebsiteController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
@@ -157,6 +158,11 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
             Route::get('/{product}/show', 'show')->name('show');
             Route::get('/{product}/edit', 'edit')->name('edit');
             Route::put('/{product}', 'update')->name('update');
+        });
+
+        Route::prefix('website')->name('website.')->controller(WebsiteController::class)->group(function () {
+            Route::get('/', 'setting')->name('setting');
+            Route::post('/', 'store')->name('store');
         });
     });
 });

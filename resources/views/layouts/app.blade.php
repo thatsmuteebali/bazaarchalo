@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+    @php
+        $webSetting = getWebsiteContent('setting');
+    @endphp
     <meta charset="utf-8" />
     <title>Bazaar Chalo - Fresh Local Shopping</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -10,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('storage/'.ltrim($webSetting['Website Favicon'], '/')) }}">
 
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
         rel="stylesheet" />
@@ -40,7 +43,6 @@
 </head>
 
 <body>
-
     <!-- Spinner Start -->
     <div id="spinner"
         class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
@@ -54,16 +56,16 @@
             <div class="d-flex justify-content-between">
                 <div class="top-info ps-2">
                     <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
-                        <a href="#" class="text-white">123 Street, New York</a></small>
+                        <a href="#" class="text-white">{{$webSetting['Website Address']}}</a></small>
                     <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#"
-                            class="text-white">Email@Example.com</a></small>
+                            class="text-white">{{$webSetting['Website Email']}}</a></small>
                 </div>
                 <div class="top-link pe-2">
-                    <a href="https://www.facebook.com/" class="text-white" target="_blank"><small
+                    <a href="{{$webSetting['Website Facebook Url']}}" class="text-white" target="_blank"><small
                             class="text-white mx-2">Facebook</small>/</a>
-                    <a href="https://www.instagram.com/" class="text-white" target="_blank"><small
+                    <a href="{{$webSetting['Website Instagram Url']}}" class="text-white" target="_blank"><small
                             class="text-white mx-2">Instagram</small>/</a>
-                    <a href="https://www.tiktok.com/" class="text-white" target="_blank"><small
+                    <a href="{{$webSetting['Website Tiktok Url']}}" class="text-white" target="_blank"><small
                             class="text-white ms-2">Tiktok</small></a>
                 </div>
             </div>
@@ -71,7 +73,7 @@
         <div class="container px-0">
             <nav class="navbar navbar-light bg-white navbar-expand-xl">
                 <a href="{{ route('frontend.home') }}" class="navbar-brand" aria-label="Bazaar Chalo home">
-                    <img src="{{ asset('img/logo.png') }}" class="site-logo site-logo-header" alt="Bazaar Chalo">
+                    <img src="{{ asset('storage/'.ltrim($webSetting['Website Header Logo'], '/')) }}" class="site-logo site-logo-header" alt="Bazaar Chalo">
                 </a>
                 <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarCollapse">
@@ -237,20 +239,20 @@
                 <div class="d-flex flex-column flex-md-row align-items-start justify-content-between">
                     <div class="footer-brand">
                         <a href="{{ route('frontend.home') }}" aria-label="Bazaar Chalo home">
-                            <img src="{{ asset('img/logo.png') }}" class="site-logo site-logo-footer" alt="Bazaar Chalo">
+                            <img src="{{ asset('storage/'.ltrim($webSetting['Website Footer Logo'], '/')) }}" class="site-logo site-logo-footer" alt="Bazaar Chalo">
                         </a>
                         <p class="text-secondary mb-0">Shop local. Live fresh.</p>
                     </div>
                     <div class="">
                         <div class="d-flex justify-content-end pt-3">
                             <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
-                                    class="fab fa-twitter"></i></a>
+                                    class="fab fa-tiktok"></i></a>
                             <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
                                     class="fab fa-facebook-f"></i></a>
                             <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i
                                     class="fab fa-youtube"></i></a>
                             <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i
-                                    class="fab fa-linkedin-in"></i></a>
+                                    class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -293,11 +295,11 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="footer-item">
                         <h4 class="text-light mb-3">Contact</h4>
-                        <p>Address: 1429 Netus Rd, NY 48247</p>
-                        <p>Email: Example@gmail.com</p>
-                        <p>Phone: +0123 4567 8910</p>
-                        <p>Payment Accepted</p>
-                        <img src="{{ asset('img/payment.png') }}" class="img-fluid" alt="" />
+                        <p>Address: {{$webSetting['Website Address']}}</p>
+                        <p>Email: {{$webSetting['Website Email']}}</p>
+                        <p>Phone: {{$webSetting['Website Phone Number']}}</p>
+                        {{-- <p>Payment Accepted</p>
+                        <img src="{{ asset('img/payment.png') }}" class="img-fluid" alt="" /> --}}
                     </div>
                 </div>
             </div>
