@@ -32,4 +32,16 @@ class Collection extends Model
     {
         return $this->belongsTo(User::class, 'seller_id');
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        return $this->image
+            ? asset('storage/'.ltrim($this->image, '/'))
+            : asset('img/fruite-item-1.jpg');
+    }
 }

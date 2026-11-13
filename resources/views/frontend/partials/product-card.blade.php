@@ -9,7 +9,7 @@
         : $product->price;
     $hasDiscount =
         !$product->has_variants && $product->compare_price && (float) $product->compare_price > (float) $product->price;
-    $productUrl = route('frontend.product-detail', $product);
+    $productUrl = route('frontend.product-detail', ['product' => $product->slug]);
 
 @endphp
 <div class="product-card">

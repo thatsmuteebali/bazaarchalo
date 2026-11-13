@@ -194,7 +194,7 @@ class CartService
                 'name'          => $product->name,
                 'variant_title' => $variant?->title,
                 'image'         => $product->coverImage?->url ?? asset('img/fruite-item-1.jpg'),
-                'url'           => route('frontend.product-detail', $product),
+                'url'           => route('frontend.product-detail', ['product' => $product->slug]),
                 'price'         => round($price, 2),
                 'qty'           => $qty,
                 'stock'         => $stock,
@@ -235,7 +235,7 @@ class CartService
         }
 
         if (! $variantId) {
-            throw new CartException('Please choose your options first.', route('frontend.product-detail', $product));
+            throw new CartException('Please choose your options first.', route('frontend.product-detail', ['product' => $product->slug]));
         }
 
         $variant = ProductVariant::where('product_id', $product->id)->find($variantId);

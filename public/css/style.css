@@ -1406,7 +1406,8 @@
 }
 
 /*** Category Carousel Start ***/
-.category-carousel {
+.category-carousel,
+.collection-carousel {
     padding-bottom: 10px;
 }
 

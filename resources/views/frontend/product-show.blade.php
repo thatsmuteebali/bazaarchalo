@@ -500,7 +500,7 @@
                 <li class="breadcrumb-item"><a href="{{ route('frontend.home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('frontend.shop') }}">Shop</a></li>
                 <li class="breadcrumb-item"><a
-                        href="{{ route('frontend.shop', ['category' => $product->category_id]) }}">{{ $product->category->name }}</a>
+                        href="{{ route('frontend.shop', ['category' => $product->category->slug]) }}">{{ $product->category->name }}</a>
                 </li>
                 <li class="breadcrumb-item active text-white">{{ $product->name }}</li>
             </ol>
@@ -534,13 +534,13 @@
 
                     {{-- INFO --}}
                     <div class="col-lg-6">
-                        <a href="{{ route('frontend.shop', ['category' => $product->category_id]) }}"
+                        <a href="{{ route('frontend.shop', ['category' => $product->category->slug]) }}"
                             class="pd-category">{{ $product->category->name }}</a>
 
                         <h2 class="pd-title display-6 mt-3 mb-2">{{ $product->name }}</h2>
                         <p class="text-muted mb-0">
                             Sold by
-                            <a href="{{ route('frontend.shop', ['shop' => $product->shop_id]) }}"
+                            <a href="{{ route('frontend.shop', ['shop' => $product->shop->slug]) }}"
                                 class="fw-bold">{{ $product->shop->name }}</a>
                         </p>
 
@@ -704,7 +704,7 @@
                 <div class="container py-4">
                     <div class="d-flex justify-content-between align-items-end mb-4">
                         <h2 class="display-6 mb-0">More in {{ $product->category->name }}</h2>
-                        <a href="{{ route('frontend.shop', ['category' => $product->category_id]) }}"
+                        <a href="{{ route('frontend.shop', ['category' => $product->category->slug]) }}"
                             class="btn btn-outline-primary rounded-pill px-4">View all</a>
                     </div>
                     <div class="row g-4">

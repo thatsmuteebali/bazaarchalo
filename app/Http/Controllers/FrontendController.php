@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Collection;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Services\CartService;
@@ -13,13 +14,37 @@ class FrontendController extends Controller
 {
     public function index()
     {
-        $categories = Category::where('status', 'active')->latest()->limit(6)->get();
-        $shops = Shop::where('status', 'active')->latest()->limit(3)->get();
+        $categories = Category::query()
+            ->where('status', 'active')
+            ->where('is_featured', true)
+            // ->whereHas('products', fn ($query) => $query->where('status', 'active')
+            //     ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active')))
+            // ->latest()
+            // ->limit(6)
+            ->get();
+        $shops = Shop::query()
+            ->where('status', 'active')
+            ->where('is_feature_shop', true)
+            // ->whereHas('products', fn ($query) => $query->where('status', 'active')
+            //     ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('status', 'active')))
+            // ->latest()
+            // ->limit(3)
+            ->get();
+        $featuredCollections = Collection::query()
+            ->where('status', 'active')
+            ->where('is_featured', true)
+            // ->whereHas('products', fn ($query) => $query->where('status', 'active')
+            //     ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active'))
+            //     ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('status', 'active')))
+            // ->latest()
+            // ->limit(8)
+            ->get();
         $featuredProducts = Product::query()
             ->where('status', 'active')
             ->where('is_featured', true)
             ->whereHas('shop', fn ($query) => $query->where('status', 'active'))
-            ->with(['shop:id,name', 'category:id,name', 'coverImage', 'images', 'variants'])
+            ->whereHas('category', fn ($query) => $query->where('status', 'active'))
+            ->with(['shop:id,name,slug', 'category:id,name,slug', 'coverImage', 'images', 'variants'])
             ->withMin('variants', 'price')->withMax('variants', 'price')->withCount('variants')
             ->latest()
             ->limit(8)
@@ -28,23 +53,31 @@ class FrontendController extends Controller
         return view('frontend.home', [
             'categories' => $categories,
             'shops' => $shops,
+            'featuredCollections' => $featuredCollections,
             'featuredProducts' => $featuredProducts,
         ]);
     }
     public function shop(Request $request)
     {
         $search = trim((string) $request->query('q', ''));
-        $categoryIds = collect((array) $request->query('category', []))
-            ->filter(fn ($id) => filter_var($id, FILTER_VALIDATE_INT) !== false)
-            ->map(fn ($id) => (int) $id)
-            ->filter(fn ($id) => $id > 0)
+        $categorySlugs = collect((array) $request->query('category', []))
+            ->filter(fn ($slug) => is_string($slug))
+            ->map(fn ($slug) => trim($slug))
+            ->filter(fn ($slug) => $slug !== '')
             ->unique()
             ->values()
             ->all();
-        $shopIds = collect((array) $request->query('shop', []))
-            ->filter(fn ($id) => filter_var($id, FILTER_VALIDATE_INT) !== false)
-            ->map(fn ($id) => (int) $id)
-            ->filter(fn ($id) => $id > 0)
+        $shopSlugs = collect((array) $request->query('shop', []))
+            ->filter(fn ($slug) => is_string($slug))
+            ->map(fn ($slug) => trim($slug))
+            ->filter(fn ($slug) => $slug !== '')
+            ->unique()
+            ->values()
+            ->all();
+        $collectionSlugs = collect((array) $request->query('collection', []))
+            ->filter(fn ($slug) => is_string($slug))
+            ->map(fn ($slug) => trim($slug))
+            ->filter(fn ($slug) => $slug !== '')
             ->unique()
             ->values()
             ->all();
@@ -77,8 +110,11 @@ class FrontendController extends Controller
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('short_description', 'like', "%{$search}%");
             }))
-            ->when($categoryIds !== [], fn ($query) => $query->whereIn('category_id', $categoryIds))
-            ->when($shopIds !== [], fn ($query) => $query->whereIn('shop_id', $shopIds))
+            ->when($categorySlugs !== [], fn ($query) => $query->whereHas('category', fn ($categoryQuery) => $categoryQuery->whereIn('slug', $categorySlugs)))
+            ->when($shopSlugs !== [], fn ($query) => $query->whereHas('shop', fn ($shopQuery) => $shopQuery->whereIn('slug', $shopSlugs)))
+            ->when($collectionSlugs !== [], fn ($query) => $query->whereHas('collection', fn ($collectionQuery) => $collectionQuery
+                ->whereIn('slug', $collectionSlugs)
+                ->where('status', 'active')))
             ->when($minPrice > 0 || $maxPrice < $priceLimit, fn ($query) => $query->where(function ($query) use ($minPrice, $maxPrice) {
                 $query->where(function ($query) use ($minPrice, $maxPrice) {
                     $query->where('has_variants', false)->whereBetween('price', [$minPrice, $maxPrice]);
@@ -86,7 +122,7 @@ class FrontendController extends Controller
                     $query->where('has_variants', true)->whereHas('variants', fn ($query) => $query->whereBetween('price', [$minPrice, $maxPrice]));
                 });
             }))
-            ->with(['shop:id,name', 'category:id,name', 'coverImage', 'images', 'variants'])
+            ->with(['shop:id,name,slug', 'category:id,name,slug', 'coverImage', 'images', 'variants'])
             ->withCount('variants')
             ->withMin('variants', 'price')->withMax('variants', 'price')
             ->when($sort === 'price_asc', fn ($query) => $query->orderByRaw('CASE WHEN products.has_variants = 1 THEN (SELECT MIN(product_variants.price) FROM product_variants WHERE product_variants.product_id = products.id) ELSE products.price END ASC'))
@@ -97,17 +133,32 @@ class FrontendController extends Controller
         $products = $productsQuery->paginate(12)->withQueryString();
         $categories = Category::query()
             ->where('status', 'active')
-            ->whereHas('products', fn ($query) => $query->where('status', 'active')
-                ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active')))
+            // ->whereHas('products', fn ($query) => $query->where('status', 'active')
+            //     ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active')))
             ->withCount(['products' => fn ($query) => $query->where('status', 'active')
                 ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active'))])
             ->orderBy('name')
             ->get();
-        $shops = Shop::where('status', 'active')->orderBy('name')->get(['id', 'name']);
+        $shops = Shop::where('status', 'active')
+                ->withCount(['products' => fn ($query) => $query->where('status', 'active')
+                    ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active'))
+                    ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('status', 'active'))])
+                ->orderBy('name')->get(['id', 'name', 'slug']);
+        $collections = Collection::query()
+            ->where('status', 'active')
+            // ->whereHas('products', fn ($query) => $query->where('status', 'active')
+            //     ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active'))
+            //     ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('status', 'active')))
+            ->withCount(['products' => fn ($query) => $query->where('status', 'active')
+                ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active'))
+                ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('status', 'active'))])
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug']);
         $featuredProducts = Product::query()
             ->where('status', 'active')
             ->where('is_featured', true)
             ->whereHas('shop', fn ($query) => $query->where('status', 'active'))
+            ->whereHas('category', fn ($query) => $query->where('status', 'active'))
             ->with(['coverImage', 'variants'])
             ->withMin('variants', 'price')
             ->latest()
@@ -118,8 +169,9 @@ class FrontendController extends Controller
             'products' => $products,
             'categories' => $categories,
             'shops' => $shops,
+            'collections' => $collections,
             'featuredProducts' => $featuredProducts,
-            'filters' => compact('search', 'categoryIds', 'shopIds', 'sort', 'minPrice', 'maxPrice', 'priceLimit'),
+            'filters' => compact('search', 'categorySlugs', 'shopSlugs', 'collectionSlugs', 'sort', 'minPrice', 'maxPrice', 'priceLimit'),
         ]);
     }
     public function about()
@@ -144,8 +196,8 @@ class FrontendController extends Controller
         );
 
         $product->load([
-            'shop:id,name',
-            'category:id,name',
+            'shop:id,name,slug',
+            'category:id,name,slug',
             'images' => fn ($query) => $query->orderBy('sort_order')->orderBy('id'),
             'options' => fn ($query) => $query->orderBy('position'),
             'variants' => fn ($query) => $query->orderBy('id'),
@@ -204,7 +256,7 @@ class FrontendController extends Controller
             ->whereHas('products', fn ($query) => $query->where('status', 'active')
                 ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active')))
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get(['slug', 'name']);
 
         $shops = Shop::query()
             ->where('status', 'active')
@@ -214,7 +266,7 @@ class FrontendController extends Controller
             }))
             ->when($category !== '', fn ($query) => $query->whereHas('products', fn ($query) => $query
                 ->where('status', 'active')
-                ->where('category_id', $category)))
+                ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', $category)->where('status', 'active'))))
             ->withCount(['products' => fn ($query) => $query->where('status', 'active')])
             ->latest()
             ->paginate(12)

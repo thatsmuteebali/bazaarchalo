@@ -52,7 +52,7 @@
                             <select id="shopCategory" name="category" class="form-select">
                                 <option value="">All categories</option>
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}" @selected($filters['category'] == $category->id)>{{ $category->name }}</option>
+                                    <option value="{{ $category->slug }}" @selected($filters['category'] == $category->slug)>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -82,7 +82,7 @@
                                     <div class="seller-meta">
                                         <span><i class="fas fa-box-open text-secondary me-1"></i>{{ $shop->products_count }} active products</span>
                                     </div>
-                                    <a href="{{ route('frontend.shop', ['shop' => $shop->id]) }}"
+                                    <a href="{{ route('frontend.shop', ['shop' => $shop->slug]) }}"
                                         class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i
                                             class="fas fa-arrow-right ms-2"></i></a>
                                 </article>

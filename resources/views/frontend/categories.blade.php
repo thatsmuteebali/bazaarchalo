@@ -40,7 +40,7 @@
                     @if (count($categories) > 0)
                         @foreach ($categories as $category)
                             <div class="col-6 col-md-4 col-lg-3">
-                                <a href="{{ route('frontend.shop', ['category' => $category->id]) }}" class="directory-card"><img
+                                <a href="{{ route('frontend.shop', ['category' => $category->slug]) }}" class="directory-card"><img
                                     src="{{ $category->image ? $category->image_url : asset('img/fruite-item-1.jpg') }}" alt="{{ $category->name }}" />
                                     <span>
                                         <strong>{{$category->name}}</strong>

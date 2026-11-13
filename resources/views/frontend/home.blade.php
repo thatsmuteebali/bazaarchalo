@@ -65,16 +65,18 @@
                         all
                         categories <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
-                <div class="owl-carousel category-carousel" data-aos="fade-up" data-aos-delay="100">
-                    @if (count($categories) > 0)
+                @if ($categories->isNotEmpty())
+                    <div class="owl-carousel category-carousel" data-aos="fade-up" data-aos-delay="100">
                         @foreach ($categories as $category)
-                            <a href="{{ route('frontend.shop', ['category' => $category->id]) }}" class="category-card">
+                            <a href="{{ route('frontend.shop', ['category' => $category->slug]) }}" class="category-card">
                                 <img src="{{ $category->image ? $category->image_url : asset('img/fruite-item-1.jpg') }}" alt="{{ $category->name }}" />
                                 <span>{{$category->name}}</span>
                             </a>
                         @endforeach
-                    @endif
-                </div>
+                    </div>
+                @else
+                    <p class="text-muted py-4 mb-0">No featured categories are available right now.</p>
+                @endif
             </div>
         </section>
         <!-- Popular Category End -->
@@ -93,8 +95,8 @@
                         shops
                         <i class="fas fa-arrow-right ms-2"></i></a>
                 </div>
-                <div class="row g-4">
-                    @if (count($shops) > 0)
+                @if ($shops->isNotEmpty())
+                    <div class="row g-4">
                         @foreach ($shops as $shop)
                             <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
                                 <div class="shop-card bg-white rounded p-4 h-100">
@@ -112,18 +114,50 @@
                                     </p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-primary"><i class="fas fa-star text-secondary me-1"></i> 4.9</span><a
-                                            href="{{ route('frontend.shop', ['shop' => $shop->id]) }}"
+                                            href="{{ route('frontend.shop', ['shop' => $shop->slug]) }}"
                                             class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">Visit
                                             shop</a>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
-                    @endif
-                </div>
+                    </div>
+                @else
+                    <p class="text-muted py-4 mb-0">No featured shops are available right now.</p>
+                @endif
             </div>
         </section>
         <!-- Popular Shops Near You End -->
+
+        <!-- Featured Collections Start -->
+        <section class="container-fluid py-5 bazaar-section">
+            <div class="container py-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-end mb-5" data-aos="fade-up">
+                    <div>
+                        <p class="text-secondary fw-bold text-uppercase mb-2">
+                            Handpicked collections
+                        </p>
+                        <h2 class="display-6 mb-0">Featured Collections</h2>
+                    </div>
+                    <a href="{{ route('frontend.shop') }}" class="btn border border-secondary rounded-pill px-4 text-primary">
+                        Shop collections <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+                @if ($featuredCollections->isNotEmpty())
+                    <div class="owl-carousel collection-carousel" data-aos="fade-up" data-aos-delay="100">
+                        @foreach ($featuredCollections as $collection)
+                            <a href="{{ route('frontend.shop', ['collection' => $collection->slug]) }}" class="category-card">
+                                <img src="{{ $collection->image_url }}" alt="{{ $collection->name }}" />
+                                <span>{{ $collection->name }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-muted py-4 mb-0">No featured collections are available right now.</p>
+                @endif
+            </div>
+        </section>
+        <!-- Featured Collections End -->
 
         <!-- Popular Products Start -->
         <section class="container-fluid py-5 bazaar-section">

@@ -71,8 +71,8 @@
                             <div class="shop-filter-options">
                                 @forelse ($categories as $category)
                                     <label class="shop-filter-option">
-                                        <input type="checkbox" name="category[]" value="{{ $category->id }}"
-                                            @checked(in_array((int) $category->id, $filters['categoryIds'], true)) />
+                                        <input type="checkbox" name="category[]" value="{{ $category->slug }}"
+                                            @checked(in_array($category->slug, $filters['categorySlugs'], true)) />
                                         <span>{{ $category->name }}</span>
                                         <small>{{ $category->products_count }}</small>
                                     </label>
@@ -87,12 +87,29 @@
                             <div class="shop-filter-options">
                                 @forelse ($shops as $shop)
                                     <label class="shop-filter-option">
-                                        <input type="checkbox" name="shop[]" value="{{ $shop->id }}"
-                                            @checked(in_array((int) $shop->id, $filters['shopIds'], true)) />
+                                        <input type="checkbox" name="shop[]" value="{{ $shop->slug }}"
+                                            @checked(in_array($shop->slug, $filters['shopSlugs'], true)) />
                                         <span>{{ $shop->name }}</span>
+                                        <small>{{ $shop->products_count }}</small>
                                     </label>
                                 @empty
                                     <p class="text-muted small mb-0">No shops available.</p>
+                                @endforelse
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="shop-filter-section">
+                            <legend class="shop-filter-label">Collections</legend>
+                            <div class="shop-filter-options">
+                                @forelse ($collections as $collection)
+                                    <label class="shop-filter-option">
+                                        <input type="checkbox" name="collection[]" value="{{ $collection->slug }}"
+                                            @checked(in_array($collection->slug, $filters['collectionSlugs'], true)) />
+                                        <span>{{ $collection->name }}</span>
+                                        <small>{{ $collection->products_count }}</small>
+                                    </label>
+                                @empty
+                                    <p class="text-muted small mb-0">No collections available.</p>
                                 @endforelse
                             </div>
                         </fieldset>
@@ -141,7 +158,7 @@
                                             : $featuredProduct->price;
                                     @endphp
                                     <a class="shop-featured-item"
-                                        href="{{ route('frontend.product-detail', $featuredProduct) }}">
+                                        href="{{ route('frontend.product-detail', ['product' => $featuredProduct->slug]) }}">
                                         <img src="{{ $featuredImage }}" alt="{{ $featuredProduct->name }}" />
                                         <span>
                                             <strong>{{ $featuredProduct->name }}</strong>
