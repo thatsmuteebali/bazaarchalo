@@ -16,6 +16,7 @@ class Category extends Model
         'image',
         'status',
         'description',
+        'is_featured',
     ];
 
     protected static function booted(): void

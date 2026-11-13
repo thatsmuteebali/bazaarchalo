@@ -23,19 +23,25 @@
             </div>
         @endif
         <dl class="row mb-0">
-            <dt class="col-sm-3 mb-2">Status</dt>
-            @php
-                $status_label = match ($category->status) {
-                    'active' => 'success',
-                    'inactive' => 'failed',
-                    default => 'pending',
-                };
-            @endphp
-            <dd class="col-sm-9 mb-2">
-                <span class="badge-table {{ $status_label }}">{{ ucfirst($category->status) }}</span>
-            </dd>
+            <dt class="col-sm-3 mb-2">Category Name</dt>
+            <dd class="col-sm-9 mb-2">{{ $category->name ?: 'N/A' }}</dd>
+            <dt class="col-sm-3 mb-2">Slug</dt>
+            <dd class="col-sm-9 mb-2">{{ $category->slug ?: 'N/A' }}</dd>
             <dt class="col-sm-3 mb-2">Description</dt>
-            <dd class="col-sm-9 mb-2">{!! nl2br(e($category->description ?: 'No description provided.')) !!}</dd>
+            <dd class="col-sm-9 mb-2">{!! nl2br(e($category->description ?: 'N/A')) !!}</dd>
+            <dt class="col-sm-3 mb-2">Status</dt>
+            <dd class="col-sm-9 mb-2">
+                @php
+                    $statusClass = match ($category->status) {
+                        'active' => 'success',
+                        'inactive' => 'failed',
+                        default => 'pending',
+                    };
+                @endphp
+                <span class="badge-table {{ $statusClass }}">{{ ucfirst($category->status ?: 'N/A') }}</span>
+            </dd>
+            <dt class="col-sm-3 mb-2">Featured category</dt>
+            <dd class="col-sm-9 mb-2">{{ $category->is_featured ? 'Yes' : 'No' }}</dd>
         </dl>
     </div>
 @endsection

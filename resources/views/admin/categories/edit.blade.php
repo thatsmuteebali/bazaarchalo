@@ -107,6 +107,23 @@
                             {{ $message }}</div>
                     @enderror
                 </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label-custom d-block">Featured Category</label>
+                    <input type="hidden" name="is_featured" value="0">
+                    <div class="form-switch-custom">
+                        <input name="is_featured" value="1"
+                            @checked((bool) old('is_featured', $category->is_featured))
+                            class="form-switch-input-custom" type="checkbox" id="is_featured">
+                        <label class="form-switch-label" for="is_featured">Show as featured category</label>
+                    </div>
+                    @error('is_featured')
+                        <div class="form-feedback-custom invalid-custom">
+                            <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
             </div>
 
             <div class="d-flex flex-wrap gap-2 mb-4">

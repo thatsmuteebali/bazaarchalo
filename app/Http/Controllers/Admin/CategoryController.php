@@ -110,6 +110,7 @@ class CategoryController extends Controller
             'image' => ['required', 'image', 'max:2048'],
             'status' => ['required', 'in:active,inactive'],
             'description' => ['nullable', 'string'],
+            'is_featured' => ['required', 'boolean'],
         ], [
             'name.unique' => 'This category already exists.',
         ]);
@@ -163,6 +164,7 @@ class CategoryController extends Controller
             'image' => ['nullable', 'image', 'max:2048'],
             'status' => ['required', 'in:active,inactive'],
             'description' => ['nullable', 'string'],
+            'is_featured' => ['required', 'boolean'],
         ], [
             'name.unique' => 'This category already exists.',
         ]);
