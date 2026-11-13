@@ -30,6 +30,8 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'home', 'field' => 'Hero Section Subtitle', 'value' => 'Sell your local products', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Hero Section Title', 'value' => 'Apne Bazaar Se Apne Ghar Tak', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Hero Section Background Image', 'value' => 'no_image', 'type' => 'image'],
+            ['page' => 'home', 'field' => 'Feature Category Subtitle', 'value' => 'Shop by collection', 'type' => 'text'],
+            ['page' => 'home', 'field' => 'Feature Category Title', 'value' => 'Popular Categories', 'type' => 'text'],
         ];
 
         foreach ($contents as $content) {

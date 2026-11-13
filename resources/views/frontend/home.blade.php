@@ -74,9 +74,9 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-end mb-5" data-aos="fade-up">
                     <div>
                         <p class="text-secondary fw-bold text-uppercase mb-2">
-                            Shop by collection
+                            {{$home_page_content['Feature Category Subtitle']}}
                         </p>
-                        <h2 class="display-6 mb-0">Popular Categories</h2>
+                        <h2 class="display-6 mb-0">{{ $home_page_content['Feature Category Title'] }}</h2>
                     </div>
                     <a href="{{ route('frontend.categories') }}" class="btn border border-secondary rounded-pill px-4 text-primary">View
                         all
