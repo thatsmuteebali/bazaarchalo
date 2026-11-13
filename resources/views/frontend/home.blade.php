@@ -1,13 +1,23 @@
 @extends('layouts.app')
+@section('customCss')
+    <style>
+        .hero-header {
+            background: linear-gradient(rgba(248, 223, 173, 0.1), rgba(248, 223, 173, 0.1)), url('{{ asset('storage/' . ltrim($home_page_content['Hero Section Background Image'], '/')) }}') !important;
+            background-position: center center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+    </style>
+@endsection
 @section('content')
     <!-- Hero Start -->
     <div class="container-fluid py-5 mb-5 hero-header">
         <div class="container py-5">
             <div class="row g-5 align-items-center">
                 <div class="col-md-12 col-lg-7" data-aos="fade-right" data-aos-duration="900">
-                    <h4 class="mb-3 text-secondary">Sell your local products</h4>
+                    <h4 class="mb-3 text-secondary">{{$home_page_content['Hero Section Subtitle']}}</h4>
                     <h1 class="mb-5 display-3 text-primary">
-                        Apne Bazaar Se Apne Ghar Tak
+                        {{$home_page_content['Hero Section Title']}}
                     </h1>
                     <form action="{{ route('frontend.shop') }}" method="GET" class="position-relative mx-auto">
                         <input class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill" type="search"
@@ -22,7 +32,14 @@
                 <div class="col-md-12 col-lg-5" data-aos="fade-left" data-aos-duration="900" data-aos-delay="150">
                     <div id="carouselId" class="carousel slide position-relative" data-bs-ride="carousel">
                         <div class="carousel-inner" role="listbox">
-                            <div class="carousel-item active rounded">
+                            @foreach ($hero_slider as $slider)
+                                <div class="carousel-item {{ $loop->iteration == 1 ? 'active' : '' }} rounded">
+                                    <img src="{{ $slider->image_url }}" class="img-fluid w-100 h-100 rounded"
+                                        alt="{{$slider->name}}" />
+                                    <a href="#" class="btn px-4 py-2 text-white rounded">{{ $slider->name }}</a>
+                                </div>
+                            @endforeach
+                            {{-- <div class="carousel-item active rounded">
                                 <img src="{{ asset('img/hero-img-1.png') }}" class="img-fluid w-100 h-100 bg-secondary rounded"
                                     alt="First slide" />
                                 <a href="#" class="btn px-4 py-2 text-white rounded">Fruites</a>
@@ -30,7 +47,7 @@
                             <div class="carousel-item rounded">
                                 <img src="{{ asset('img/hero-img-2.jpg') }}" class="img-fluid w-100 h-100 rounded" alt="Second slide" />
                                 <a href="#" class="btn px-4 py-2 text-white rounded">Vesitables</a>
-                            </div>
+                            </div> --}}
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselId"
                             data-bs-slide="prev">

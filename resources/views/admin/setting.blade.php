@@ -88,6 +88,52 @@
             @endif
 
             <div class="row">
+                @if ($page == 'home')
+                    @php
+                        $existingSliders = $sliders->keyBy('id');
+                        $sliderRows =
+                            old('sliders') ??
+                            $sliders->map(fn($s) => ['id' => $s->id, 'name' => $s->name])->values()->all();
+                        $nextSliderIndex = count($sliderRows)
+                            ? max(array_map('intval', array_keys($sliderRows))) + 1
+                            : 0;
+                    @endphp
+
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Hero Section Slider Images</h5>
+                        <button type="button" id="add-slider" class="btn-custom btn-custom-primary">
+                            <i class="bi bi-plus-lg"></i> Add Hero Slider Image
+                        </button>
+                    </div>
+
+                    <input type="hidden" name="has_sliders" value="1">
+
+                    <div id="slider-list">
+                        @foreach ($sliderRows as $index => $row)
+                            @include('admin.partials.hero-slider-row', [
+                                'index' => $index,
+                                'id' => $row['id'] ?? '',
+                                'name' => $row['name'] ?? '',
+                                'imageUrl' =>
+                                    !empty($row['id']) && $existingSliders->has($row['id'])
+                                        ? $existingSliders[$row['id']]->image_url
+                                        : asset('assets/images/no_image.png'),
+                            ])
+                        @endforeach
+                    </div>
+
+                    <p id="slider-empty" class="text-muted">No slider images added yet.</p>
+
+                    <template id="slider-row-template">
+                        @include('admin.partials.hero-slider-row', [
+                            'index' => '__INDEX__',
+                            'id' => '',
+                            'name' => '',
+                            'imageUrl' => asset('assets/images/no_image.png'),
+                        ])
+                    </template>
+                @endif
+                
                 @forelse ($webcontents as $content)
                     @php
                         $inputId = 'content_' . $content->id;
@@ -212,6 +258,35 @@
                         $picker.val($text.val());
                     });
                 });
+
+                @if ($page == 'home')
+                    // ---------- Hero slider rows ----------
+                    let sliderIndex = {{ $nextSliderIndex }};
+
+                    function toggleSliderEmpty() {
+                        $('#slider-empty').toggle($('#slider-list .slider-row').length === 0);
+                    }
+
+                    $('#add-slider').on('click', function() {
+                        const template = document.getElementById('slider-row-template').innerHTML;
+                        $('#slider-list').append(template.replace(/__INDEX__/g, sliderIndex++));
+                        toggleSliderEmpty();
+                    });
+
+                    $(document).on('click', '.js-remove-slider', function() {
+                        $(this).closest('.slider-row').remove();
+                        toggleSliderEmpty();
+                    });
+
+                    $(document).on('change', '.js-slider-image', function() {
+                        const $preview = $(this).closest('.slider-row').find('.slider-preview');
+                        if (this.files && this.files[0]) {
+                            $preview.attr('src', URL.createObjectURL(this.files[0]));
+                        }
+                    });
+
+                    toggleSliderEmpty();
+                @endif
             });
         </script>
     @endsection

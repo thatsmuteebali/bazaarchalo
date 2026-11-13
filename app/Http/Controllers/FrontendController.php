@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Collection;
+use App\Models\HeroSectionSliderImage;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Services\CartService;
@@ -14,6 +15,9 @@ class FrontendController extends Controller
 {
     public function index()
     {
+        $home_page_content = getWebsiteContent('home');
+        $hero_slider = HeroSectionSliderImage::all();
+
         $categories = Category::query()
             ->where('status', 'active')
             ->where('is_featured', true)
@@ -51,6 +55,8 @@ class FrontendController extends Controller
             ->get();
 
         return view('frontend.home', [
+            'home_page_content' => $home_page_content,
+            'hero_slider' => $hero_slider,
             'categories' => $categories,
             'shops' => $shops,
             'featuredCollections' => $featuredCollections,

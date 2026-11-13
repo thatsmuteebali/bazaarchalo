@@ -27,6 +27,9 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'setting', 'field' => 'Website Phone Number', 'value' => '03306490627', 'type' => 'text'],
             ['page' => 'setting', 'field' => 'Website Address', 'value' => 'Bank Road Daska', 'type' => 'textarea'],
             // ['page' => 'setting', 'field' => 'Website Description', 'value' => '<p>Maketing Place Website</p>', 'type' => 'editor'],
+            ['page' => 'home', 'field' => 'Hero Section Subtitle', 'value' => 'Sell your local products', 'type' => 'text'],
+            ['page' => 'home', 'field' => 'Hero Section Title', 'value' => 'Apne Bazaar Se Apne Ghar Tak', 'type' => 'text'],
+            ['page' => 'home', 'field' => 'Hero Section Background Image', 'value' => 'no_image', 'type' => 'image'],
         ];
 
         foreach ($contents as $content) {

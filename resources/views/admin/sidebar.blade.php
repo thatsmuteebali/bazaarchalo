@@ -90,8 +90,12 @@
                         <ul class="sidebar-submenu">
                             <li>
                                 <a href="{{ route('admin.website.setting', ['page' => 'setting']) }}"
-                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') ? 'active' : '' }}">
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'setting' ? 'active' : '' }}">
                                     Setting
+                                </a>
+                                <a href="{{ route('admin.website.setting', ['page' => 'home']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'home' ? 'active' : '' }}">
+                                    Home Page
                                 </a>
                             </li>
                         </ul>
