@@ -37,6 +37,7 @@ Route::controller(FrontendController::class)->name('frontend.')->group(function 
     Route::get('/product-detail/{product:slug?}', 'productDetail')->name('product-detail');
     Route::get('/about', 'about')->name('about');
     Route::get('/contact', 'contact')->name('contact');
+    Route::post('/contact', 'sendContactMessage')->middleware('throttle:5,1')->name('contact.send');
     Route::get('/categories', 'categories')->name('categories');
     Route::get('/delivery-policy', 'deliveryPolicy')->name('delivery-policy');
     Route::get('/faq', 'faq')->name('faq');

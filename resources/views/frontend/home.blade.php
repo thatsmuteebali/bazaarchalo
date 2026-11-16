@@ -8,10 +8,10 @@
             background-size: cover !important;
         }
 
-        .seller-section {
+        /* .seller-section {
             background: {{ $home_page_content['Become a Seller Background Color'] }};
             overflow: hidden;
-        }
+        } */
     </style>
 @endsection
 @section('content')

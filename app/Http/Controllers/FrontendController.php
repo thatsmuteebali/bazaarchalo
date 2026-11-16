@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactMessageMail;
 use App\Models\Category;
 use App\Models\Collection;
 use App\Models\HeroSectionSliderImage;
@@ -10,6 +11,7 @@ use App\Models\Shop;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class FrontendController extends Controller
 {
@@ -182,11 +184,38 @@ class FrontendController extends Controller
     }
     public function about()
     {
-        return view('frontend.about');
+        $about_page_content = getWebsiteContent('about-us');
+        return view('frontend.about',[
+            'about_page_content' => $about_page_content,
+        ]);
     }
     public function contact()
     {
         return view('frontend.contact');
+    }
+    public function sendContactMessage(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+            'email' => ['required', 'string', 'email', 'max:254'],
+            'message' => ['required', 'string', 'max:10000'],
+        ]);
+
+        $recipient = getWebsiteContent('setting')['Website Email'] ?? null;
+
+        if (! is_string($recipient) || ! filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+            return back()
+                ->withInput()
+                ->withErrors(['contact' => 'We are unable to receive messages right now. Please try again later.']);
+        }
+
+        Mail::to($recipient)->send(new ContactMessageMail(
+            name: $validated['name'],
+            email: $validated['email'],
+            message: $validated['message'],
+        ));
+
+        return to_route('frontend.contact')->with('status', 'Thank you for reaching out. Your message has been sent.');
     }
     public function productDetail(?Product $product = null)
     {

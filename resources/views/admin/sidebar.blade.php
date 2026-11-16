@@ -97,6 +97,12 @@
                                     class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'home' ? 'active' : '' }}">
                                     Home Page
                                 </a>
+
+                                <a href="{{ route('admin.website.setting', ['page' => 'about-us']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'about-us' ? 'active' : '' }}">
+                                    About Us
+                                </a>
+
                             </li>
                         </ul>
                     </div>

@@ -146,13 +146,14 @@
 
                         @switch($content->type)
                             @case('image')
+                                
+                                <input type="file" name="images[{{ $content->id }}]" id="{{ $inputId }}" accept="image/*"
+                                    data-preview="preview_{{ $content->id }}"
+                                    class="form-control-custom js-image-input @error($errorKey) is-invalid-custom @enderror">
                                 <div class="mb-2">
                                     <img id="preview_{{ $content->id }}" class="image-preview" src="{{ $content->image_url }}"
                                         alt="{{ $content->field }}" style="width: 96px; height: 72px; object-fit: contain;">
                                 </div>
-                                <input type="file" name="images[{{ $content->id }}]" id="{{ $inputId }}" accept="image/*"
-                                    data-preview="preview_{{ $content->id }}"
-                                    class="form-control-custom js-image-input @error($errorKey) is-invalid-custom @enderror">
                                 <small class="text-muted">Optional. Maximum file size: 2 MB.</small>
                             @break
 

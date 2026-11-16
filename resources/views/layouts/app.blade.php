@@ -263,8 +263,6 @@
                         <h4 class="text-light mb-3">Bazaar Chalo</h4>
                         <a class="btn-link" href="{{ route('frontend.about') }}">About Us</a>
                         <a class="btn-link" href="{{ route('frontend.contact') }}">Contact Us</a>
-                        <a class="btn-link" href="#">Careers</a>
-                        <a class="btn-link" href="#">Become a Seller</a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">
