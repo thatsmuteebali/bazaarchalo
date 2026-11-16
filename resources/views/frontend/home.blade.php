@@ -7,6 +7,11 @@
             background-repeat: no-repeat !important;
             background-size: cover !important;
         }
+
+        .seller-section {
+            background: {{ $home_page_content['Become a Seller Background Color'] }};
+            overflow: hidden;
+        }
     </style>
 @endsection
 @section('content')
@@ -104,9 +109,9 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-end mb-5" data-aos="fade-up">
                     <div>
                         <p class="text-secondary fw-bold text-uppercase mb-2">
-                            Fresh from your neighbourhood
+                            {{ $home_page_content['Feature Shops Subtitle'] }}
                         </p>
-                        <h2 class="display-6 mb-0">Popular Shops Near You</h2>
+                        <h2 class="display-6 mb-0">{{ $home_page_content['Feature Shops Title'] }}</h2>
                     </div>
                     <a href="{{ route('frontend.shop-listing') }}" class="btn border border-secondary rounded-pill px-4 text-primary">Explore
                         shops
@@ -152,9 +157,9 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-end mb-5" data-aos="fade-up">
                     <div>
                         <p class="text-secondary fw-bold text-uppercase mb-2">
-                            Handpicked collections
+                            {{ $home_page_content['Feature Collections Subtitle'] }}
                         </p>
-                        <h2 class="display-6 mb-0">Featured Collections</h2>
+                        <h2 class="display-6 mb-0">{{ $home_page_content['Feature Collections Title'] }}</h2>
                     </div>
                     <a href="{{ route('frontend.shop') }}" class="btn border border-secondary rounded-pill px-4 text-primary">
                         Shop collections <i class="fas fa-arrow-right ms-2"></i>
@@ -182,9 +187,9 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-end mb-5" data-aos="fade-up">
                     <div>
                         <p class="text-secondary fw-bold text-uppercase mb-2">
-                            Handpicked for you
+                            {{ $home_page_content['Feature Products Subtitle'] }}
                         </p>
-                        <h2 class="display-6 mb-0">Popular Products</h2>
+                        <h2 class="display-6 mb-0">{{ $home_page_content['Feature Products Title'] }}</h2>
                     </div>
                     <a href="{{ route('frontend.shop') }}" class="btn border border-secondary rounded-pill px-4 text-primary">Shop all
                         products <i class="fas fa-arrow-right ms-2"></i></a>
@@ -296,33 +301,29 @@
                 <div class="row align-items-center g-5">
                     <div class="col-lg-7" data-aos="fade-right">
                         <p class="text-secondary fw-bold text-uppercase mb-2">
-                            Grow with your community
+                            {{ $home_page_content['Become a Seller Subtitle'] }}
                         </p>
-                        <h2 class="display-6 mb-3">Become a Seller on Bazaar Chalo</h2>
+                        <h2 class="display-6 mb-3">{{ $home_page_content['Become a Seller Title'] }}</h2>
                         <p class="lead mb-4">
-                            Take your shop online, reach more local customers, and manage
-                            your products and orders in one simple place.
+                            {{ $home_page_content['Become a Seller Description'] }}
                         </p>
                         <div class="row g-3 mb-4">
                             <div class="col-sm-4">
-                                <strong class="d-block"><i class="fas fa-store text-secondary me-2"></i>List your
-                                    shop</strong><small>Set up your storefront</small>
+                                <strong class="d-block"><i class="{{ $home_page_content['Become a Seller step1 icon'] }} text-secondary me-2"></i>{{$home_page_content['Become a Seller step1 Title']}}</strong><small>{{$home_page_content['Become a Seller step1 Description']}}</small>
                             </div>
                             <div class="col-sm-4">
-                                <strong class="d-block"><i class="fas fa-box-open text-secondary me-2"></i>Add
-                                    products</strong><small>Showcase your stock</small>
+                                <strong class="d-block"><i class="{{ $home_page_content['Become a Seller step2 icon'] }} text-secondary me-2"></i>{{ $home_page_content['Become a Seller step2 Title'] }}</strong><small>{{ $home_page_content['Become a Seller step2 Description'] }}</small>
                             </div>
                             <div class="col-sm-4">
-                                <strong class="d-block"><i class="fas fa-chart-line text-secondary me-2"></i>Grow
-                                    sales</strong><small>Reach local buyers</small>
+                                <strong class="d-block"><i class="{{ $home_page_content['Become a Seller step3 icon'] }} text-secondary me-2"></i>{{ $home_page_content['Become a Seller step3 Title'] }}</strong><small>{{ $home_page_content['Become a Seller step3 Description'] }}</small>
                             </div>
                         </div>
                         <a href="{{ route('seller.register') }}" class="btn btn-primary rounded-pill py-3 px-5">Register your shop <i
                                 class="fas fa-arrow-right ms-2"></i></a>
                     </div>
                     <div class="col-lg-5" data-aos="fade-left" data-aos-delay="150">
-                        <img src="{{ asset('img/banner-fruits.jpg') }}" class="img-fluid rounded seller-image"
-                            alt="Fresh produce for local shops" />
+                        <img src="{{ asset('storage/'.ltrim($home_page_content['Become a Seller Right Image'], '/')) }}" class="img-fluid rounded seller-image"
+                            alt="Become a seller" />
                     </div>
                 </div>
             </div>
@@ -334,45 +335,45 @@
             <div class="container py-4">
                 <div class="text-center mx-auto mb-5" style="max-width: 700px" data-aos="fade-up">
                     <p class="text-secondary fw-bold text-uppercase mb-2">
-                        Why choose us
+                        {{$home_page_content['Why Bazaar Chalo Subtitle']}}
                     </p>
-                    <h2 class="display-6">Why Bazaar Chalo</h2>
+                    <h2 class="display-6">{{$home_page_content['Why Bazaar Chalo Title']}}</h2>
                     <p class="mb-0">
-                        A better way to shop local and help neighbourhood sellers thrive.
+                        {{$home_page_content['Why Bazaar Chalo Description']}}
                     </p>
                 </div>
                 <div class="row g-4">
                     <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
                         <div class="why-card text-center p-4">
-                            <i class="fas fa-leaf"></i>
-                            <h5>Fresh and local</h5>
+                            <i class="{{$home_page_content['Why Bazaar Chalo step1 Icon']}}"></i>
+                            <h5>{{$home_page_content['Why Bazaar Chalo step1 Title']}}</h5>
                             <p class="mb-0">
-                                Shop produce sourced from sellers close to you.
+                                {{$home_page_content['Why Bazaar Chalo step1 Description']}}
                             </p>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
                         <div class="why-card text-center p-4">
-                            <i class="fas fa-shield-alt"></i>
-                            <h5>Trusted sellers</h5>
+                            <i class="{{$home_page_content['Why Bazaar Chalo step2 Icon']}}"></i>
+                            <h5>{{$home_page_content['Why Bazaar Chalo step2 Title']}}</h5>
                             <p class="mb-0">
-                                Buy with confidence from verified local shops.
+                                {{$home_page_content['Why Bazaar Chalo step2 Description']}}
                             </p>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
                         <div class="why-card text-center p-4">
-                            <i class="fas fa-hand-holding-heart"></i>
-                            <h5>Support local</h5>
-                            <p class="mb-0">Every order helps a small business grow.</p>
+                            <i class="{{$home_page_content['Why Bazaar Chalo step3 Icon']}}"></i>
+                            <h5>{{$home_page_content['Why Bazaar Chalo step3 Title']}}</h5>
+                            <p class="mb-0">{{$home_page_content['Why Bazaar Chalo step3 Description']}}</p>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="400">
                         <div class="why-card text-center p-4">
-                            <i class="fas fa-shipping-fast"></i>
-                            <h5>Easy delivery</h5>
+                            <i class="{{$home_page_content['Why Bazaar Chalo step4 Icon']}}"></i>
+                            <h5>{{$home_page_content['Why Bazaar Chalo step4 Title']}}</h5>
                             <p class="mb-0">
-                                Get your everyday essentials delivered with ease.
+                                {{$home_page_content['Why Bazaar Chalo step4 Description']}}
                             </p>
                         </div>
                     </div>
