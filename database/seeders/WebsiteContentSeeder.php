@@ -119,6 +119,12 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'faq', 'field' => 'FAQ Title', 'value' => 'How can we help?', 'type' => 'text'],
             ['page' => 'faq', 'field' => 'FAQ Description', 'value' => 'Find quick answers about shopping fresh, supporting local sellers, and receiving your order.', 'type' => 'textarea'],
 
+            // Privacy Policy content 
+            ['page' => 'privacy-policy', 'field' => 'Banner Title', 'value' => 'Privacy Policy', 'type' => 'text'],
+            ['page' => 'privacy-policy', 'field' => 'Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
+            ['page' => 'privacy-policy', 'field' => 'Subtitle', 'value' => 'Bazaar Chalo', 'type' => 'text'],
+            ['page' => 'privacy-policy', 'field' => 'Title', 'value' => 'Privacy Policy', 'type' => 'text'],
+            ['page' => 'privacy-policy', 'field' => 'Description', 'value' => 'Bazaar Chalo respects your privacy. This Privacy Policy explains what information we collect, how we use it, and the choices you have when you use our website, marketplace, and services.', 'type' => 'editor'],
         ];
 
         foreach ($contents as $content) {

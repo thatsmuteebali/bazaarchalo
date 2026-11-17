@@ -281,7 +281,10 @@ class FrontendController extends Controller
     }
     public function privacyPolicy()
     {
-        return view('frontend.privacy-policy');
+        $privacy_page_content = getWebsiteContent('privacy-policy');
+        return view('frontend.privacy-policy',[
+            'privacy_page_content' => $privacy_page_content
+        ]);
     }
     public function refundPolicy()
     {

@@ -108,6 +108,11 @@
                                     FAQ
                                 </a>
 
+                                <a href="{{ route('admin.website.setting', ['page' => 'privacy-policy']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'privacy-policy' ? 'active' : '' }}">
+                                    Privacy Policy
+                                </a>
+
                             </li>
                         </ul>
                     </div>
