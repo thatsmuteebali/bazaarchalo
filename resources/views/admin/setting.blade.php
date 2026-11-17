@@ -133,7 +133,7 @@
                         ])
                     </template>
                 @endif
-                
+
                 @forelse ($webcontents as $content)
                     @php
                         $inputId = 'content_' . $content->id;
@@ -146,7 +146,7 @@
 
                         @switch($content->type)
                             @case('image')
-                                
+
                                 <input type="file" name="images[{{ $content->id }}]" id="{{ $inputId }}" accept="image/*"
                                     data-preview="preview_{{ $content->id }}"
                                     class="form-control-custom js-image-input @error($errorKey) is-invalid-custom @enderror">
@@ -197,7 +197,50 @@
                     @endforelse
                 </div>
 
-                @if ($webcontents->isNotEmpty())
+                @if ($page == 'faq')
+                    @php
+                        $faqRows =
+                            old('faqs') ??
+                            $faqs
+                                ->map(fn($f) => ['id' => $f->id, 'question' => $f->question, 'answer' => $f->answer])
+                                ->values()
+                                ->all();
+                        $nextFaqIndex = count($faqRows) ? max(array_map('intval', array_keys($faqRows))) + 1 : 0;
+                    @endphp
+
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Frequently Asked Questions</h5>
+                        <button type="button" id="add-faq" class="btn-custom btn-custom-primary">
+                            <i class="bi bi-plus-lg"></i> Add Faq
+                        </button>
+                    </div>
+
+                    <input type="hidden" name="has_faqs" value="1">
+
+                    <div id="faq-list">
+                        @foreach ($faqRows as $index => $row)
+                            @include('admin.partials.faq-row', [
+                                'index' => $index,
+                                'id' => $row['id'] ?? '',
+                                'question' => $row['question'] ?? '',
+                                'answer' => $row['answer'] ?? '',
+                            ])
+                        @endforeach
+                    </div>
+
+                    <p id="faq-empty" class="text-muted">No FAQs added yet.</p>
+
+                    <template id="faq-row-template">
+                        @include('admin.partials.faq-row', [
+                            'index' => '__INDEX__',
+                            'id' => '',
+                            'question' => '',
+                            'answer' => '',
+                        ])
+                    </template>
+                @endif
+
+                @if ($webcontents->isNotEmpty() || in_array($page, ['home', 'faq']))
                     <div class="d-flex flex-wrap gap-2 mb-4">
                         <button class="btn-custom btn-custom-primary" type="submit">Save</button>
                         <a href="{{ route('admin.website.setting', ['page' => $page]) }}"
@@ -287,6 +330,28 @@
                     });
 
                     toggleSliderEmpty();
+                @endif
+
+                @if ($page == 'faq')
+                    // ---------- FAQ rows ----------
+                    let faqIndex = {{ $nextFaqIndex }};
+
+                    function toggleFaqEmpty() {
+                        $('#faq-empty').toggle($('#faq-list .faq-row').length === 0);
+                    }
+
+                    $('#add-faq').on('click', function() {
+                        const template = document.getElementById('faq-row-template').innerHTML;
+                        $('#faq-list').append(template.replace(/__INDEX__/g, faqIndex++));
+                        toggleFaqEmpty();
+                    });
+
+                    $(document).on('click', '.js-remove-faq', function() {
+                        $(this).closest('.faq-row').remove();
+                        toggleFaqEmpty();
+                    });
+
+                    toggleFaqEmpty();
                 @endif
             });
         </script>

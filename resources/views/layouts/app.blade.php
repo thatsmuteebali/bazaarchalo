@@ -272,9 +272,8 @@
                         <a class="btn-link" href="{{ route('register') }}">Register</a>
                         <a class="btn-link" href="{{ route('customer.account') }}">My Account</a>
                         <a class="btn-link" href="{{ route('customer.orders') }}">My Orders</a>
-                        <a class="btn-link" href="{{ route('customer.order-tracking') }}">Track Order</a>
-                        <a class="btn-link" href="{{ route('frontend.faq') }}">FAQ /Help Center</a>
-                        <a class="btn-link" href="">Return</a>
+                        {{-- <a class="btn-link" href="{{ route('customer.order-tracking') }}">Track Order</a> --}}
+                        <a class="btn-link" href="{{ route('frontend.faq') }}">FAQ</a>
                         <a class="btn-link" href="{{ route('frontend.privacy-policy') }}">Privacy Policy</a>
                         <a class="btn-link" href="{{ route('frontend.terms-and-conditions') }}">Terms & Conditions</a>
                         <a class="btn-link" href="{{ route('frontend.refund-policy') }}">Refund Policy</a>

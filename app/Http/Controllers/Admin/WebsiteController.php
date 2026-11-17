@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Faq;
 use App\Models\HeroSectionSliderImage;
 use App\Models\WebContent;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ class WebsiteController extends Controller
             'sliders' => $page === 'home'
                 ? HeroSectionSliderImage::orderBy('id')->get()
                 : collect(),
+            'faqs' => $page === 'faq'
+                ? Faq::orderBy('id')->get()
+                : collect(),
         ]);
     }
 
@@ -31,10 +35,11 @@ class WebsiteController extends Controller
 
         $page = $request->input('page');
         $isHome = $page === 'home';
+        $isFaq = $page === 'faq';
 
         $webcontents = WebContent::where('page', $page)->get();
 
-        abort_if($webcontents->isEmpty() && ! $isHome, 404);
+        abort_if($webcontents->isEmpty() && ! $isHome && ! $isFaq, 404);
 
         // ---------- Rules for web content rows ----------
         $rules = [];
@@ -81,6 +86,22 @@ class WebsiteController extends Controller
             $attributes["sliders.$i.image"] = "slide $n image";
         }
 
+        // ---------- Rules for FAQ rows (faq page only) ----------
+        $syncFaqs = $isFaq && $request->boolean('has_faqs');
+        $faqRows = $syncFaqs ? (array) $request->input('faqs', []) : [];
+
+        $n = 0;
+        foreach ($faqRows as $i => $row) {
+            $n++;
+
+            $rules["faqs.$i.id"] = ['nullable', 'integer', 'exists:faqs,id'];
+            $rules["faqs.$i.question"] = ['required', 'string', 'max:500'];
+            $rules["faqs.$i.answer"] = ['required', 'string', 'max:5000'];
+
+            $attributes["faqs.$i.question"] = "FAQ $n question";
+            $attributes["faqs.$i.answer"] = "FAQ $n answer";
+        }
+
         $request->validate($rules, [], $attributes);
 
         // ---------- Save web content rows ----------
@@ -109,6 +130,11 @@ class WebsiteController extends Controller
         // ---------- Save hero sliders ----------
         if ($syncSliders) {
             $this->syncSliders($request, $sliderRows);
+        }
+
+        // ---------- Save FAQs ----------
+        if ($syncFaqs) {
+            $this->syncFaqs($faqRows);
         }
 
         return redirect()
@@ -146,6 +172,24 @@ class WebsiteController extends Controller
             if ($file) {
                 $this->deleteImage($oldPath);
             }
+        }
+    }
+
+    private function syncFaqs(array $rows): void
+    {
+        $keepIds = collect($rows)->pluck('id')->filter()->map(fn ($id) => (int) $id)->all();
+
+        // Delete FAQs that were removed in the form
+        Faq::whereNotIn('id', $keepIds)->delete();
+
+        // Create or update the rest
+        foreach ($rows as $row) {
+            $faq = ! empty($row['id']) ? Faq::find($row['id']) : null;
+            $faq ??= new Faq();
+
+            $faq->question = trim($row['question']);
+            $faq->answer = trim($row['answer']);
+            $faq->save();
         }
     }
 

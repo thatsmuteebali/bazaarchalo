@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ContactMessageMail;
 use App\Models\Category;
 use App\Models\Collection;
+use App\Models\Faq;
 use App\Models\HeroSectionSliderImage;
 use App\Models\Product;
 use App\Models\Shop;
@@ -267,7 +268,12 @@ class FrontendController extends Controller
     }
     public function faq()
     {
-        return view('frontend.faq');
+        $faq_page_content = getWebsiteContent('faq');
+        $faqs = Faq::orderBy('id')->get();
+        return view('frontend.faq', [
+            'faq_page_content' => $faq_page_content,
+            'faqs' => $faqs
+        ]);
     }
     public function offers()
     {

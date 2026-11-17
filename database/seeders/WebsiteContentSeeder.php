@@ -38,7 +38,7 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'home', 'field' => 'Feature Collections Title', 'value' => 'Featured Collections', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Feature Products Subtitle', 'value' => 'Handpicked for you', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Feature Products Title', 'value' => 'Popular Products', 'type' => 'text'],
-            // Home Page Become a seller section 
+            // Home Page Become a seller section
             ['page' => 'home', 'field' => 'Become a Seller Subtitle', 'value' => 'Grow with your community', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Become a Seller Title', 'value' => 'Become a Seller on Bazaar Chalo', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Become a Seller Description', 'value' => 'Take your shop online, reach more local customers, and manage your products and orders in one simple place.', 'type' => 'textarea'],
@@ -53,7 +53,7 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'home', 'field' => 'Become a Seller step3 Description', 'value' => 'Reach local buyers', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Become a Seller Right Image', 'value' => 'no_image', 'type' => 'image'],
             // ['page' => 'home', 'field' => 'Become a Seller Background Color', 'value' => '#f8dfad2e', 'type' => 'color'],
-            // Home page Why chalo bazaar section 
+            // Home page Why chalo bazaar section
             ['page' => 'home', 'field' => 'Why Bazaar Chalo Subtitle', 'value' => 'Why choose us', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Why Bazaar Chalo Title', 'value' => 'Why Bazaar Chalo', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Why Bazaar Chalo Description', 'value' => 'A better way to shop local and help neighbourhood sellers thrive.', 'type' => 'textarea'],
@@ -69,10 +69,10 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'home', 'field' => 'Why Bazaar Chalo step4 Icon', 'value' => 'fas fa-shipping-fast', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Why Bazaar Chalo step4 Title', 'value' => 'Easy delivery', 'type' => 'text'],
             ['page' => 'home', 'field' => 'Why Bazaar Chalo step4 Description', 'value' => 'Get your everyday essentials delivered with ease.', 'type' => 'text'],
-            // About Banner Section 
+            // About Banner Section
             ['page' => 'about-us', 'field' => 'Banner Title', 'value' => 'About Bazaar Chalo', 'type' => 'text'],
             ['page' => 'about-us', 'field' => 'Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
-            // About Main Section 
+            // About Main Section
             ['page' => 'about-us', 'field' => 'About Section Left Image', 'value' => 'no_image', 'type' => 'image'],
             ['page' => 'about-us', 'field' => 'About Section Subtitle', 'value' => 'Fresh shopping, local impact', 'type' => 'text'],
             ['page' => 'about-us', 'field' => 'About Section Title', 'value' => 'Your local bazaar, brought closer', 'type' => 'text'],
@@ -91,7 +91,7 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'about-us', 'field' => 'Guide Section Step3 Title', 'value' => 'Shopping with purpose', 'type' => 'text'],
             ['page' => 'about-us', 'field' => 'Guide Section Step3 Description', 'value' => 'Every order keeps more value close to home and supports the people around you.', 'type' => 'text'],
 
-            // About How bazaar chalo work section 
+            // About How bazaar chalo work section
             ['page' => 'about-us', 'field' => 'How Bazaar Chalo Subtitle', 'value' => 'Simple by design', 'type' => 'text'],
             ['page' => 'about-us', 'field' => 'How Bazaar Chalo Title', 'value' => 'How Bazaar Chalo works', 'type' => 'text'],
             ['page' => 'about-us', 'field' => 'How Bazaar Chalo Description', 'value' => 'A better local shopping journey in three easy steps.', 'type' => 'textarea'],
@@ -109,9 +109,16 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'setting', 'field' => 'Contact Banner Title', 'value' => 'Contact', 'type' => 'text'],
             ['page' => 'setting', 'field' => 'Contact Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
 
-            // Contact main heading 
+            // Contact main heading
             ['page' => 'setting', 'field' => 'Contact Title', 'value' => 'Get in touch', 'type' => 'text'],
-            
+
+            // FAQ page content
+            ['page' => 'faq', 'field' => 'FAQ Banner Title', 'value' => 'Frequently Asked Questions', 'type' => 'text'],
+            ['page' => 'faq', 'field' => 'FAQ Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
+            ['page' => 'faq', 'field' => 'FAQ Subtitle', 'value' => 'Need a little help?', 'type' => 'text'],
+            ['page' => 'faq', 'field' => 'FAQ Title', 'value' => 'How can we help?', 'type' => 'text'],
+            ['page' => 'faq', 'field' => 'FAQ Description', 'value' => 'Find quick answers about shopping fresh, supporting local sellers, and receiving your order.', 'type' => 'textarea'],
+
         ];
 
         foreach ($contents as $content) {

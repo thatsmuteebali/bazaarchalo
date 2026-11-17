@@ -103,6 +103,11 @@
                                     About Us
                                 </a>
 
+                                <a href="{{ route('admin.website.setting', ['page' => 'faq']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'faq' ? 'active' : '' }}">
+                                    FAQ
+                                </a>
+
                             </li>
                         </ul>
                     </div>
