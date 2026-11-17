@@ -288,7 +288,10 @@ class FrontendController extends Controller
     }
     public function refundPolicy()
     {
-        return view('frontend.refund-policy');
+        $refund_page_content = getWebsiteContent('refund-policy');
+        return view('frontend.refund-policy',[
+           'refund_page_content' => $refund_page_content 
+        ]);
     }
     public function shopListing(Request $request)
     {
@@ -324,7 +327,10 @@ class FrontendController extends Controller
     }
     public function termsAndConditions()
     {
-        return view('frontend.terms-and-conditions');
+        $term_page_content = getWebsiteContent('term-and-condition');
+        return view('frontend.terms-and-conditions',[
+            'term_page_content' => $term_page_content
+        ]);
     }
     public function cart(CartService $cart)
    {

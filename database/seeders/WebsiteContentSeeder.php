@@ -125,6 +125,20 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'privacy-policy', 'field' => 'Subtitle', 'value' => 'Bazaar Chalo', 'type' => 'text'],
             ['page' => 'privacy-policy', 'field' => 'Title', 'value' => 'Privacy Policy', 'type' => 'text'],
             ['page' => 'privacy-policy', 'field' => 'Description', 'value' => 'Bazaar Chalo respects your privacy. This Privacy Policy explains what information we collect, how we use it, and the choices you have when you use our website, marketplace, and services.', 'type' => 'editor'],
+
+            // Privacy Policy content 
+            ['page' => 'term-and-condition', 'field' => 'Banner Title', 'value' => 'Terms and Conditions', 'type' => 'text'],
+            ['page' => 'term-and-condition', 'field' => 'Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
+            ['page' => 'term-and-condition', 'field' => 'Subtitle', 'value' => 'Bazaar Chalo', 'type' => 'text'],
+            ['page' => 'term-and-condition', 'field' => 'Title', 'value' => 'Terms and Conditions', 'type' => 'text'],
+            ['page' => 'term-and-condition', 'field' => 'Description', 'value' => 'Welcome to Bazaar Chalo. These Terms and Conditions explain the rules for using our website, marketplace, and services. By accessing Bazaar Chalo or placing an order, you agree to follow these terms.', 'type' => 'editor'],
+
+            // Refund policy content 
+            ['page' => 'refund-policy', 'field' => 'Banner Title', 'value' => 'Refund Policy', 'type' => 'text'],
+            ['page' => 'refund-policy', 'field' => 'Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
+            ['page' => 'refund-policy', 'field' => 'Subtitle', 'value' => 'Bazaar Chalo', 'type' => 'text'],
+            ['page' => 'refund-policy', 'field' => 'Title', 'value' => 'Refund Policy', 'type' => 'text'],
+            ['page' => 'refund-policy', 'field' => 'Description', 'value' => 'We want you to feel confident when shopping with local sellers through Bazaar Chalo. This Refund Policy explains when an order may qualify for a refund, replacement, or other resolution.', 'type' => 'editor'],
         ];
 
         foreach ($contents as $content) {

@@ -112,6 +112,15 @@
                                     class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'privacy-policy' ? 'active' : '' }}">
                                     Privacy Policy
                                 </a>
+                                <a href="{{ route('admin.website.setting', ['page' => 'term-and-condition']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'term-and-condition' ? 'active' : '' }}">
+                                    Term & Condition
+                                </a>
+
+                                <a href="{{ route('admin.website.setting', ['page' => 'refund-policy']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'refund-policy' ? 'active' : '' }}">
+                                    Refund Policy
+                                </a>
 
                             </li>
                         </ul>
