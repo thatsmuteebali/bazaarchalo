@@ -285,8 +285,8 @@
                         <h4 class="text-light mb-3">Seller</h4>
                         <a class="btn-link" href="{{ route('seller.login') }}">Seller Login</a>
                         <a class="btn-link" href="{{ route('seller.register') }}">Seller Registration</a>
-                        <a class="btn-link" href="{{ route('frontend.faq') }}">Seller Guide</a>
-                        <a class="btn-link" href="{{ route('frontend.faq') }}">Seller Support</a>
+                        <a class="btn-link" href="{{ route('frontend.seller-guide') }}">Seller Guide</a>
+                        <a class="btn-link" href="{{ route('frontend.seller-support') }}">Seller Support</a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6">

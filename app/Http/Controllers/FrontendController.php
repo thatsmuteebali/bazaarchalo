@@ -339,4 +339,19 @@ class FrontendController extends Controller
    {
        return view('frontend.cart', ['cart' => $cart->summary()]);
    }
+
+    public function sellerGuide()
+    {
+        $seller_guide_page_content = getWebsiteContent('seller-guide');
+        return view('frontend.seller-guide',[
+            'seller_guide_page_content' => $seller_guide_page_content,
+        ]);
+    }
+    public function sellerSupport()
+    {
+        $seller_support_page_content = getWebsiteContent('seller-support');
+        return view('frontend.seller-support',[
+            'seller_support_page_content' => $seller_support_page_content,
+        ]);
+    }
 }

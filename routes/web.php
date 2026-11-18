@@ -46,7 +46,8 @@ Route::controller(FrontendController::class)->name('frontend.')->group(function 
     Route::get('/refund-policy', 'refundPolicy')->name('refund-policy');
     Route::get('/shop-listing', 'shopListing')->name('shop-listing');
     Route::get('/terms-and-conditions', 'termsAndConditions')->name('terms-and-conditions');
-
+    Route::get('/seller-support', 'sellerSupport')->name('seller-support');
+    Route::get('/seller-guide', 'sellerGuide')->name('seller-guide');
     Route::get('/cart', 'cart')->name('cart');
 });
 

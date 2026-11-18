@@ -127,6 +127,16 @@
                                     Delivery Policy
                                 </a>
 
+                                <a href="{{ route('admin.website.setting', ['page' => 'seller-guide']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'seller-guide' ? 'active' : '' }}">
+                                    Seller Guide
+                                </a>
+
+                                <a href="{{ route('admin.website.setting', ['page' => 'seller-support']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'seller-support' ? 'active' : '' }}">
+                                    Seller Support
+                                </a>
+
                             </li>
                         </ul>
                     </div>

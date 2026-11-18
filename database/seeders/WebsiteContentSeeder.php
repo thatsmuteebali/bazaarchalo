@@ -140,12 +140,26 @@ class WebsiteContentSeeder extends Seeder
             ['page' => 'refund-policy', 'field' => 'Title', 'value' => 'Refund Policy', 'type' => 'text'],
             ['page' => 'refund-policy', 'field' => 'Description', 'value' => 'We want you to feel confident when shopping with local sellers through Bazaar Chalo. This Refund Policy explains when an order may qualify for a refund, replacement, or other resolution.', 'type' => 'editor'],
 
-            // Refund policy content
+            // Delivery policy content
             ['page' => 'delivery-policy', 'field' => 'Banner Title', 'value' => 'Delivery Policy', 'type' => 'text'],
             ['page' => 'delivery-policy', 'field' => 'Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
             ['page' => 'delivery-policy', 'field' => 'Subtitle', 'value' => 'Bazaar Chalo', 'type' => 'text'],
             ['page' => 'delivery-policy', 'field' => 'Title', 'value' => 'Delivery Policy', 'type' => 'text'],
             ['page' => 'delivery-policy', 'field' => 'Description', 'value' => 'Bazaar Chalo helps local sellers deliver fresh products and everyday essentials to customers. This Delivery Policy explains how delivery works, what customers should expect, and how to report a delivery issue.', 'type' => 'editor'],
+
+            // Seller Guide content
+            ['page' => 'seller-guide', 'field' => 'Banner Title', 'value' => 'Seller Guide', 'type' => 'text'],
+            ['page' => 'seller-guide', 'field' => 'Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
+            ['page' => 'seller-guide', 'field' => 'Subtitle', 'value' => 'Bazaar Chalo', 'type' => 'text'],
+            ['page' => 'seller-guide', 'field' => 'Title', 'value' => 'Seller Guidelines', 'type' => 'text'],
+            ['page' => 'seller-guide', 'field' => 'Description', 'value' => 'Welcome to Bazaar Chalo! We are excited to have you as part of our seller community. Whether you are starting a new online business or expanding your existing store, Bazaar Chalo provides an easy way to showcase your products and connect with customers.', 'type' => 'editor'],
+
+            // Seller Support content
+            ['page' => 'seller-support', 'field' => 'Banner Title', 'value' => 'Seller Support', 'type' => 'text'],
+            ['page' => 'seller-support', 'field' => 'Banner Background Image', 'value' => 'no_image', 'type' => 'image'],
+            ['page' => 'seller-support', 'field' => 'Subtitle', 'value' => 'Bazaar Chalo', 'type' => 'text'],
+            ['page' => 'seller-support', 'field' => 'Title', 'value' => 'Seller Support', 'type' => 'text'],
+            ['page' => 'seller-support', 'field' => 'Description', 'value' => 'At Bazaar Chalo, we value our sellers and are committed to helping them succeed. Whether you need assistance with your seller account, product listings, orders, payments, or deliveries, our support team is here to help.', 'type' => 'editor'],
         ];
 
         foreach ($contents as $content) {
