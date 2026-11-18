@@ -24,7 +24,7 @@ class Order extends Model
         'order_number', 'user_id',
         'customer_name', 'customer_phone', 'customer_email',
         'delivery_address', 'latitude', 'longitude', 'notes',
-        'payment_method', 'online_payment_method', 'payment_status', 'paid_at',
+        'payment_method', 'online_payment_method', 'payment_method_name', 'payment_status', 'paid_at',
         'subtotal', 'shipping_total', 'total', 'payable_total',
         'status', 'completed_at', 'cancelled_at',
     ];
@@ -87,6 +87,17 @@ class Order extends Model
     public function isCashOnDelivery(): bool
     {
         return $this->payment_method === self::METHOD_COD;
+    }
+
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        if ($this->payment_method_name) {
+            return $this->payment_method_name;
+        }
+
+        return $this->isCashOnDelivery()
+            ? 'Cash on Delivery'
+            : str_replace('_', ' ', ucfirst($this->online_payment_method ?? 'Online'));
     }
 
     /** Orders that contain at least one item of this seller. */

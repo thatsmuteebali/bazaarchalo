@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CollectionController as AdminCollectionController;
 use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Admin\ManagedUserController;
+use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ShopController as AdminShopController;
 use App\Http\Controllers\Admin\WebsiteController;
@@ -125,6 +126,18 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
                 Route::patch('/{category}/restore', 'restore')->withTrashed()->name('restore');
                 Route::delete('/{category}/force', 'forceDelete')->withTrashed()->name('force-delete');
             });
+        });
+
+        Route::controller(PaymentMethodController::class)->prefix('payment-methods')->name('payment-methods.')->group(function () {
+            Route::get('/', 'list')->name('list');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/{paymentMethod}/show', 'show')->name('show');
+            Route::get('/{paymentMethod}/edit', 'edit')->name('edit');
+            Route::put('/{paymentMethod}', 'update')->name('update');
+            Route::delete('/{paymentMethod}', 'destroy')->name('destroy');
+            Route::patch('/{paymentMethod}/restore', 'restore')->withTrashed()->name('restore');
+            Route::delete('/{paymentMethod}/force', 'forceDelete')->withTrashed()->name('force-delete');
         });
 
         Route::prefix('sellers')->name('sellers.')->controller(ManagedUserController::class)->group(function () {

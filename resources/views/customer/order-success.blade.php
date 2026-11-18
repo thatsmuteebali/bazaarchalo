@@ -52,7 +52,7 @@
                         <div class="d-flex justify-content-between border-bottom pb-3 mb-3 gap-3">
                             <span class="text-muted">Payment</span>
                             <strong>
-                                {{ $order->payment_method === 'cod' ? 'Cash on Delivery' : ucfirst($order->online_payment_method) }}
+                                {{ $order->payment_method_label }}
                                 <span class="text-muted fw-normal">({{ ucfirst($order->payment_status) }})</span>
                             </strong>
                         </div>

@@ -295,7 +295,7 @@
             <section class="seller-order-panel">
                 <h2>Order information</h2>
                 <div class="seller-order-info-row"><span class="seller-order-muted">Payment
-                        method</span><strong>{{ $order->payment_method === 'cod' ? 'Cash on Delivery' : ucfirst($order->online_payment_method) }}</strong>
+                        method</span><strong>{{ $order->payment_method_label }}</strong>
                 </div>
                 <div class="seller-order-info-row"><span class="seller-order-muted">Payment
                         status</span><strong>{{ ucfirst($order->payment_status) }}</strong></div>

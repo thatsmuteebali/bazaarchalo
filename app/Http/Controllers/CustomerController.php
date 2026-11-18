@@ -8,6 +8,7 @@ use App\Services\OrderPlacementService;
 use App\Exceptions\CartException;
 use App\Http\Requests\CheckoutRequest;
 use App\Models\Order;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -101,6 +102,10 @@ class CustomerController extends Controller
             'totals'           => $checkout->totals($summary),
             'googleMapsApiKey' => config('services.google_maps.key'),
             'user'              => auth()->user(),
+            'paymentMethods'    => PaymentMethod::query()
+                ->where('status', 'active')
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 

@@ -6,10 +6,12 @@ use App\Exceptions\CartException;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderPayment;
+use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class OrderPlacementService
 {
@@ -87,7 +89,21 @@ class OrderPlacementService
             }
 
             $totals = $this->checkout->totals(['count' => $count, 'subtotal' => round($subtotal, 2)]);
-            $paymentMethod = $details['payment_method'];
+            $selectedPaymentMethod = PaymentMethod::query()
+                ->whereKey($details['payment_method'])
+                ->where('status', 'active')
+                ->lockForUpdate()
+                ->first();
+
+            if (! $selectedPaymentMethod) {
+                throw ValidationException::withMessages([
+                    'payment_method' => 'That payment method is no longer available. Please choose another one.',
+                ]);
+            }
+
+            $isCashOnDelivery = $selectedPaymentMethod->slug === 'cod';
+            $paymentMethod = $isCashOnDelivery ? Order::METHOD_COD : Order::METHOD_ONLINE;
+            $gateway = $isCashOnDelivery ? null : $selectedPaymentMethod->slug;
 
             $order = Order::create([
                 'user_id' => $customer->id,
@@ -99,9 +115,8 @@ class OrderPlacementService
                 'longitude' => $details['longitude'] ?? null,
                 'notes' => $details['notes'] ?? null,
                 'payment_method' => $paymentMethod,
-                'online_payment_method' => $paymentMethod === Order::METHOD_ONLINE
-                    ? $details['online_payment_method']
-                    : null,
+                'online_payment_method' => $gateway,
+                'payment_method_name' => $selectedPaymentMethod->name,
                 'payment_status' => Order::PAYMENT_UNPAID,
                 'subtotal' => $totals['subtotal'],
                 'shipping_total' => $totals['shipping'],
@@ -145,7 +160,7 @@ class OrderPlacementService
 
             $order->payments()->create([
                 'method' => $paymentMethod,
-                'gateway' => $paymentMethod === Order::METHOD_ONLINE ? $details['online_payment_method'] : null,
+                'gateway' => $gateway,
                 'amount' => $totals['total'],
                 'status' => OrderPayment::STATUS_PENDING,
             ]);

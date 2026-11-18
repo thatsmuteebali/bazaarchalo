@@ -31,6 +31,14 @@
                         <span>Categories</span>
                     </a>
                 </li>
+                <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.payment-methods.list') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.payment-methods*') ? 'active' : '' }}"
+                        id="menu-payment-methods" title="Payment Methods">
+                        <i class="bi bi-credit-card-fill"></i>
+                        <span>Payment Methods</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-menu-item">
                     <a href="{{ route('admin.customers.index') }}"

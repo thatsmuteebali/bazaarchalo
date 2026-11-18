@@ -365,43 +365,28 @@
                             <p class="co-card-sub">Choose how you would like to pay.</p>
 
                             @php
-                                $selectedPayment = old('payment_method', 'cod');
-                                $selectedOnlineMethod = old('online_payment_method');
-                                $onlineMethods = [
-                                    'jazzcash' => 'JazzCash',
-                                    'easypaisa' => 'Easypaisa',
-                                    'gopayfast' => 'Gopayfast',
-                                    'bank_account' => 'Bank Account',
-                                ];
+                                $selectedPaymentMethod = (string) old('payment_method', $paymentMethods->first()?->id);
                             @endphp
 
-                            <fieldset class="border-0 p-0 m-0">
-                                <legend class="visually-hidden">Choose a payment method</legend>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="paymentCod" value="cod"
-                                        {{ $selectedPayment === 'cod' ? 'checked' : '' }} required>
-                                    <label class="form-check-label" for="paymentCod">Cash on Delivery</label>
+                            @if ($paymentMethods->isEmpty())
+                                <div class="alert alert-warning mb-0" role="status">
+                                    No payment methods are currently available. Please contact the store before placing your order.
                                 </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="paymentOnline" value="online"
-                                        {{ $selectedPayment === 'online' ? 'checked' : '' }} required>
-                                    <label class="form-check-label" for="paymentOnline">Online Payment</label>
-                                </div>
-                            </fieldset>
-
-                            <fieldset id="onlinePaymentOptions" class="co-online-options rounded d-none" {{ $selectedPayment === 'online' ? '' : 'hidden' }}>
-                                <legend class="fs-6 fw-semibold mb-2">Select online payment method</legend>
-                                @foreach ($onlineMethods as $key => $label)
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="radio" name="online_payment_method" id="onlinePayment{{ ucfirst($key) }}"
-                                            value="{{ $key }}" {{ $selectedOnlineMethod === $key ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="onlinePayment{{ ucfirst($key) }}">{{ $label }}</label>
-                                    </div>
-                                @endforeach
-                                @error('online_payment_method')
-                                    <div class="text-danger small mt-2">{{ $message }}</div>
-                                @enderror
-                            </fieldset>
+                            @else
+                                <fieldset class="border-0 p-0 m-0">
+                                    <legend class="visually-hidden">Choose a payment method</legend>
+                                    @foreach ($paymentMethods as $paymentMethod)
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="payment_method"
+                                                id="paymentMethod{{ $paymentMethod->id }}" value="{{ $paymentMethod->id }}"
+                                                @checked($selectedPaymentMethod === (string) $paymentMethod->id) required>
+                                            <label class="form-check-label" for="paymentMethod{{ $paymentMethod->id }}">
+                                                {{ $paymentMethod->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </fieldset>
+                            @endif
 
                             @error('payment_method')
                                 <div class="text-danger small mt-2">{{ $message }}</div>
@@ -445,7 +430,8 @@
                                     <div class="invalid-feedback">@error('terms') {{ $message }} @else Please accept the terms to continue. @enderror</div>
                                 </div>
 
-                                <button type="submit" id="placeOrderBtn" class="btn btn-primary rounded-pill w-100 py-3 mt-4 text-uppercase">
+                                <button type="submit" id="placeOrderBtn" class="btn btn-primary rounded-pill w-100 py-3 mt-4 text-uppercase"
+                                    @disabled($paymentMethods->isEmpty())>
                                     <i class="fas fa-lock me-2" aria-hidden="true"></i><span>Place Order</span>
                                 </button>
 
@@ -476,8 +462,6 @@
             var suggestionsBox = document.getElementById('addressSuggestions');
             var addressStatus = document.getElementById('addressStatus');
             var currentLocationButton = document.getElementById('useCurrentLocation');
-            var onlinePaymentOptions = document.getElementById('onlinePaymentOptions');
-            var onlinePaymentRadios = onlinePaymentOptions.querySelectorAll('input[name="online_payment_method"]');
             var submitting = false;
 
             // Keep the mobile number in the exact 11-digit format expected by validation.
@@ -485,20 +469,6 @@
                 phone.value = phone.value.replace(/\D/g, '').slice(0, 11);
             });
             phone.value = phone.value.replace(/\D/g, '').slice(0, 11);
-
-            function updateOnlinePaymentOptions() {
-                var onlineSelected = document.getElementById('paymentOnline').checked;
-                onlinePaymentOptions.hidden = !onlineSelected;
-                onlinePaymentRadios.forEach(function(radio) {
-                    radio.disabled = !onlineSelected;
-                    radio.required = onlineSelected;
-                });
-            }
-
-            document.querySelectorAll('input[name="payment_method"]').forEach(function(radio) {
-                radio.addEventListener('change', updateOnlinePaymentOptions);
-            });
-            updateOnlinePaymentOptions();
 
             /* =====================================================
                Google Maps: address suggestions + map + current location

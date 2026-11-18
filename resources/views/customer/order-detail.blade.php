@@ -110,7 +110,7 @@
                     </div>
                     <div class="bg-light rounded p-4 mb-4">
                         <h3 class="h5 mb-3">Payment</h3>
-                        <p class="mb-2">{{ $order->payment_method === 'cod' ? 'Cash on Delivery' : ucfirst($order->online_payment_method) }}</p>
+                        <p class="mb-2">{{ $order->payment_method_label }}</p>
                         <p class="text-muted mb-0">{{ ucfirst($order->payment_status) }}</p>
                     </div>
                     <a href="{{ route('customer.order-tracking', ['order' => $order->order_number]) }}" class="btn btn-primary rounded-pill py-3 px-4 text-white w-100">

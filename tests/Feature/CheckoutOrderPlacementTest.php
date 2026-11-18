@@ -7,15 +7,24 @@ use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderPayment;
+use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Models\User;
+use Database\Seeders\WebsiteContentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CheckoutOrderPlacementTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(WebsiteContentSeeder::class);
+    }
 
     public function test_customer_can_place_an_order_and_view_its_confirmation_and_tracking(): void
     {
@@ -33,6 +42,11 @@ class CheckoutOrderPlacementTest extends TestCase
             'status' => 'active',
             'has_variants' => false,
         ]);
+        $paymentMethod = PaymentMethod::create([
+            'name' => 'Cash on Delivery',
+            'slug' => 'cod',
+            'status' => 'active',
+        ]);
 
         $response = $this->actingAs($customer)->withSession([
             'cart_lines' => [
@@ -43,7 +57,7 @@ class CheckoutOrderPlacementTest extends TestCase
             'phone' => '03000000000',
             'email' => '',
             'address' => 'House 12, Main Road',
-            'payment_method' => 'cod',
+            'payment_method' => $paymentMethod->id,
             'terms' => '1',
         ]);
 
@@ -103,6 +117,7 @@ class CheckoutOrderPlacementTest extends TestCase
         $this->get(route('customer.order-detail', ['order' => $order->order_number]))
             ->assertOk()
             ->assertSee($order->order_number)
+            ->assertSee('Cash on Delivery')
             ->assertSee('Fresh Apples')
             ->assertSee('House 12, Main Road')
             ->assertSee('alt="Fresh Apples"', false);
@@ -121,11 +136,62 @@ class CheckoutOrderPlacementTest extends TestCase
             'payable_total' => 50,
             'status' => 'pending',
         ]);
+        $this->assertSame('Cash on Delivery', $order->payment_method_label);
 
         $this->get(route('customer.orders'))
             ->assertDontSee($anotherOrder->order_number);
 
         $this->get(route('customer.order-detail', ['order' => $anotherOrder->order_number]))
             ->assertRedirect(route('customer.orders'));
+    }
+
+    public function test_customer_can_place_an_order_using_a_dynamic_online_method(): void
+    {
+        $customer = User::factory()->create(['role' => 'customer']);
+        $seller = User::factory()->create(['role' => 'seller']);
+        $shop = Shop::create(['seller_id' => $seller->id, 'name' => 'Online Shop', 'status' => 'active']);
+        $category = Category::create(['name' => 'Fruit', 'status' => 'active']);
+        $product = Product::create([
+            'seller_id' => $seller->id,
+            'shop_id' => $shop->id,
+            'category_id' => $category->id,
+            'name' => 'Fresh Pears',
+            'price' => 80,
+            'stock' => 3,
+            'status' => 'active',
+            'has_variants' => false,
+        ]);
+        $paymentMethod = PaymentMethod::create([
+            'name' => 'Custom Wallet',
+            'slug' => 'custom-wallet',
+            'status' => 'active',
+        ]);
+
+        $response = $this->actingAs($customer)->withSession([
+            'cart_lines' => [
+                'p' . $product->id => ['product_id' => $product->id, 'variant_id' => null, 'qty' => 1],
+            ],
+        ])->post(route('customer.checkout.place'), [
+            'name' => 'Customer Name',
+            'phone' => '03000000000',
+            'address' => 'House 12, Main Road',
+            'payment_method' => $paymentMethod->id,
+            'terms' => '1',
+        ]);
+
+        $order = Order::query()->where('user_id', $customer->id)->firstOrFail();
+        $response->assertRedirect(route('customer.order-success', ['order' => $order->order_number]));
+        $this->assertSame(Order::METHOD_ONLINE, $order->payment_method);
+        $this->assertSame('custom-wallet', $order->online_payment_method);
+        $this->assertSame('Custom Wallet', $order->payment_method_label);
+        $this->assertDatabaseHas('order_payments', [
+            'order_id' => $order->id,
+            'method' => Order::METHOD_ONLINE,
+            'gateway' => 'custom-wallet',
+        ]);
+
+        $this->get(route('customer.order-success', ['order' => $order->order_number]))
+            ->assertOk()
+            ->assertSee('Custom Wallet');
     }
 }

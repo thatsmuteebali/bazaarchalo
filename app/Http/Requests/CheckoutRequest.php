@@ -22,12 +22,10 @@ class CheckoutRequest extends FormRequest
             'latitude'       => ['nullable', 'numeric', 'between:-90,90'],
             'longitude'      => ['nullable', 'numeric', 'between:-180,180'],
             'notes'          => ['nullable', 'string', 'max:500'],
-            'payment_method' => ['required', Rule::in(['cod', 'online'])],
-            'online_payment_method' => [
-                'required_if:payment_method,online',
-                'prohibited_unless:payment_method,online',
-                'nullable',
-                Rule::in(['jazzcash', 'easypaisa', 'gopayfast', 'bank_account']),
+            'payment_method' => [
+                'required',
+                'integer',
+                Rule::exists('payment_methods', 'id')->where('status', 'active'),
             ],
             'terms'          => ['accepted'],
         ];
@@ -38,10 +36,7 @@ class CheckoutRequest extends FormRequest
         return [
             'phone.regex' => 'Enter 11 digits with no spaces or hyphens, for example 03000000000.',
             'terms.accepted' => 'Please accept the terms and conditions to continue.',
-            'payment_method.in' => 'Please choose a payment method.',
-            'online_payment_method.required_if' => 'Please choose an online payment method.',
-            'online_payment_method.prohibited_unless' => 'Choose an online payment method only when paying online.',
-            'online_payment_method.in' => 'Please choose a valid online payment method.',
+            'payment_method.exists' => 'Please choose an available payment method.',
         ];
     }
 }

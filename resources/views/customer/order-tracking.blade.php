@@ -116,7 +116,7 @@
                             <div class="d-flex justify-content-between mb-2"><span>Subtotal</span><span>@money($order->subtotal)</span></div>
                             <div class="d-flex justify-content-between mb-3"><span>Delivery</span><span>@if ($order->shipping_total > 0) @money($order->shipping_total) @else Free @endif</span></div>
                             <div class="d-flex justify-content-between border-top pt-3"><strong>Total</strong><strong class="text-primary">@money($order->total)</strong></div>
-                            <p class="small text-muted mt-3 mb-0">Payment: {{ $order->payment_method === 'cod' ? 'Cash on Delivery' : ucfirst($order->online_payment_method) }} · {{ ucfirst($order->payment_status) }}</p>
+                            <p class="small text-muted mt-3 mb-0">Payment: {{ $order->payment_method_label }} · {{ ucfirst($order->payment_status) }}</p>
                         </section>
                     </aside>
                 @endif
