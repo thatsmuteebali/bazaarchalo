@@ -122,6 +122,11 @@
                                     Refund Policy
                                 </a>
 
+                                <a href="{{ route('admin.website.setting', ['page' => 'delivery-policy']) }}"
+                                    class="sidebar-submenu-link {{ request()->routeIs('admin.website.setting') && request('page') === 'delivery-policy' ? 'active' : '' }}">
+                                    Delivery Policy
+                                </a>
+
                             </li>
                         </ul>
                     </div>
