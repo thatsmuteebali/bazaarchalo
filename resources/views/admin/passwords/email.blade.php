@@ -15,7 +15,7 @@
         @csrf
 
         <div class="login-form-group">
-            <label for="email" class="login-form-label">Admin email address</label>
+            <label for="email" class="login-form-label">Email address</label>
             <div class="login-input-group">
                 <i class="bi bi-envelope input-icon" aria-hidden="true"></i>
                 <input id="email" type="email" name="email"
