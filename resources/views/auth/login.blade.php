@@ -53,7 +53,7 @@
                             <input class="form-check-input" type="checkbox" id="rememberMe" /><label
                                 class="form-check-label" for="rememberMe">Remember me</label>
                         </div>
-                        <a href="#" class="text-primary">Forgot password?</a>
+                        <a href="{{ route('password.request') }}" class="text-primary">Forgot password?</a>
                     </div>
 
                     @if (config('services.recaptcha.enabled'))

@@ -98,7 +98,7 @@
                         <input type="checkbox" class="custom-checkbox-input" id="rememberMe">
                         <span>Remember Me</span>
                     </label>
-                    <a href="#" class="forgot-password-link">Forgot Password?</a>
+                    <a href="{{ route('seller.password.request') }}" class="forgot-password-link">Forgot Password?</a>
                 </div>
 
                 @if (config('services.recaptcha.enabled'))

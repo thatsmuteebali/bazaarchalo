@@ -9,14 +9,16 @@ use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ShopController as AdminShopController;
 use App\Http\Controllers\Admin\WebsiteController;
+use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\SellerLoginController;
+use App\Http\Controllers\Auth\SellerRegisterController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\Auth\SellerLoginController;
-use App\Http\Controllers\Auth\SellerRegisterController;
-use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Seller\CollectionController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductController;
@@ -25,7 +27,22 @@ use App\Http\Controllers\Seller\SellerController;
 use App\Http\Controllers\Seller\ShopController;
 use Illuminate\Support\Facades\Route;
 
-Auth::routes();
+Auth::routes(['reset' => false]);
+
+Route::middleware('guest')->group(function () {
+    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])
+        ->defaults('role', 'customer')
+        ->name('password.request');
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->middleware('throttle:5,1')
+        ->defaults('role', 'customer')
+        ->name('password.email');
+    Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])
+        ->name('password.reset');
+    Route::post('password/reset', [ResetPasswordController::class, 'reset'])
+        ->middleware('throttle:5,1')
+        ->name('password.update');
+});
 // Customer
 Route::get('auth/{provider}', [LoginController::class, 'redirectToProvider'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [LoginController::class, 'handleProviderCallback']);
@@ -92,6 +109,13 @@ Route::group(['middleware' => ['CustomerMiddleware']], function () {
 Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
     Route::get('login', [AdminLoginController::class, 'showLoginForm'])->name('login');
     Route::post('login', [AdminLoginController::class, 'login']);
+    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])
+        ->defaults('role', 'admin')
+        ->name('password.request');
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->middleware('throttle:5,1')
+        ->defaults('role', 'admin')
+        ->name('password.email');
 });
 
 Route::group(['middleware' => ['AdminMiddleware']], function () {
@@ -189,6 +213,13 @@ Route::prefix('seller')->name('seller.')->middleware('guest')->group(function ()
 
     Route::get('login', [SellerLoginController::class, 'showLoginForm'])->name('login');
     Route::post('login', [SellerLoginController::class, 'login']);
+    Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])
+        ->defaults('role', 'seller')
+        ->name('password.request');
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->middleware('throttle:5,1')
+        ->defaults('role', 'seller')
+        ->name('password.email');
     Route::get('register', [SellerRegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('register', [SellerRegisterController::class, 'register']);
 });
