@@ -152,7 +152,8 @@ a:hover {
     z-index: 1030;
     display: flex;
     flex-direction: column;
-    padding: 2rem 1.5rem;
+    padding: 2rem 0;
+    padding-left: 1.5rem;
     border-right: 1px solid var(--border-dark-green);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -341,6 +342,7 @@ a:hover {
     gap: 0.75rem;
     background-color: rgba(255, 255, 255, 0.03);
     padding: 0.85rem;
+    margin-right: 1.5rem;
     border-radius: var(--radius-xl);
     border: 1px solid var(--border-dark-green);
     color: #FFFFFF;
@@ -1680,12 +1682,12 @@ span.flatpickr-weekday {
     gap: 0.35rem;
 }
 
-.footer-logo i {
+/* .footer-logo i {
     color: var(--brand-forest-medium);
     font-size: 0.95rem;
     display: inline-block;
     animation: rotateLogo 12s linear infinite;
-}
+} */
 
 @keyframes rotateLogo {
     from { transform: rotate(0deg); }
@@ -1858,12 +1860,12 @@ span.flatpickr-weekday {
     transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.login-brand i {
+/* .login-brand i {
     color: var(--brand-forest-medium);
     font-size: 1.75rem;
     animation: rotateLogo 15s linear infinite;
     transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+} */
 
 .login-brand:hover,
 .login-brand:hover i {

@@ -27,6 +27,9 @@
 </head>
 
 <body>
+    @php
+        $webSetting = getWebsiteContent('setting');
+    @endphp
     <!-- ==========================================
          START: Sidebar Component
          Highly polished, dark-green sticky navigation
@@ -52,7 +55,8 @@
             <div class="footer-left">
                 <span class="footer-copy">&copy; 2026 </span>
                 <span class="footer-logo">
-                    <i class="bi bi-asterisk"></i> Bazaar Chalo
+                    {{-- <i class="bi bi-asterisk"></i> --}}
+                    Bazaar Chalo
                 </span>
                 <span class="footer-separator">|</span>
             </div>

@@ -27,6 +27,9 @@
 </head>
 
 <body>
+    @php
+        $webSetting = getWebsiteContent('setting');
+    @endphp
     <!-- ==========================================
          START: Sidebar Component
          Highly polished, dark-green sticky navigation
@@ -52,7 +55,8 @@
             <div class="footer-left">
                 <span class="footer-copy">&copy; 2026 </span>
                 <span class="footer-logo">
-                    <i class="bi bi-asterisk"></i> Bazaar Chalo
+                    {{-- <i class="bi bi-asterisk"></i> --}}
+                    Bazaar Chalo
                 </span>
                 <span class="footer-separator">|</span>
             </div>
@@ -77,7 +81,7 @@
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
 
     <script src="{{ asset('assets/plugins/summernote-0.9.0-dist/summernote-bs5.js') }}"></script>
-    
+
     <!-- Local dashboard interactions controller -->
     <script src="{{ asset('assets/js/dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/auth.js') }}"></script>

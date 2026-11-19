@@ -27,7 +27,9 @@
 </head>
 
 <body>
-
+    @php
+        $webSetting = getWebsiteContent('setting');
+    @endphp
     <!-- ==========================================
          START: Authentication Container & Login Card
          ========================================== -->
@@ -40,8 +42,9 @@
         <div class="login-card">
 
             <!-- Brand Identity -->
-            <a href="dashboard.html" class="login-brand text-decoration-none">
-                <i class="bi bi-asterisk"></i>
+            <a href="#" class="login-brand text-decoration-none">
+                {{-- <i class="bi bi-asterisk"></i> --}}
+                <img src="{{ asset('storage/'.ltrim($webSetting['Website Header Logo'], '/')) }}" class="site-logo site-logo-header" alt="Bazaar Chalo" width="50" height="50">
                 <span>Bazaar Chalo</span>
             </a>
             @include('dashboard-message')
