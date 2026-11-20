@@ -31,17 +31,32 @@ class MarketplaceNotificationService
         string $url,
         string $icon,
     ): void {
-        $admins = User::query()
-            ->where('role', 'admin');
+        $this->notifyAdmins(new MarketplaceNotification(
+            'New '.$entity.' pending review',
+            $seller->name.' submitted '.$name.'. It is awaiting your review.',
+            $url,
+            $icon,
+        ));
+    }
 
-        $admins->chunkById(100, function ($users) use ($entity, $name, $seller, $url, $icon) {
-            Notification::send($users, new MarketplaceNotification(
-                'New '.$entity.' pending review',
-                $seller->name.' submitted '.$name.'. It is awaiting your review.',
-                $url,
-                $icon,
-            ));
-        });
+    public function notifyAdminsOfVerifiedCustomer(User $customer): void
+    {
+        $this->notifyAdmins(new MarketplaceNotification(
+            'New customer verified',
+            $customer->name.' ('.$customer->email.') verified their email address.',
+            route('admin.customers.index', [], false),
+            'bi bi-person-check',
+        ));
+    }
+
+    public function notifyAdminsOfVerifiedSeller(User $seller): void
+    {
+        $this->notifyAdmins(new MarketplaceNotification(
+            'New seller verified',
+            $seller->name.' ('.$seller->email.') verified their email address.',
+            route('admin.sellers.index', [], false),
+            'bi bi-shop',
+        ));
     }
 
     public function notifySellerOfStatus(
@@ -58,5 +73,14 @@ class MarketplaceNotificationService
             $url,
             $icon,
         ));
+    }
+
+    private function notifyAdmins(MarketplaceNotification $notification): void
+    {
+        User::query()
+            ->where('role', 'admin')
+            ->chunkById(100, function ($admins) use ($notification) {
+                Notification::send($admins, $notification);
+            });
     }
 }

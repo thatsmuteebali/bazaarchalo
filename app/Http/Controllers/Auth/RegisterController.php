@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Rules\Recaptcha;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\Recaptcha;
 
 class RegisterController extends Controller
 {
@@ -53,7 +53,7 @@ class RegisterController extends Controller
     {
         $rules = [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone' => ['required', 'unique:users', 'regex:/^03\d{9}$/'],
             'term' => ['required'],
@@ -99,6 +99,6 @@ class RegisterController extends Controller
 
         event(new Registered($user));
 
-        return redirect('/login')->with('status', 'Registration successful! Please log in.');
+        return redirect('/login')->with('status', 'Registration successful! Please check your email for a verification link, then log in.');
     }
 }

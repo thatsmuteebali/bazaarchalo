@@ -16,9 +16,16 @@ class SellerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(isset(Auth::user()->role) && Auth::user()->role == 'seller') {
-            return $next($request);
+        $user = Auth::user();
+
+        if ($user?->role !== 'seller') {
+            return redirect()->route('seller.login');
         }
-        return redirect()->route('seller.login');
+
+        if (! $user->google_id && ! $user->facebook_id && ! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
+        return $next($request);
     }
 }

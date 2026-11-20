@@ -16,9 +16,16 @@ class CustomerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(isset(Auth::user()->role) && Auth::user()->role == 'customer') {
-            return $next($request);
+        $user = Auth::user();
+
+        if ($user?->role !== 'customer') {
+            return redirect()->route('login');
         }
-        return redirect()->route('login');
+
+        if (! $user->google_id && ! $user->facebook_id && ! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
+        return $next($request);
     }
 }

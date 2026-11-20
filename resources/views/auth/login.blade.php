@@ -20,6 +20,9 @@
                     <h2 class="mb-2">Welcome Back</h2>
                     <p class="mb-0 text-muted">Sign in to continue shopping fresh.</p>
                 </div>
+                @if (session('status'))
+                    <p class="text-success text-center" role="status">{{ session('status') }}</p>
+                @endif
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="form-item mb-4">

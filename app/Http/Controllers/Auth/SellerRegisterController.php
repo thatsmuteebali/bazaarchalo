@@ -28,7 +28,7 @@ class SellerRegisterController extends Controller
     {
         $rules = [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone' => ['required', 'unique:users', 'regex:/^03\d{9}$/'],
             'shop_name' => ['required', 'string', 'max:255'],
@@ -66,6 +66,9 @@ class SellerRegisterController extends Controller
 
         event(new Registered($user));
 
-        return redirect()->route('seller.login')->with('success', 'Registration successful! Please log in.');
+        return redirect()->route('seller.login')->with(
+            'success',
+            'Registration successful! Please check your email for a verification link, then log in.'
+        );
     }
 }
