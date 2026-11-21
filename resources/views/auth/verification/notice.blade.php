@@ -21,7 +21,7 @@
             </form>
 
             <p class="text-center mt-4 mb-0">
-                <a href="{{ route('register') }}" class="text-primary" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Back to Home</a>
+                <a href="#" class="text-primary" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Back to Home</a>
             </p>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                 @csrf

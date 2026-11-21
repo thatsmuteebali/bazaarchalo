@@ -26,6 +26,10 @@ class SellerMiddleware
             return redirect()->route('verification.notice');
         }
 
+        if ( ($user->google_id || $user->facebook_id) &&  !$user->onboarding) {
+            return redirect()->route('create-shop');
+        }
+
         return $next($request);
     }
 }

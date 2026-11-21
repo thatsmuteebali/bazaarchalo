@@ -75,4 +75,47 @@ class EmailVerificationController extends Controller
     {
         return redirect()->route($user->role === 'seller' ? 'seller.dashboard' : 'home');
     }
+
+    // One Shop required for seller functionality
+    public function createShop(){
+        return view('seller.verification.create-shop');
+    }
+
+    public function storeShop(Request $request, MarketplaceNotificationService $notifications)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'unique:shops,slug','regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+            'description' => ['nullable', 'string', 'max:5000'],
+            'banner' => ['required', 'image', 'max:4096'],
+            'address' => ['required', 'string', 'max:5000'],
+            'is_primary' => ['nullable', 'boolean'],
+        ],[
+            'slug.regex' => 'Slug must contain only lowercase letters, numbers, and single hyphens (e.g. apple-iphone-15).',
+        ]);
+
+        if ($request->hasFile('banner')) {
+            $validated['banner'] = $request->file('banner')->store('shops', 'public');
+        }
+
+        $shop = auth()->user()->shops()->create($validated + ['status' => 'pending']);
+
+        $user = $request->user();
+        if($user->email){
+            Mail::to($user->email)->queue((new WelcomeSellerMail($user))->afterCommit());
+        }
+        $notifications->notifyAdminsOfVerifiedSeller($user);
+
+        $notifications->notifyAdminsOfPendingSubmission(
+            'shop',
+            $shop->name,
+            auth()->user(),
+            route('admin.shops.show', $shop, false),
+            'bi bi-shop',
+        );
+
+        $user->update(['onboarding' => 'completed']);
+
+        return redirect()->route('seller.dashboard')->with('success', 'Welcome Bazaar Chalo.');
+    }
 }

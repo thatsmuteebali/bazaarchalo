@@ -39,6 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
+
+    Route::get('/create-shop', [EmailVerificationController::class, 'createShop'])->name('create-shop');
+    Route::post('/store-shop', [EmailVerificationController::class, 'storeShop'])->name('store-shop');
 });
 
 Route::middleware('guest')->group(function () {
