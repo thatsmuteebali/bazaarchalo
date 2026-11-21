@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
     <style>
         .login-card {
-            max-width: 900px !important;
+            max-width: 750px !important;
         }
     </style>
 </head>

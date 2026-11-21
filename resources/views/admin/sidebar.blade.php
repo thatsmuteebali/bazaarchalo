@@ -87,6 +87,15 @@
                 </li>
 
                 <li class="sidebar-menu-item">
+                    <a href="#"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.order.*') ? 'active' : '' }}"
+                        id="menu-products" title="Products">
+                        <i class="bi bi-receipt"></i>
+                        <span>Orders</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
                     <a href="#menu-catalog" data-bs-toggle="collapse" role="button"
                         class="sidebar-menu-link {{ $catalogActive ? 'active' : '' }}"
                         aria-expanded="{{ $catalogActive ? 'true' : 'false' }}" aria-controls="menu-catalog"
