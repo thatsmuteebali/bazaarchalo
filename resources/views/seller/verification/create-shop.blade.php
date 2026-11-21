@@ -101,6 +101,7 @@
                     <input type="text" name="slug"
                         class="form-control-custom @error('slug') is-invalid-custom @enderror" id="slug"
                         value="{{ old('slug', $shop->slug ?? '') }}" placeholder="eg: shop-name" maxlength="255">
+                    <small class="text-muted">Slug must contain only lowercase letters, numbers, and single hyphens (e.g. apple-iphone-15)</small>
                     @error('slug')
                         <div class="form-feedback-custom invalid-custom">
                             <i class="bi bi-exclamation-circle-fill"></i> {{ $message }}
