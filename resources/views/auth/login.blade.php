@@ -28,7 +28,7 @@
                     <div class="form-item mb-4">
                         <label for="login" class="form-label">Email or Username or Phone Number <sup class="text-danger">*</sup></label>
                         <input type="login" name="login" class="form-control py-3" id="login"
-                            placeholder="Enter your login" required />
+                            placeholder="Enter your login" value="{{ old('login') }}" required />
                         @error('login')
                             <p class="text-danger">
                                 {{ $message }}
