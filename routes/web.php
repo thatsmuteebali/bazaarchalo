@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CollectionController as AdminCollectionController;
 use App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Admin\ManagedUserController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ShopController as AdminShopController;
@@ -212,6 +213,18 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
             Route::get('/{product}/show', 'show')->name('show');
             Route::get('/{product}/edit', 'edit')->name('edit');
             Route::put('/{product}', 'update')->name('update');
+        });
+
+        Route::prefix('orders')->name('orders.')->controller(AdminOrderController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::patch('/{order}/items/{orderItem}/decision', 'decide')
+                ->whereNumber('order')
+                ->whereNumber('orderItem')
+                ->name('items.decide');
+            Route::post('/{order}/tracking', 'storeTracking')
+                ->whereNumber('order')
+                ->name('tracking.store');
+            Route::get('/{order}', 'show')->whereNumber('order')->name('show');
         });
 
         Route::prefix('website')->name('website.')->controller(WebsiteController::class)->group(function () {

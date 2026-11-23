@@ -87,9 +87,9 @@
                 </li>
 
                 <li class="sidebar-menu-item">
-                    <a href="#"
-                        class="sidebar-menu-link {{ request()->routeIs('admin.order.*') ? 'active' : '' }}"
-                        id="menu-products" title="Products">
+                    <a href="{{ route('admin.orders.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
+                        id="menu-orders" title="Orders">
                         <i class="bi bi-receipt"></i>
                         <span>Orders</span>
                     </a>
