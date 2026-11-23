@@ -1,5 +1,9 @@
 @extends('layouts.seller')
 
+@section('customCss')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+@endsection
+
 @section('content')
     <div class="page-header">
         <div>
@@ -9,66 +13,100 @@
     </div>
 
     <div class="table-card-custom">
-        <div class="table-responsive">
-            <table class="table-custom">
-                <thead>
-                    <tr>
-                        <th>Order</th>
-                        <th>Customer</th>
-                        <th>Placed</th>
-                        <th>Your items</th>
-                        <th>Your subtotal</th>
-                        <th>Status</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($orders as $order)
-                        @php
-                            $itemStatuses = $order->items->pluck('status')->unique();
-                            $sellerStatus = $itemStatuses->contains('pending')
-                                ? 'needs action'
-                                : ($itemStatuses->count() === 1 ? $itemStatuses->first() : 'mixed');
-                            $statusClass = match ($sellerStatus) {
-                                'accepted', 'delivered' => 'success',
-                                'rejected', 'cancelled' => 'failed',
-                                default => 'pending',
-                            };
-                            $quantity = (int) ($order->seller_items_quantity ?? 0);
-                        @endphp
-                        <tr>
-                            <td>
-                                <div class="table-user-name">{{ $order->order_number }}</div>
-                                <div class="table-user-sub">{{ $order->seller_items_count }} product {{ $order->seller_items_count === 1 ? 'line' : 'lines' }}</div>
-                            </td>
-                            <td>
-                                <div class="table-user-name">{{ $order->customer?->name ?? $order->customer_name }}</div>
-                                <div class="table-user-sub">{{ $order->customer_phone }}</div>
-                            </td>
-                            <td>{{ $order->created_at->format('M j, Y') }}<small class="d-block text-muted">{{ $order->created_at->format('g:i A') }}</small></td>
-                            <td>{{ $quantity }} {{ $quantity === 1 ? 'unit' : 'units' }}</td>
-                            <td>{{ \App\Support\Money::format($order->seller_items_sum_line_total) }}</td>
-                            <td><span class="badge-table {{ $statusClass }}">{{ ucfirst($sellerStatus) }}</span></td>
-                            <td class="text-center">
-                                <a href="{{ route('seller.orders.show', $order) }}" class="table-btn-action"
-                                    title="View order" aria-label="View order {{ $order->order_number }}">
-                                    <i class="bi bi-eye" aria-hidden="true"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">
-                                <i class="bi bi-receipt d-block mb-2" style="font-size: 28px" aria-hidden="true"></i>
-                                No orders contain your products yet.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <div class="table-header-control">
+            <form id="order-search-form" class="table-search-box search-form" role="search" autocomplete="off">
+                <i class="bi bi-search table-search-icon" aria-hidden="true"></i>
+                <input type="search" id="order-search" class="table-search-input"
+                    placeholder="Search orders..." aria-label="Search orders">
+            </form>
+
+            <div class="table-filter-group">
+                <select id="order-length" class="form-select-custom form-select-inline" aria-label="Rows per page">
+                    <option value="10">10 / page</option>
+                    <option value="25">25 / page</option>
+                    <option value="50">50 / page</option>
+                    <option value="100">100 / page</option>
+                </select>
+            </div>
         </div>
-        <div class="table-footer-control">
-            {{ $orders->links() }}
-        </div>
+
+        <table id="order-table" class="table-custom w-100">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Placed</th>
+                    <th>Your items</th>
+                    <th>Your subtotal</th>
+                    <th>Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
+@endsection
+
+@section('customjs')
+    <script>
+        $(function () {
+            const $table = $('#order-table');
+            const $search = $('#order-search');
+            const $length = $('#order-length');
+            let searchTimer = null;
+
+            const table = $table.DataTable({
+                processing: true,
+                serverSide: true,
+                dom: '<"dt-body"<"table-responsive"t>r><"table-footer-control dt-footer"ip>',
+                ajax: @json(route('seller.orders.index')),
+                columns: [
+                    { data: 'order', name: 'orders.order_number', searchable: true },
+                    { data: 'customer', name: 'customer', orderable: false, searchable: true },
+                    { data: 'created_at', name: 'orders.created_at' },
+                    { data: 'items', name: 'seller_items_quantity', searchable: false },
+                    { data: 'seller_items_sum_line_total', name: 'seller_items_sum_line_total', searchable: false },
+                    { data: 'seller_status', name: 'seller_status', orderable: false, searchable: false },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false }
+                ],
+                order: [[2, 'desc']],
+                pageLength: 10,
+                language: {
+                    processing: '<span class="dt-processing-box"><span class="dt-spinner" aria-hidden="true"></span><span>Loading...</span></span>',
+                    emptyTable: 'No orders contain your products yet.',
+                    zeroRecords: 'No orders match your search.',
+                    info: 'Showing _START_ to _END_ of _TOTAL_ results',
+                    infoEmpty: 'Showing 0 results',
+                    infoFiltered: '',
+                    paginate: { previous: '&lsaquo;', next: '&rsaquo;' }
+                }
+            });
+
+            $table.on('processing.dt', function (e, settings, isProcessing) {
+                $table.closest('.dt-body').toggleClass('is-loading', isProcessing);
+            });
+
+            function applySearch() {
+                const value = $search.val().trim();
+                if (table.search() !== value) {
+                    table.search(value).draw();
+                }
+            }
+
+            $search.on('input', function () {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(applySearch, 400);
+            });
+
+            $('#order-search-form').on('submit', function (event) {
+                event.preventDefault();
+                clearTimeout(searchTimer);
+                applySearch();
+            });
+
+            $length.on('change', function () {
+                table.page.len(parseInt(this.value, 10)).draw();
+            });
+        });
+    </script>
 @endsection

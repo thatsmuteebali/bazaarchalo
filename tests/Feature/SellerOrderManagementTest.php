@@ -9,12 +9,37 @@ use App\Models\OrderPayment;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Models\User;
+use App\Models\WebContent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class SellerOrderManagementTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        foreach ([
+            'Website Favicon',
+            'Website Address',
+            'Website Email',
+            'Website Facebook Url',
+            'Website Instagram Url',
+            'Website Tiktok Url',
+            'Website Header Logo',
+            'Website Footer Logo',
+            'Website Phone Number',
+        ] as $field) {
+            WebContent::create([
+                'page' => 'setting',
+                'field' => $field,
+                'value' => '',
+                'type' => 'text',
+            ]);
+        }
+    }
 
     public function test_seller_can_view_only_their_items_and_accept_or_reject_pending_items(): void
     {
@@ -82,9 +107,47 @@ class SellerOrderManagementTest extends TestCase
         $this->actingAs($seller)
             ->get(route('seller.orders.index'))
             ->assertOk()
-            ->assertSee($order->order_number)
-            ->assertSee('3 units')
-            ->assertDontSee('Other seller private item');
+            ->assertSee('id="order-table"', false)
+            ->assertSee('Search orders');
+
+        $ordersResponse = $this->get(route('seller.orders.index'), [
+                'X-Requested-With' => 'XMLHttpRequest',
+                'Accept' => 'application/json',
+            ])->assertOk();
+        $orderRows = $ordersResponse->json('data');
+
+        $this->assertCount(1, $orderRows);
+        $this->assertStringContainsString($order->order_number, $orderRows[0]['order']);
+        $this->assertSame('3 units', $orderRows[0]['items']);
+        $this->assertStringContainsString('Needs action', $orderRows[0]['seller_status']);
+
+        $searchParams = http_build_query([
+            'draw' => 1,
+            'start' => 0,
+            'length' => 10,
+            'search' => ['value' => 'Customer Name', 'regex' => 'false'],
+            'columns' => [
+                [
+                    'data' => 'order',
+                    'name' => 'orders.order_number',
+                    'searchable' => 'true',
+                    'orderable' => 'false',
+                    'search' => ['value' => '', 'regex' => 'false'],
+                ],
+                [
+                    'data' => 'customer',
+                    'name' => 'customer',
+                    'searchable' => 'true',
+                    'orderable' => 'false',
+                    'search' => ['value' => '', 'regex' => 'false'],
+                ],
+            ],
+        ]);
+        $searchResponse = $this->get(route('seller.orders.index').'?'.$searchParams, [
+            'X-Requested-With' => 'XMLHttpRequest',
+            'Accept' => 'application/json',
+        ])->assertOk();
+        $this->assertCount(1, $searchResponse->json('data'));
 
         $detailUrl = route('seller.orders.show', $order);
         $this->get($detailUrl)
