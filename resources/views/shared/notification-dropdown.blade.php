@@ -29,7 +29,7 @@
                     @csrf
                     <button class="notification-item {{ $notification->read_at ? 'is-read' : 'is-unread' }}"
                         type="submit">
-                        <span class="notification-icon bg-primary text-white">
+                        <span class="notification-icon bg-success text-white">
                             <i class="{{ $notification->data['icon'] ?? 'bi bi-bell' }}"></i>
                         </span>
                         <span class="notification-content">
