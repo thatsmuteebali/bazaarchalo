@@ -60,6 +60,15 @@
                 </li>
 
                 <li class="sidebar-menu-item">
+                    <a href="{{ route('admin.riders.index') }}"
+                        class="sidebar-menu-link {{ request()->routeIs('admin.riders.*') ? 'active' : '' }}"
+                        id="menu-riders" title="Riders">
+                        <i class="bi bi-bicycle"></i>
+                        <span>Riders</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-menu-item">
                     <a href="{{ route('admin.shops.index') }}"
                         class="sidebar-menu-link {{ request()->routeIs('admin.shops.*') ? 'active' : '' }}"
                         id="menu-shops" title="Shops">

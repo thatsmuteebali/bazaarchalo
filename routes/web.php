@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ManagedUserController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\RiderController;
 use App\Http\Controllers\Admin\ShopController as AdminShopController;
 use App\Http\Controllers\Admin\WebsiteController;
 use App\Http\Controllers\Auth\AdminLoginController;
@@ -192,6 +193,16 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
             Route::get('/{userKey}/show', 'showCustomer')->name('show');
             Route::get('/{userKey}/edit', 'editCustomer')->name('edit');
             Route::put('/{userKey}', 'updateCustomer')->name('update');
+        });
+
+        Route::prefix('riders')->name('riders.')->controller(RiderController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{riderKey}/show', 'show')->name('show');
+            Route::get('/{riderKey}/edit', 'edit')->name('edit');
+            Route::put('/{riderKey}', 'update')->name('update');
+            Route::delete('/{riderKey}', 'destroy')->name('destroy');
         });
 
         Route::prefix('shops')->name('shops.')->controller(AdminShopController::class)->group(function () {
