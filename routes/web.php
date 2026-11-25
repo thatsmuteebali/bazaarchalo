@@ -24,6 +24,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Rider\PanelController as RiderPanelController;
+use App\Http\Controllers\Rider\ProfileController as RiderProfileController;
 use App\Http\Controllers\Seller\CollectionController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductController;
@@ -274,6 +275,15 @@ Route::group(['middleware' => ['RiderMiddleware']], function () {
     Route::prefix('rider')->name('rider.')->group(function () {
         Route::get('/dashboard', [RiderPanelController::class, 'dashboard'])->name('dashboard');
         Route::get('/orders', [RiderPanelController::class, 'orders'])->name('orders.index');
+        Route::controller(NotificationController::class)->prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', 'index')->defaults('panel', 'rider')->name('index');
+            Route::post('/read-all', 'readAll')->defaults('panel', 'rider')->name('read-all');
+            Route::post('/{notification}/read', 'read')->defaults('panel', 'rider')->name('read');
+        });
+        Route::controller(RiderProfileController::class)->group(function () {
+            Route::get('/profile', 'show')->name('profile');
+            Route::put('/profile', 'update')->name('profile.update');
+        });
         Route::post('logout', [RiderLoginController::class, 'logout'])->name('logout');
     });
 });

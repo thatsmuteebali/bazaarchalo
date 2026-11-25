@@ -1,4 +1,6 @@
-@extends($panel === 'admin' ? 'layouts.admin' : ($panel === 'seller' ? 'layouts.seller' : 'layouts.app'))
+@extends($panel === 'admin'
+    ? 'layouts.admin'
+    : ($panel === 'seller' ? 'layouts.seller' : ($panel === 'rider' ? 'layouts.rider' : 'layouts.app')))
 
 @section('content')
     @if ($panel === 'customer')

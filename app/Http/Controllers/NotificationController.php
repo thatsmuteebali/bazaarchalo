@@ -49,7 +49,7 @@ class NotificationController extends Controller
     {
         $panel = $request->route('panel');
 
-        abort_unless(in_array($panel, ['admin', 'seller', 'customer'], true), 404);
+        abort_unless(in_array($panel, ['admin', 'seller', 'rider', 'customer'], true), 404);
 
         return $panel;
     }

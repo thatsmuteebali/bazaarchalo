@@ -4,8 +4,12 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Models\WebContent;
+use App\Notifications\MarketplaceNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class RiderPanelTest extends TestCase
@@ -174,5 +178,84 @@ class RiderPanelTest extends TestCase
             ->assertRedirect(route('rider.login'));
 
         $this->assertGuest();
+    }
+
+    public function test_riders_can_view_and_update_their_profile(): void
+    {
+        Storage::fake('public');
+        $rider = User::factory()->create([
+            'role' => 'rider',
+            'status' => 'Active',
+            'name' => 'Original Rider',
+            'username' => 'original-rider',
+            'email' => 'original-rider@example.com',
+            'phone' => '03012345678',
+            'password' => 'old-password',
+        ]);
+        $newImage = UploadedFile::fake()->image('rider-profile.jpg');
+
+        $this->actingAs($rider)
+            ->get(route('rider.profile'))
+            ->assertOk()
+            ->assertSee('Manage your rider account details.')
+            ->assertSee(route('rider.profile.update'), false);
+
+        $this->put(route('rider.profile.update'), [
+            'name' => 'Updated Rider',
+            'username' => 'updated-rider',
+            'email' => 'updated-rider@example.com',
+            'phone' => '03098765432',
+            'password' => 'new-password',
+            'password_confirmation' => 'new-password',
+            'image' => $newImage,
+        ])->assertRedirect(route('rider.profile'));
+
+        $rider->refresh();
+        $this->assertSame('Updated Rider', $rider->name);
+        $this->assertSame('updated-rider', $rider->username);
+        $this->assertSame('updated-rider@example.com', $rider->email);
+        $this->assertSame('03098765432', $rider->phone);
+        $this->assertTrue(Hash::check('new-password', $rider->password));
+        Storage::disk('public')->assertExists($rider->image);
+    }
+
+    public function test_rider_notifications_show_in_dropdown_and_can_be_read(): void
+    {
+        $rider = User::factory()->create([
+            'role' => 'rider',
+            'status' => 'Active',
+        ]);
+        $rider->notify(new MarketplaceNotification(
+            'Delivery assigned',
+            'A new delivery is ready for you.',
+            route('rider.orders.index', [], false),
+            'bi bi-receipt',
+        ));
+        $notificationId = $rider->notifications()->firstOrFail()->id;
+
+        $this->actingAs($rider)
+            ->get(route('rider.dashboard'))
+            ->assertOk()
+            ->assertSee('Delivery assigned')
+            ->assertSee('navbar-action-badge">1</span>', false);
+
+        $this->get(route('rider.notifications.index'))
+            ->assertOk()
+            ->assertSee('Notifications')
+            ->assertSee('A new delivery is ready for you.');
+
+        $this->post(route('rider.notifications.read', $notificationId))
+            ->assertRedirect(route('rider.orders.index'));
+        $this->assertNotNull($rider->notifications()->firstOrFail()->read_at);
+
+        $rider->notify(new MarketplaceNotification(
+            'Another update',
+            'A second rider update.',
+            route('rider.dashboard', [], false),
+            'bi bi-bell',
+        ));
+        $this->post(route('rider.notifications.read-all'))
+            ->assertRedirect(route('rider.notifications.index'));
+        $this->assertSame(0, $rider->unreadNotifications()->count());
     }
 }

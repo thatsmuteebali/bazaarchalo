@@ -15,6 +15,8 @@
         <button class="navbar-action-btn me-1" aria-label="Toggle Fullscreen" id="btn-fullscreen">
             <i class="bi bi-arrows-fullscreen"></i>
         </button>
+        @include('shared.notification-dropdown', ['routePrefix' => 'rider'])
+
         <div class="dropdown ms-2">
             <button class="navbar-profile-btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false" id="profile-dropdown">
@@ -25,6 +27,14 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-profile" aria-labelledby="profile-dropdown">
                 <li class="dropdown-header">Welcome, {{ auth()->user()->name }}</li>
+                <li>
+                    <a class="dropdown-item" href="{{ route('rider.profile') }}">
+                        <i class="bi bi-person"></i> My Profile
+                    </a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
                 <li>
                     <a class="dropdown-item text-danger" href="{{ route('rider.logout') }}"
                         onclick="event.preventDefault(); document.getElementById('rider-logout-form').submit();">
