@@ -39,6 +39,11 @@ class HomeController extends Controller
                     return redirect()->route('seller.dashboard');
                 }
             }
+            elseif($role == 'rider'){
+                if(Auth::user()->status == 'Active'){
+                    return redirect()->route('rider.dashboard');
+                }
+            }
         }
         return redirect()->route('login');
     }

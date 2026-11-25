@@ -16,12 +16,14 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\RiderLoginController;
 use App\Http\Controllers\Auth\SellerLoginController;
 use App\Http\Controllers\Auth\SellerRegisterController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Rider\PanelController as RiderPanelController;
 use App\Http\Controllers\Seller\CollectionController;
 use App\Http\Controllers\Seller\OrderController;
 use App\Http\Controllers\Seller\ProductController;
@@ -263,6 +265,18 @@ Route::prefix('seller')->name('seller.')->middleware('guest')->group(function ()
     Route::post('register', [SellerRegisterController::class, 'register']);
 });
 
+Route::prefix('rider')->name('rider.')->middleware('guest')->group(function () {
+    Route::get('login', [RiderLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [RiderLoginController::class, 'login']);
+});
+
+Route::group(['middleware' => ['RiderMiddleware']], function () {
+    Route::prefix('rider')->name('rider.')->group(function () {
+        Route::get('/dashboard', [RiderPanelController::class, 'dashboard'])->name('dashboard');
+        Route::get('/orders', [RiderPanelController::class, 'orders'])->name('orders.index');
+        Route::post('logout', [RiderLoginController::class, 'logout'])->name('logout');
+    });
+});
 
 Route::group(['middleware' => ['SellerMiddleware']], function () {
     Route::prefix('seller')->name('seller.')->group(function () {
