@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+    @php
+        $webSetting = getWebsiteContent('setting');
+    @endphp
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bazaar Chalo - Premium Bootstrap 5 Admin Dashboard Template</title>
@@ -11,7 +14,7 @@
     <meta name="author" content="Bazaar Chalo Team">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('storage/'.ltrim($webSetting['Website Favicon'], '/')) }}">
 
     <!-- Local Third-Party Libraries (100% Offline Compatible) -->
     <link rel="stylesheet" href="{{ asset('assets/libs/bootstrap/css/bootstrap.min.css') }}">
@@ -27,9 +30,6 @@
 </head>
 
 <body>
-    @php
-        $webSetting = getWebsiteContent('setting');
-    @endphp
     <!-- ==========================================
          START: Sidebar Component
          Highly polished, dark-green sticky navigation
