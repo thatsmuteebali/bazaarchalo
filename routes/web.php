@@ -289,6 +289,9 @@ Route::group(['middleware' => ['RiderMiddleware']], function () {
             ->whereNumber('order')
             ->whereNumber('orderItem')
             ->name('orders.items.status');
+        Route::patch('/orders/{order}/payment/paid', [RiderPanelController::class, 'markOrderPaid'])
+            ->whereNumber('order')
+            ->name('orders.payment.paid');
         Route::controller(NotificationController::class)->prefix('notifications')->name('notifications.')->group(function () {
             Route::get('/', 'index')->defaults('panel', 'rider')->name('index');
             Route::post('/read-all', 'readAll')->defaults('panel', 'rider')->name('read-all');

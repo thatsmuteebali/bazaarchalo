@@ -26,6 +26,12 @@ class RiderPanelTest extends TestCase
             'value' => 'no_image',
             'type' => 'image',
         ]);
+        WebContent::create([
+            'page' => 'setting',
+            'field' => 'Website Favicon',
+            'value' => 'no_image',
+            'type' => 'image',
+        ]);
     }
 
     public function test_rider_login_page_uses_rider_route_and_has_no_social_login(): void
@@ -154,7 +160,7 @@ class RiderPanelTest extends TestCase
 
         $this->get(route('rider.orders.index'))
             ->assertOk()
-            ->assertSee('No assigned orders yet');
+            ->assertSee('No orders have been assigned to you yet.');
     }
 
     public function test_non_riders_cannot_access_rider_panel(): void
