@@ -348,8 +348,7 @@
                 <hr class="my-4">
                 <h3 class="h6 mb-3">Add tracking update</h3>
                 <p class="admin-order-muted">
-                    Updates are recorded in the timeline and cannot be edited or deleted. Mark an item as accepted
-                    before shipping it; delivered items must already be shipped.
+                    Add a customer-visible or internal note here. Only the assigned rider can update pickup and delivery statuses.
                 </p>
                 <form method="POST" action="{{ route('admin.orders.tracking.store', $order) }}" class="admin-tracking-form">
                     @csrf
@@ -357,8 +356,6 @@
                         <label for="tracking-status" class="form-label">Event type</label>
                         <select id="tracking-status" name="status" class="form-select" required>
                             <option value="note" @selected(old('status', 'note') === 'note')>Note</option>
-                            <option value="shipped" @selected(old('status') === 'shipped')>Shipped</option>
-                            <option value="delivered" @selected(old('status') === 'delivered')>Delivered</option>
                         </select>
                     </div>
                     <div>
@@ -415,6 +412,48 @@
         </div>
 
         <aside>
+            <section class="admin-order-panel mb-3">
+                <h2>Delivery rider</h2>
+                @if ($order->rider)
+                    <div class="admin-order-info-row">
+                        <span class="admin-order-muted">Assigned to</span>
+                        <strong>{{ $order->rider->name }}</strong>
+                    </div>
+                    @if ($order->rider->phone)
+                        <div class="admin-order-info-row">
+                            <span class="admin-order-muted">Phone</span>
+                            <a href="tel:{{ $order->rider->phone }}">{{ $order->rider->phone }}</a>
+                        </div>
+                    @endif
+                @elseif ($allItemsDecided && $hasAcceptedItems)
+                    <p class="admin-order-muted">All items have been decided. Assign one active rider to collect the accepted items.</p>
+                    @if ($riders->isNotEmpty())
+                        <form method="POST" action="{{ route('admin.orders.assign-rider', $order) }}">
+                            @csrf
+                            <label for="order-rider" class="form-label">Active rider</label>
+                            <select id="order-rider" name="rider_id" class="form-select mb-3" required>
+                                <option value="">Choose a rider</option>
+                                @foreach ($riders as $rider)
+                                    <option value="{{ $rider->id }}" @selected((string) old('rider_id') === (string) $rider->id)>
+                                        {{ $rider->name }}{{ $rider->phone ? ' · '.$rider->phone : '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="submit" class="btn-quick-action">
+                                <i class="bi bi-truck" aria-hidden="true"></i>
+                                <span>Assign rider</span>
+                            </button>
+                        </form>
+                    @else
+                        <p class="admin-order-muted mb-0">There are no active riders available to assign.</p>
+                    @endif
+                @elseif ($allItemsDecided)
+                    <p class="admin-order-muted mb-0">There are no accepted items to deliver.</p>
+                @else
+                    <p class="admin-order-muted mb-0">Decide every order item before assigning a rider.</p>
+                @endif
+            </section>
+
             <section class="admin-order-panel mb-3">
                 <h2>Customer</h2>
                 <div class="admin-order-info-row">

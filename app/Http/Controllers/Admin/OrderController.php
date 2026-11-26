@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\User;
+use App\Services\OrderDispatchService;
 use App\Services\OrderItemDecisionService;
 use App\Services\OrderTrackingService;
 use App\Support\Money;
@@ -111,6 +113,7 @@ class OrderController extends Controller
     {
         $order->load([
             'customer:id,name,email,phone',
+            'rider:id,name,phone',
             'items' => fn ($query) => $query->with(['seller:id,name', 'shop:id,name'])->orderBy('id'),
             'tracking' => fn ($query) => $query
                 ->with(['item:id,product_name', 'creator:id,name'])
@@ -119,7 +122,35 @@ class OrderController extends Controller
                 ->orderBy('id'),
         ]);
 
-        return view('admin.orders.show', compact('order'));
+        $riders = User::query()
+            ->where('role', 'rider')
+            ->where('status', 'Active')
+            ->orderBy('name')
+            ->get(['id', 'name', 'phone']);
+        $allItemsDecided = $order->items->isNotEmpty()
+            && $order->items->every(fn (OrderItem $item) => ! $item->canBeDecided());
+        $hasAcceptedItems = $order->items->contains(
+            fn (OrderItem $item) => $item->status === OrderItem::STATUS_ACCEPTED,
+        );
+
+        return view('admin.orders.show', compact('order', 'riders', 'allItemsDecided', 'hasAcceptedItems'));
+    }
+
+    public function assignRider(Request $request, Order $order, OrderDispatchService $dispatch)
+    {
+        $data = $request->validate([
+            'rider_id' => [
+                'required',
+                'integer',
+                Rule::exists('users', 'id')->where('role', 'rider')->where('status', 'Active'),
+            ],
+        ]);
+
+        $dispatch->assignRider($order, (int) $data['rider_id'], $request->user());
+
+        return redirect()
+            ->route('admin.orders.show', $order)
+            ->with('success', 'The rider has been assigned and order notifications have been sent.');
     }
 
     public function decide(
@@ -159,7 +190,7 @@ class OrderController extends Controller
                 'integer',
                 Rule::exists('order_items', 'id')->where('order_id', $order->id),
             ],
-            'status' => ['required', Rule::in(['note', 'shipped', 'delivered'])],
+            'status' => ['required', Rule::in(['note'])],
             'title' => ['required', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:2000'],
             'courier_name' => ['nullable', 'string', 'max:80'],

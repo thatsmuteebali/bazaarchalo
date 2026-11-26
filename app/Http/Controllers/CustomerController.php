@@ -8,10 +8,13 @@ use App\Services\OrderPlacementService;
 use App\Exceptions\CartException;
 use App\Http\Requests\CheckoutRequest;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class CustomerController extends Controller
 {
@@ -73,6 +76,44 @@ class CustomerController extends Controller
         }
 
         return view('customer.order-detail', compact('order'));
+    }
+
+    public function storeOrderItemReview(Request $request, Order $order, OrderItem $orderItem)
+    {
+        abort_unless((int) $order->user_id === (int) $request->user()->id, 404);
+        abort_unless((int) $orderItem->order_id === (int) $order->id, 404);
+
+        $data = $request->validate([
+            'rating' => ['required', 'integer', 'between:1,5'],
+            'description' => ['required', 'string', 'max:2000'],
+        ]);
+
+        DB::transaction(function () use ($orderItem, $request, $data): void {
+            $item = OrderItem::query()->whereKey($orderItem->id)->lockForUpdate()->firstOrFail();
+
+            if ($item->status !== OrderItem::STATUS_DELIVERED) {
+                throw ValidationException::withMessages([
+                    'review' => 'You can review this product after it has been delivered.',
+                ]);
+            }
+
+            if ($item->review()->exists()) {
+                throw ValidationException::withMessages([
+                    'review' => 'You have already reviewed this product.',
+                ]);
+            }
+
+            $item->review()->create([
+                'product_id' => $item->product_id,
+                'customer_id' => $request->user()->id,
+                'rating' => $data['rating'],
+                'description' => $data['description'],
+            ]);
+        });
+
+        return redirect()
+            ->route('customer.order-detail', ['order' => $order->order_number])
+            ->with('success', 'Thank you for sharing your product review.');
     }
     public function orderTracking(Request $request)
     {
@@ -142,13 +183,13 @@ class CustomerController extends Controller
     {
         $query = Order::query()->where('user_id', $request->user()->id);
         if ($request->filled('order')) {
-            return $query->with(['items', 'payments'])
+            return $query->with(['items.review', 'payments'])
                 ->where('order_number', $request->query('order'))
                 ->first();
         }
 
         return $latestWhenMissing
-            ? $query->with(['items', 'payments'])->latest()->first()
+            ? $query->with(['items.review', 'payments'])->latest()->first()
             : null;
     }
 }

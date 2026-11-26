@@ -661,6 +661,12 @@
                                     data-bs-target="#pane-info" type="button" role="tab">Additional
                                     information</button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="tab-reviews" data-bs-toggle="tab"
+                                    data-bs-target="#pane-reviews" type="button" role="tab">
+                                    Reviews ({{ $reviewCount }})
+                                </button>
+                            </li>
                         </ul>
 
                         <div class="tab-content">
@@ -692,6 +698,45 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                            </div>
+
+                            <div class="tab-pane fade" id="pane-reviews" role="tabpanel">
+                                @if ($reviewCount > 0)
+                                    <div class="mb-4">
+                                        <strong class="h5">{{ number_format((float) $averageReviewRating, 1) }}/5</strong>
+                                        <span class="text-warning ms-2" aria-label="Average customer rating">
+                                            @for ($star = 1; $star <= 5; $star++)
+                                                <i class="fas fa-star {{ $star <= round((float) $averageReviewRating) ? '' : 'text-muted' }}"
+                                                    aria-hidden="true"></i>
+                                            @endfor
+                                        </span>
+                                        <span class="text-muted ms-2">
+                                            {{ $reviewCount }} {{ $reviewCount === 1 ? 'review' : 'reviews' }}
+                                        </span>
+                                    </div>
+                                    @foreach ($product->reviews as $review)
+                                        <article class="border-bottom py-3">
+                                            <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+                                                <div>
+                                                    <strong>{{ $review->customer?->name ?? 'Verified customer' }}</strong>
+                                                    <span class="text-warning ms-2"
+                                                        aria-label="{{ $review->rating }} out of 5 stars">
+                                                        @for ($star = 1; $star <= 5; $star++)
+                                                            <i class="fas fa-star {{ $star <= $review->rating ? '' : 'text-muted' }}"
+                                                                aria-hidden="true"></i>
+                                                        @endfor
+                                                    </span>
+                                                </div>
+                                                <time class="text-muted small" datetime="{{ $review->created_at->toDateString() }}">
+                                                    {{ $review->created_at->format('M j, Y') }}
+                                                </time>
+                                            </div>
+                                            <p class="mb-0">{{ $review->description }}</p>
+                                        </article>
+                                    @endforeach
+                                @else
+                                    <p class="text-muted mb-0">This product has not received a review yet.</p>
+                                @endif
                             </div>
                         </div>
                     </div>

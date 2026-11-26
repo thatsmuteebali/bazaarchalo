@@ -34,6 +34,7 @@ class Product extends Model
     public function options()    { return $this->hasMany(ProductOption::class); }
     public function variants()   { return $this->hasMany(ProductVariant::class); }
     public function movements()  { return $this->hasMany(InventoryMovement::class); }
+    public function reviews()    { return $this->hasMany(ProductReview::class); }
 
     // first image by sort_order (used as thumbnail in the list)
     public function coverImage()

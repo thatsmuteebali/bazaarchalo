@@ -237,7 +237,10 @@ class FrontendController extends Controller
             'images' => fn ($query) => $query->orderBy('sort_order')->orderBy('id'),
             'options' => fn ($query) => $query->orderBy('position'),
             'variants' => fn ($query) => $query->orderBy('id'),
+            'reviews' => fn ($query) => $query->with('customer:id,name')->latest()->limit(20),
         ]);
+        $reviewCount = $product->reviews()->count();
+        $averageReviewRating = $product->reviews()->avg('rating');
 
         $relatedProducts = Product::query()
             ->where('status', 'active')
@@ -250,7 +253,12 @@ class FrontendController extends Controller
             ->limit(4)
             ->get();
 
-        return view('frontend.product-show', compact('product', 'relatedProducts'));
+        return view('frontend.product-show', compact(
+            'product',
+            'relatedProducts',
+            'reviewCount',
+            'averageReviewRating',
+        ));
     }
     public function categories()
     {

@@ -8,15 +8,15 @@ use App\Models\OrderPayment;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class OrderItemDecisionService
 {
-    public function __construct(private readonly StockService $stock)
-    {
-    }
+    public function __construct(
+        private readonly StockService $stock,
+        private readonly MarketplaceNotificationService $notifications,
+    ) {}
 
     public function decide(
         int $orderItemId,
@@ -27,7 +27,10 @@ class OrderItemDecisionService
         ?int $sellerId = null,
     ): Order {
         return DB::transaction(function () use ($orderItemId, $decision, $reason, $actor, $actorLabel, $sellerId): Order {
+            $initialItem = OrderItem::query()->findOrFail($orderItemId);
+            $order = Order::query()->whereKey($initialItem->order_id)->lockForUpdate()->firstOrFail();
             $itemQuery = OrderItem::query()->whereKey($orderItemId);
+            $itemQuery->where('order_id', $order->id);
 
             if ($sellerId !== null) {
                 $itemQuery->where('seller_id', $sellerId);
@@ -41,7 +44,6 @@ class OrderItemDecisionService
                 ]);
             }
 
-            $order = Order::query()->whereKey($item->order_id)->lockForUpdate()->firstOrFail();
             $now = now();
 
             if ($decision === OrderItem::STATUS_REJECTED) {
@@ -83,8 +85,8 @@ class OrderItemDecisionService
                 'seller_id' => $item->seller_id,
                 'status' => $decision,
                 'title' => $actorLabel.($decision === OrderItem::STATUS_ACCEPTED
-                    ? ' accepted an item'
-                    : ' rejected an item ('.$item->product_name.')'),
+                    ? ' accepted '.$item->product_name
+                    : ' rejected '.$item->product_name),
                 'description' => $decision === OrderItem::STATUS_REJECTED
                     ? $reason
                     : $item->product_name.' is being prepared by the seller.',
@@ -98,11 +100,21 @@ class OrderItemDecisionService
                 ->where('status', OrderPayment::STATUS_PENDING)
                 ->update(['amount' => $order->payable_total]);
 
+            $order->loadMissing('customer');
+            $item->loadMissing('seller');
+            $this->notifications->notifyOrderItemDecision(
+                $order,
+                $item,
+                $decision,
+                $actor,
+                $actorLabel === 'Admin',
+            );
+
             return $order;
         });
     }
 
-    public function refreshOrderStatus(Order $order, Carbon $now): void
+    public function refreshOrderStatus(Order $order, \DateTimeInterface $now): void
     {
         $statuses = $order->items()->pluck('status');
         $activeStatuses = $statuses->reject(fn ($status) => in_array($status, [
@@ -112,7 +124,6 @@ class OrderItemDecisionService
 
         if ($activeStatuses->isEmpty()) {
             $orderStatus = Order::STATUS_CANCELLED;
-            $order->payable_total = 0;
         } elseif ($activeStatuses->every(fn ($status) => $status === OrderItem::STATUS_DELIVERED)) {
             $orderStatus = Order::STATUS_COMPLETED;
         } elseif ($activeStatuses->contains(fn ($status) => in_array($status, [
@@ -127,7 +138,7 @@ class OrderItemDecisionService
 
         $order->update([
             'status' => $orderStatus,
-            'payable_total' => $order->payable_total,
+            'payable_total' => $orderStatus === Order::STATUS_CANCELLED ? '0.00' : $order->payable_total,
             'completed_at' => $orderStatus === Order::STATUS_COMPLETED ? ($order->completed_at ?? $now) : null,
             'cancelled_at' => $orderStatus === Order::STATUS_CANCELLED ? ($order->cancelled_at ?? $now) : null,
         ]);

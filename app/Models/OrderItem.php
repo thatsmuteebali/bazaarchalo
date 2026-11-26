@@ -68,6 +68,11 @@ class OrderItem extends Model
         return $this->hasMany(OrderTracking::class)->latest('created_at')->latest('id');
     }
 
+    public function review()
+    {
+        return $this->hasOne(ProductReview::class);
+    }
+
     /* ---------------- scopes ---------------- */
 
     public function scopeForSeller(Builder $query, int $sellerId): Builder

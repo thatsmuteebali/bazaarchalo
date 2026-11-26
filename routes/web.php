@@ -111,6 +111,10 @@ Route::group(['middleware' => ['CustomerMiddleware']], function () {
 
             Route::get('/orders', 'orders')->name('orders');
             Route::get('/order-detail', 'orderDetail')->name('order-detail');
+            Route::post('/orders/{order}/items/{orderItem}/review', 'storeOrderItemReview')
+                ->whereNumber('order')
+                ->whereNumber('orderItem')
+                ->name('orders.items.review');
             Route::get('/order-tracking', 'orderTracking')->name('order-tracking');
 
             Route::get('/wishlist', 'wishlist')->name('wishlist');
@@ -231,6 +235,9 @@ Route::group(['middleware' => ['AdminMiddleware']], function () {
 
         Route::prefix('orders')->name('orders.')->controller(AdminOrderController::class)->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::post('/{order}/assign-rider', 'assignRider')
+                ->whereNumber('order')
+                ->name('assign-rider');
             Route::patch('/{order}/items/{orderItem}/decision', 'decide')
                 ->whereNumber('order')
                 ->whereNumber('orderItem')
@@ -275,6 +282,13 @@ Route::group(['middleware' => ['RiderMiddleware']], function () {
     Route::prefix('rider')->name('rider.')->group(function () {
         Route::get('/dashboard', [RiderPanelController::class, 'dashboard'])->name('dashboard');
         Route::get('/orders', [RiderPanelController::class, 'orders'])->name('orders.index');
+        Route::get('/orders/{order}', [RiderPanelController::class, 'show'])
+            ->whereNumber('order')
+            ->name('orders.show');
+        Route::patch('/orders/{order}/items/{orderItem}/status', [RiderPanelController::class, 'updateItemStatus'])
+            ->whereNumber('order')
+            ->whereNumber('orderItem')
+            ->name('orders.items.status');
         Route::controller(NotificationController::class)->prefix('notifications')->name('notifications.')->group(function () {
             Route::get('/', 'index')->defaults('panel', 'rider')->name('index');
             Route::post('/read-all', 'readAll')->defaults('panel', 'rider')->name('read-all');

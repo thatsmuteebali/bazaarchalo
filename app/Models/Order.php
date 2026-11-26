@@ -21,7 +21,7 @@ class Order extends Model
     public const METHOD_ONLINE = 'online';
 
     protected $fillable = [
-        'order_number', 'user_id',
+        'order_number', 'user_id', 'rider_id',
         'customer_name', 'customer_phone', 'customer_email',
         'delivery_address', 'latitude', 'longitude', 'notes',
         'payment_method', 'online_payment_method', 'payment_method_name', 'payment_status', 'paid_at',
@@ -65,6 +65,11 @@ class Order extends Model
     public function customer()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function rider()
+    {
+        return $this->belongsTo(User::class, 'rider_id');
     }
 
     public function items()

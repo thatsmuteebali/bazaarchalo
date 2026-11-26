@@ -65,7 +65,7 @@
                                 @forelse ($tracking as $event)
                                     <div class="tracking-step {{ $loop->last ? 'active' : 'completed' }}">
                                         <span class="tracking-icon">
-                                            <i class="fas {{ $event->status === 'placed' ? 'fa-check' : ($event->status === 'shipped' ? 'fa-truck' : ($event->status === 'delivered' ? 'fa-home' : 'fa-store')) }}" aria-hidden="true"></i>
+                                            <i class="fas {{ $event->status === 'placed' ? 'fa-check' : (in_array($event->status, ['rider_assigned', 'shipped'], true) ? 'fa-truck' : ($event->status === 'delivered' ? 'fa-home' : 'fa-store')) }}" aria-hidden="true"></i>
                                         </span>
                                         <div>
                                             <h3 class="h6 mb-1">{{ $event->title }}</h3>

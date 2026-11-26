@@ -28,6 +28,16 @@
     </div>
     <main class="container-fluid py-5 account-page">
         <div class="container py-5">
+            @if (session('success'))
+                <div class="alert alert-success" role="status">{{ session('success') }}</div>
+            @endif
+            @if ($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
             <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
                 <div>
                     <p class="text-secondary fw-bold text-uppercase mb-2">
@@ -79,6 +89,54 @@
                                 </div>
                                 <strong class="text-nowrap">@money($item->line_total)</strong>
                             </div>
+                            @if ($item->status === 'delivered')
+                                <div class="border rounded p-3 mb-4 bg-white">
+                                    @if ($item->review)
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <span class="text-warning" aria-label="{{ $item->review->rating }} out of 5 stars">
+                                                @for ($star = 1; $star <= 5; $star++)
+                                                    <i class="bi {{ $star <= $item->review->rating ? 'bi-star-fill' : 'bi-star' }}"
+                                                        aria-hidden="true"></i>
+                                                @endfor
+                                            </span>
+                                            <strong>{{ $item->review->rating }}/5</strong>
+                                            <span class="text-muted small">Your review</span>
+                                        </div>
+                                        <p class="mb-0">{{ $item->review->description }}</p>
+                                    @else
+                                        <h4 class="h6 mb-3">Review {{ $item->product_name }}</h4>
+                                        <form method="POST"
+                                            action="{{ route('customer.orders.items.review', [$order, $item]) }}">
+                                            @csrf
+                                            <fieldset class="mb-3">
+                                                <legend class="form-label">Your rating</legend>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    @for ($star = 1; $star <= 5; $star++)
+                                                        <input type="radio" class="btn-check"
+                                                            name="rating" id="review-{{ $item->id }}-{{ $star }}"
+                                                            value="{{ $star }}"
+                                                            @checked((string) old('rating') === (string) $star) required>
+                                                        <label class="btn btn-outline-warning"
+                                                            for="review-{{ $item->id }}-{{ $star }}"
+                                                            aria-label="{{ $star }} {{ $star === 1 ? 'star' : 'stars' }}">
+                                                            {{ $star }} <i class="bi bi-star-fill" aria-hidden="true"></i>
+                                                        </label>
+                                                    @endfor
+                                                </div>
+                                            </fieldset>
+                                            <label class="form-label" for="review-description-{{ $item->id }}">
+                                                Your review
+                                            </label>
+                                            <textarea class="form-control mb-3" id="review-description-{{ $item->id }}"
+                                                name="description" rows="3" maxlength="2000" required
+                                                placeholder="Share your experience with this product.">{{ old('description') }}</textarea>
+                                            <button type="submit" class="btn btn-primary rounded-pill px-4 text-white">
+                                                Submit review
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @endif
                         @endforeach
                         <div class="d-flex justify-content-between text-muted mb-2">
                             <span>Subtotal</span><span>@money($order->subtotal)</span>

@@ -141,7 +141,7 @@ class AdminOrderManagementTest extends TestCase
             'order_item_id' => $acceptItem->id,
             'seller_id' => $seller->id,
             'status' => OrderItem::STATUS_ACCEPTED,
-            'title' => 'Admin accepted an item',
+            'title' => 'Admin accepted Fresh Apples',
             'created_by' => $this->admin->id,
         ]);
 
@@ -161,45 +161,13 @@ class AdminOrderManagementTest extends TestCase
             'status_reason' => $reason,
         ]);
 
-        $this->post(route('admin.orders.tracking.store', $order), [
+        $this->from($detailUrl)->post(route('admin.orders.tracking.store', $order), [
             'order_item_id' => $acceptItem->id,
             'status' => 'shipped',
-            'title' => 'Package handed to courier',
-            'description' => 'The courier collected the package.',
-            'courier_name' => 'Local Express',
-            'tracking_number' => 'LE-12345',
-            'location' => 'Central depot',
+            'title' => 'Package picked up',
             'is_public' => '1',
-        ])->assertRedirect($detailUrl);
-
-        $this->assertDatabaseHas('order_tracking', [
-            'order_id' => $order->id,
-            'order_item_id' => $acceptItem->id,
-            'seller_id' => $seller->id,
-            'status' => 'shipped',
-            'title' => 'Package handed to courier',
-            'courier_name' => 'Local Express',
-            'tracking_number' => 'LE-12345',
-            'location' => 'Central depot',
-            'is_public' => true,
-            'created_by' => $this->admin->id,
-        ]);
-        $this->assertDatabaseHas('order_items', [
-            'id' => $acceptItem->id,
-            'status' => OrderItem::STATUS_SHIPPED,
-            'courier_name' => 'Local Express',
-            'tracking_number' => 'LE-12345',
-        ]);
-
-        $this->post(route('admin.orders.tracking.store', $order), [
-            'order_item_id' => $acceptItem->id,
-            'status' => 'delivered',
-            'title' => 'Package delivered',
-            'is_public' => '1',
-        ])->assertRedirect($detailUrl);
-        $this->assertSame(OrderItem::STATUS_DELIVERED, $acceptItem->fresh()->status);
-        $this->assertSame(Order::STATUS_COMPLETED, $order->fresh()->status);
-        $this->assertSame('LE-12345', $acceptItem->fresh()->tracking_number);
+        ])->assertSessionHasErrors('status');
+        $this->assertSame(OrderItem::STATUS_ACCEPTED, $acceptItem->fresh()->status);
 
         $this->post(route('admin.orders.tracking.store', $order), [
             'status' => 'note',
@@ -210,8 +178,6 @@ class AdminOrderManagementTest extends TestCase
         $this->actingAs($customer)
             ->get(route('customer.order-tracking', ['order' => $order->order_number]))
             ->assertOk()
-            ->assertSee('Package handed to courier')
-            ->assertSee('Package delivered')
             ->assertDontSee('Internal dispatch note')
             ->assertDontSee('Customer should not see this note.');
     }

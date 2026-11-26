@@ -17,7 +17,8 @@ class OrderPlacementService
 {
     public function __construct(
         private CheckoutService $checkout,
-        private StockService $stock
+        private StockService $stock,
+        private MarketplaceNotificationService $notifications,
     ) {}
 
     public function place(User $customer, array $cart, array $details): Order
@@ -31,7 +32,7 @@ class OrderPlacementService
             return [$left['product_id'], $left['variant_id'] ?? 0] <=> [$right['product_id'], $right['variant_id'] ?? 0];
         });
 
-        return DB::transaction(function () use ($customer, $items, $details): Order {
+        $order = DB::transaction(function () use ($customer, $items, $details): Order {
             $prepared = [];
             $subtotal = 0.0;
             $count = 0;
@@ -173,7 +174,11 @@ class OrderPlacementService
                 'created_by' => $customer->id,
             ]);
 
+            $this->notifications->notifyOrderPlaced($order);
+
             return $order;
         });
+
+        return $order;
     }
 }
