@@ -543,15 +543,43 @@
         closeCartDrawer();
     });
 
+    var clearCartModalElement = document.getElementById("clearCartModal");
+    var clearCartModal = clearCartModalElement && window.bootstrap
+        ? new window.bootstrap.Modal(clearCartModalElement)
+        : null;
+
     // "Clear cart" button on the cart page
     $(document).on("click", "[data-cart-clear]", function () {
-        if (!window.confirm("Remove all items from your cart?")) {
+        if (!clearCartModal) {
+            showCartToast("Unable to open the cart confirmation. Please refresh the page and try again.", "error");
             return;
         }
 
-        window.BazaarCart.clear().catch(function (error) {
-            showCartToast(error.message, "error");
-        });
+        clearCartModal.show();
+    });
+
+    $(document).on("click", "#confirmCartClear", function () {
+        var $button = $(this);
+        if ($button.data("busy") || !clearCartModal) {
+            return;
+        }
+
+        $button.data("busy", true).prop("disabled", true);
+        $button.find(".clear-cart-confirm-label").addClass("d-none");
+        $button.find(".clear-cart-confirm-loading").removeClass("d-none");
+
+        window.BazaarCart.clear()
+            .then(function () {
+                clearCartModal.hide();
+            })
+            .catch(function (error) {
+                showCartToast(error.message, "error");
+            })
+            .then(function () {
+                $button.data("busy", false).prop("disabled", false);
+                $button.find(".clear-cart-confirm-label").removeClass("d-none");
+                $button.find(".clear-cart-confirm-loading").addClass("d-none");
+            });
     });
 
     $(document).on("keydown", function (e) {
