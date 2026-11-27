@@ -261,6 +261,7 @@
                 <div class="col-lg-3 col-md-6">
                     <div class="d-flex flex-column text-start footer-item">
                         <h4 class="text-light mb-3">Bazaar Chalo</h4>
+                        <a class="btn-link" href="{{ route('rider.login') }}">Rider Login</a>
                         <a class="btn-link" href="{{ route('frontend.about') }}">About Us</a>
                         <a class="btn-link" href="{{ route('frontend.contact') }}">Contact Us</a>
                     </div>
