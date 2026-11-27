@@ -318,7 +318,7 @@
                                     <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric" required
                                         pattern="03[0-9]{9}" maxlength="11"
                                         value="{{ old('phone', $user->phone ?? '') }}"
-                                        class="form-control @error('phone') is-invalid @enderror" placeholder="03000000000">
+                                        class="form-control @error('phone') is-invalid @enderror" placeholder="e.g. 03000000000">
                                     <div class="invalid-feedback">@error('phone') {{ $message }} @else Enter 11 digits with no spaces or hyphens, e.g. 03000000000. @enderror</div>
                                 </div>
 

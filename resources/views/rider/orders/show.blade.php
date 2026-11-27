@@ -158,9 +158,6 @@
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="alert alert-success" role="status">{{ session('success') }}</div>
-    @endif
     @if ($errors->any())
         <div class="alert alert-danger" role="alert">
             @foreach ($errors->all() as $error)
@@ -360,15 +357,50 @@
                     <div class="alert alert-info mt-3 mb-2">
                         All deliverable items are marked delivered. Confirm after you collect the cash from the customer.
                     </div>
-                    <form method="POST" action="{{ route('rider.orders.payment.paid', $order) }}"
-                        onsubmit="return confirm('Confirm that you collected {{ \App\Support\Money::format($order->payable_total) }} cash from the customer?');">
+                    <form id="markOrderPaidForm" method="POST"
+                        action="{{ route('rider.orders.payment.paid', $order) }}">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" class="btn btn-success w-100">
+                        <button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
+                            data-bs-target="#confirmPaymentModal">
                             <i class="bi bi-cash-coin me-1" aria-hidden="true"></i>
                             Mark as paid
                         </button>
                     </form>
+
+                    <div class="modal fade" id="confirmPaymentModal" tabindex="-1"
+                        aria-labelledby="confirmPaymentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2 class="modal-title fs-5" id="confirmPaymentModalLabel">
+                                        Confirm cash collection
+                                    </h2>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="mb-2">Have you collected the cash payment from the customer?</p>
+                                    <div class="d-flex justify-content-between align-items-center rounded bg-light p-3">
+                                        <span class="text-muted">Amount to collect</span>
+                                        <strong>{{ \App\Support\Money::format($order->payable_total) }}</strong>
+                                    </div>
+                                    <p class="text-muted small mt-3 mb-0">
+                                        Confirm only after you have received the full amount.
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" form="markOrderPaidForm" class="btn btn-success">
+                                        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                                        Yes, mark as paid
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 @elseif ($order->payment_status === 'unpaid' && ! $order->isCashOnDelivery())
                     <p class="rider-order-muted mt-3 mb-0">
                         This is not a cash-on-delivery order. Payment is handled through its selected payment method.

@@ -1,9 +1,14 @@
-@extends($panel === 'admin'
-    ? 'layouts.admin'
-    : ($panel === 'seller' ? 'layouts.seller' : ($panel === 'rider' ? 'layouts.rider' : 'layouts.app')))
+@extends($panel === 'admin' ? 'layouts.admin' : ($panel === 'seller' ? 'layouts.seller' : ($panel === 'rider' ? 'layouts.rider' : 'layouts.app')))
 
 @section('content')
     @if ($panel === 'customer')
+        <div class="container-fluid page-header py-5">
+            <h1 class="text-center text-white display-6">Notifications</h1>
+            {{-- <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ route('frontend.home') }}">Home</a></li>
+            <li class="breadcrumb-item active text-white">My Account</li>
+        </ol> --}}
+        </div>
         <div class="container py-5">
             <div class="row">
                 @include('customer.sidebar')
@@ -53,7 +58,7 @@
                             <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
                         </span>
                         @unless ($notification->read_at)
-                            <span class="badge text-bg-success">Unread</span>
+                            <span class="badge {{$panel === 'customer' ? 'bg-primary' : 'text-bg-success'}}">Unread</span>
                         @endunless
                     </span>
                 </button>
