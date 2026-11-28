@@ -132,7 +132,8 @@
                                         {{$shop->description}}
                                     </p>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-primary"><i class="fas fa-star text-secondary me-1"></i> 4.9</span><a
+                                        @include('frontend.partials.shop-rating', ['shop' => $shop])
+                                        <a
                                             href="{{ route('frontend.shop', ['shop' => $shop->slug]) }}"
                                             class="btn btn-sm border border-secondary rounded-pill px-3 text-primary">Visit
                                             shop</a>

@@ -32,6 +32,8 @@ class FrontendController extends Controller
         $shops = Shop::query()
             ->where('status', 'active')
             ->where('is_feature_shop', true)
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             // ->whereHas('products', fn ($query) => $query->where('status', 'active')
             //     ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('status', 'active')))
             // ->latest()
@@ -330,6 +332,8 @@ class FrontendController extends Controller
                 ->where('status', 'active')
                 ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('slug', $category)->where('status', 'active'))))
             ->withCount(['products' => fn ($query) => $query->where('status', 'active')])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->latest()
             ->paginate(12)
             ->withQueryString();

@@ -32,6 +32,18 @@ class Shop extends Model
         return $this->hasMany(Product::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasManyThrough(
+            ProductReview::class,
+            Product::class,
+            'shop_id',
+            'product_id',
+            'id',
+            'id',
+        );
+    }
+
     public function getBannerUrlAttribute(): string
     {
         if ($this->banner) {

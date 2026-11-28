@@ -81,6 +81,7 @@
                                     </p>
                                     <div class="seller-meta">
                                         <span><i class="fas fa-box-open text-secondary me-1"></i>{{ $shop->products_count }} active products</span>
+                                        @include('frontend.partials.shop-rating', ['shop' => $shop])
                                     </div>
                                     <a href="{{ route('frontend.shop', ['shop' => $shop->slug]) }}"
                                         class="btn btn-primary rounded-pill w-100 mt-4">Visit shop <i

@@ -37,7 +37,12 @@ class OrderWorkflowTest extends TestCase
         $otherRider = User::factory()->create(['role' => 'rider', 'status' => 'Active']);
         $inactiveRider = User::factory()->create(['role' => 'rider', 'status' => 'Inactive']);
         $category = Category::create(['name' => 'Produce', 'status' => 'active']);
-        $appleShop = Shop::create(['seller_id' => $appleSeller->id, 'name' => 'Apple Shop', 'status' => 'active']);
+        $appleShop = Shop::create([
+            'seller_id' => $appleSeller->id,
+            'name' => 'Apple Shop',
+            'status' => 'active',
+            'is_feature_shop' => true,
+        ]);
         $pearShop = Shop::create(['seller_id' => $pearSeller->id, 'name' => 'Pear Shop', 'status' => 'active']);
         $inactiveShop = Shop::create(['seller_id' => $inactiveSeller->id, 'name' => 'Inactive Shop', 'status' => 'active']);
         $apples = $this->createProduct($appleSeller, $appleShop, $category, 'Fresh Apples', 'fresh-apples');
@@ -183,6 +188,15 @@ class OrderWorkflowTest extends TestCase
         $this->get(route('frontend.shop'))
             ->assertOk()
             ->assertSee('5.0 (1)');
+
+        $this->get(route('frontend.home'))
+            ->assertOk()
+            ->assertSee('5.0')
+            ->assertSee('(1 review)');
+        $this->get(route('frontend.shop-listing'))
+            ->assertOk()
+            ->assertSee('5.0')
+            ->assertSee('(1 review)');
 
         $this->post($reviewUrl, [
             'rating' => 4,
