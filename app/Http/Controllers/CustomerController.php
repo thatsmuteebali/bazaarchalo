@@ -19,8 +19,19 @@ use Illuminate\Validation\ValidationException;
 
 class CustomerController extends Controller
 {
-    public function account(){
-        return view('customer.account');
+    public function account(Request $request)
+    {
+        $user = $request->user();
+        $orderCount = Order::query()->where('user_id', $user->id)->count();
+        $wishlistCount = $user->wishlists()->count();
+        $recentOrders = Order::query()
+            ->where('user_id', $user->id)
+            ->withSum('items', 'quantity')
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        return view('customer.account', compact('orderCount', 'wishlistCount', 'recentOrders'));
     }
     public function profile(){
         return view('customer.profile');
