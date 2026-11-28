@@ -30,6 +30,10 @@ class CustomerWishlistTest extends TestCase
 
         $this->post(route('customer.wishlist.toggle', $product))
             ->assertRedirect(route('login'));
+
+        $this->postJson(route('customer.wishlist.toggle', $product))
+            ->assertUnauthorized()
+            ->assertJsonPath('redirect', route('login'));
     }
 
     public function test_customer_can_add_view_and_remove_wishlist_products(): void
@@ -41,8 +45,14 @@ class CustomerWishlistTest extends TestCase
         $product = $this->createProduct();
 
         $this->actingAs($customer)
-            ->post(route('customer.wishlist.toggle', $product))
-            ->assertRedirect();
+            ->postJson(route('customer.wishlist.toggle', $product))
+            ->assertOk()
+            ->assertJson([
+                'ok' => true,
+                'wishlisted' => true,
+                'wishlist_count' => 1,
+                'visible_wishlist_count' => 1,
+            ]);
 
         $this->assertDatabaseHas('wishlists', [
             'user_id' => $customer->id,
@@ -53,7 +63,8 @@ class CustomerWishlistTest extends TestCase
             ->assertOk()
             ->assertSee($product->name)
             ->assertSee('wishlist-button active')
-            ->assertSee('Remove from wishlist');
+            ->assertSee('Remove from wishlist')
+            ->assertSee('class="account-tab-count" data-wishlist-count>1</span>', false);
 
         $otherCustomer = User::factory()->create([
             'role' => 'customer',
@@ -66,8 +77,14 @@ class CustomerWishlistTest extends TestCase
             ->assertDontSee($product->name);
 
         $this->actingAs($customer);
-        $this->post(route('customer.wishlist.toggle', $product))
-            ->assertRedirect();
+        $this->postJson(route('customer.wishlist.toggle', $product))
+            ->assertOk()
+            ->assertJson([
+                'ok' => true,
+                'wishlisted' => false,
+                'wishlist_count' => 0,
+                'visible_wishlist_count' => 0,
+            ]);
 
         $this->assertDatabaseMissing('wishlists', [
             'user_id' => $customer->id,

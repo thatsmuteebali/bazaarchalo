@@ -29,9 +29,10 @@
             <a class="nav-link text-start {{ request()->routeIs('customer.orders') ? 'active' : '' }}"
                 href="{{ route('customer.orders') }}"><i class="fas fa-box"></i>My Orders <span
                     class="account-tab-count">{{ auth()->user()->placeOrders() }}</span></a>
+            @php($wishlistCount = auth()->user()->wishlists()->count())
             <a class="nav-link text-start {{ request()->routeIs('customer.wishlist') ? 'active' : '' }}"
                 href="{{ route('customer.wishlist') }}"><i class="fas fa-heart"></i>Wishlist <span
-                    class="account-tab-count">4</span></a>
+                    class="account-tab-count" data-wishlist-count>{{ $wishlistCount }}</span></a>
             {{-- <a class="nav-link text-start {{ request()->routeIs('customer.addresses') ? 'active' : '' }}"
                 href="{{ route('customer.addresses') }}"><i class="fas fa-map-marker-alt"></i>Addresses</a> --}}
             <a href="{{ route('logout') }}" class="nav-link text-start text-danger mt-3"

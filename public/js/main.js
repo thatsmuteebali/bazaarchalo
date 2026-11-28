@@ -241,6 +241,85 @@
             addWishlistButton($(this).closest(".text-center")[0]);
         });
 
+    $(document).on("submit", "form[data-wishlist-toggle]", function (e) {
+        e.preventDefault();
+
+        var $form = $(this);
+        var $button = $form.find(".wishlist-button");
+        if ($form.data("busy")) {
+            return;
+        }
+
+        $form.data("busy", true);
+        $button.prop("disabled", true);
+
+        fetch($form.attr("action"), {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+                Accept: "application/json",
+                "X-CSRF-TOKEN": csrfToken,
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+            .then(function (response) {
+                return response.json().catch(function () {
+                    return {};
+                }).then(function (data) {
+                    data = data || {};
+                    if (data.redirect) {
+                        window.location.assign(data.redirect);
+                        return null;
+                    }
+
+                    if (!response.ok || (data && data.ok === false)) {
+                        throw new Error((data && data.message) || "Unable to update your wishlist. Please try again.");
+                    }
+
+                    return data;
+                });
+            })
+            .then(function (data) {
+                if (!data) {
+                    return;
+                }
+
+                var active = data.wishlisted === true;
+                $button
+                    .toggleClass("active", active)
+                    .attr("aria-label", active ? "Remove from wishlist" : "Add to wishlist")
+                    .attr("aria-pressed", active ? "true" : "false")
+                    .attr("title", active ? "Remove from wishlist" : "Add to wishlist");
+                $button.find("i")
+                    .toggleClass("far", !active)
+                    .toggleClass("fas", active);
+
+                $("[data-wishlist-count]").text(data.wishlist_count);
+                showCartToast(data.message, "info");
+
+                if (!active) {
+                    var $wishlistItems = $form.closest("[data-wishlist-items]");
+                    var $wishlistCard = $form.closest("[data-wishlist-card]");
+                    if ($wishlistItems.length && $wishlistCard.length) {
+                        $wishlistCard.remove();
+                        if (Number(data.visible_wishlist_count) === 0) {
+                            $wishlistItems.find("[data-wishlist-empty-state]").removeClass("d-none");
+                            $wishlistItems.find("[data-wishlist-pagination]").remove();
+                        } else if (!$wishlistItems.find("[data-wishlist-card]").length) {
+                            $wishlistItems.find("[data-wishlist-page-empty-state]").removeClass("d-none");
+                        }
+                    }
+                }
+            })
+            .catch(function (error) {
+                showCartToast(error.message || "Unable to update your wishlist. Please try again.", "error");
+            })
+            .then(function () {
+                $form.data("busy", false);
+                $button.prop("disabled", false);
+            });
+    });
+
     $(document).on("click", ".wishlist-button", function (e) {
         if ($(this).closest("form[data-wishlist-toggle]").length) {
             return;

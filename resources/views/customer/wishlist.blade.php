@@ -25,22 +25,26 @@
                             Your favourite local products, ready when you are.
                         </p>
                     </div>
-                    <div class="row g-4">
-                        @forelse ($wishlistItems as $wishlistItem)
-                            <div class="col-md-6 col-lg-6 col-xl-4">
+                    <div class="row g-4" data-wishlist-items>
+                        @foreach ($wishlistItems as $wishlistItem)
+                            <div class="col-md-6 col-lg-6 col-xl-4" data-wishlist-card>
                                 @include('frontend.partials.product-card', ['product' => $wishlistItem->product])
                             </div>
-                        @empty
-                            <div class="col-12">
-                                <div class="alert alert-light border mb-0">
-                                    Your wishlist is empty.
-                                    <a href="{{ route('frontend.shop') }}" class="alert-link">Browse products</a>
-                                    to find something you love.
-                                </div>
+                        @endforeach
+                        <div class="col-12 {{ $wishlistItems->isEmpty() ? '' : 'd-none' }}" data-wishlist-empty-state>
+                            <div class="alert alert-light border mb-0">
+                                Your wishlist is empty.
+                                <a href="{{ route('frontend.shop') }}" class="alert-link">Browse products</a>
+                                to find something you love.
                             </div>
-                        @endforelse
+                        </div>
+                        <div class="col-12 d-none" data-wishlist-page-empty-state>
+                            <div class="alert alert-light border mb-0">
+                                There are no more wishlist products on this page.
+                            </div>
+                        </div>
                         @if ($wishlistItems->hasPages())
-                            <div class="col-12 d-flex justify-content-center mt-4">
+                            <div class="col-12 d-flex justify-content-center mt-4" data-wishlist-pagination>
                                 {{ $wishlistItems->links() }}
                             </div>
                         @endif

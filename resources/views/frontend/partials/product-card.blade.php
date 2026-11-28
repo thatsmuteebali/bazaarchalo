@@ -30,6 +30,7 @@
         @csrf
         <button type="submit" class="wishlist-button {{ $isWishlisted ? 'active' : '' }}"
             aria-label="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}"
+            aria-pressed="{{ $isWishlisted ? 'true' : 'false' }}"
             title="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}">
             <i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart" aria-hidden="true"></i>
         </button>

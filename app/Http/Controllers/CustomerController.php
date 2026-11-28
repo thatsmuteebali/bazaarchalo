@@ -210,9 +210,29 @@ class CustomerController extends Controller
         if ($wishlist) {
             $wishlist->delete();
             $message = 'Product removed from your wishlist.';
+            $wishlisted = false;
         } else {
             $request->user()->wishlists()->create(['product_id' => $product->id]);
             $message = 'Product added to your wishlist.';
+            $wishlisted = true;
+        }
+
+        if ($request->expectsJson()) {
+            $wishlistCount = $request->user()->wishlists()->count();
+            $visibleWishlistCount = $request->user()->wishlists()
+                ->whereHas('product', fn ($query) => $query
+                    ->where('status', 'active')
+                    ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active'))
+                    ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('status', 'active')))
+                ->count();
+
+            return response()->json([
+                'ok' => true,
+                'wishlisted' => $wishlisted,
+                'wishlist_count' => $wishlistCount,
+                'visible_wishlist_count' => $visibleWishlistCount,
+                'message' => $message,
+            ]);
         }
 
         return back()->with('success', $message);
