@@ -10,7 +10,8 @@
     $hasDiscount =
         !$product->has_variants && $product->compare_price && (float) $product->compare_price > (float) $product->price;
     $productUrl = route('frontend.product-detail', ['product' => $product->slug]);
-
+    $reviewCount = $product->reviews_count ?? 0;
+    $averageRating = (float) ($product->reviews_avg_rating ?? 0);
 @endphp
 <div class="product-card">
     @if ($hasDiscount)
@@ -54,9 +55,20 @@
             <small class="text-muted">{{ $product->category->name }}</small>
         @endif
         <div class="product-meta">
-            <div class="product-rating" aria-label="No reviews yet">
-                <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i
-                    class="far fa-star"></i><i class="far fa-star"></i>
+            <div class="product-rating"
+                aria-label="{{ $reviewCount > 0 ? number_format($averageRating, 1) . ' out of 5 stars from ' . $reviewCount . ' reviews' : 'No reviews yet' }}">
+                <span aria-hidden="true">
+                    @for ($star = 1; $star <= 5; $star++)
+                        <i class="{{ $reviewCount > 0 && $star <= round($averageRating) ? 'fas' : 'far' }} fa-star"></i>
+                    @endfor
+                </span>
+                @if ($reviewCount > 0)
+                    <span class="text-muted ms-1" aria-hidden="true">
+                        {{ number_format($averageRating, 1) }} ({{ $reviewCount }})
+                    </span>
+                @else
+                    <span class="text-muted ms-1">No reviews</span>
+                @endif
             </div>
             <div class="product-price">
                 @if ($hasDiscount)

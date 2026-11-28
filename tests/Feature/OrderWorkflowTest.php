@@ -180,6 +180,10 @@ class OrderWorkflowTest extends TestCase
             'description' => 'The apples were fresh and exactly as described.',
         ]);
 
+        $this->get(route('frontend.shop'))
+            ->assertOk()
+            ->assertSee('5.0 (1)');
+
         $this->post($reviewUrl, [
             'rating' => 4,
             'description' => 'A second review should not be accepted.',

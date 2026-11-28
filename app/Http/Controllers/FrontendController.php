@@ -53,6 +53,7 @@ class FrontendController extends Controller
             ->whereHas('category', fn ($query) => $query->where('status', 'active'))
             ->with(['shop:id,name,slug', 'category:id,name,slug', 'coverImage', 'images', 'variants'])
             ->withMin('variants', 'price')->withMax('variants', 'price')->withCount('variants')
+            ->withAvg('reviews', 'rating')->withCount('reviews')
             ->latest()
             ->limit(8)
             ->get();
@@ -132,7 +133,8 @@ class FrontendController extends Controller
                 });
             }))
             ->with(['shop:id,name,slug', 'category:id,name,slug', 'coverImage', 'images', 'variants'])
-            ->withCount('variants')
+            ->withCount(['variants', 'reviews'])
+            ->withAvg('reviews', 'rating')
             ->withMin('variants', 'price')->withMax('variants', 'price')
             ->when($sort === 'price_asc', fn ($query) => $query->orderByRaw('CASE WHEN products.has_variants = 1 THEN (SELECT MIN(product_variants.price) FROM product_variants WHERE product_variants.product_id = products.id) ELSE products.price END ASC'))
             ->when($sort === 'price_desc', fn ($query) => $query->orderByRaw('CASE WHEN products.has_variants = 1 THEN (SELECT MIN(product_variants.price) FROM product_variants WHERE product_variants.product_id = products.id) ELSE products.price END DESC'))
@@ -170,6 +172,7 @@ class FrontendController extends Controller
             ->whereHas('category', fn ($query) => $query->where('status', 'active'))
             ->with(['coverImage', 'variants'])
             ->withMin('variants', 'price')
+            ->withAvg('reviews', 'rating')->withCount('reviews')
             ->latest()
             ->limit(3)
             ->get();
@@ -249,6 +252,7 @@ class FrontendController extends Controller
             ->whereHas('shop', fn ($query) => $query->where('status', 'active'))
             ->with(['category:id,name', 'coverImage', 'images', 'variants'])
             ->withMin('variants', 'price')->withMax('variants', 'price')->withCount('variants')
+            ->withAvg('reviews', 'rating')->withCount('reviews')
             ->latest()
             ->limit(4)
             ->get();
