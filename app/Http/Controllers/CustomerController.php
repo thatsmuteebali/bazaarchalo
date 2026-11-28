@@ -10,6 +10,7 @@ use App\Http\Requests\CheckoutRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PaymentMethod;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -172,9 +173,51 @@ class CustomerController extends Controller
 
         return view('customer.order-success', compact('order'));
     }
-    public function wishlist(){
-        return view('customer.wishlist');
+    public function wishlist(Request $request)
+    {
+        $userId = (int) $request->user()->id;
+        $wishlistItems = $request->user()->wishlists()
+            ->whereHas('product', fn ($query) => $query
+                ->where('status', 'active')
+                ->whereHas('shop', fn ($shopQuery) => $shopQuery->where('status', 'active'))
+                ->whereHas('category', fn ($categoryQuery) => $categoryQuery->where('status', 'active')))
+            ->with(['product' => fn ($query) => $query
+                ->with(['category', 'coverImage', 'images', 'variants'])
+                ->withCount(['variants', 'reviews'])
+                ->withAvg('reviews', 'rating')
+                ->withMin('variants', 'price')
+                ->withMax('variants', 'price')
+                ->withWishlistStatus($userId)])
+            ->latest()
+            ->paginate(12);
+
+        return view('customer.wishlist', compact('wishlistItems'));
     }
+
+    public function toggleWishlist(Request $request, Product $product)
+    {
+        abort_unless(
+            $product->status === 'active'
+                && $product->shop()->where('status', 'active')->exists()
+                && $product->category()->where('status', 'active')->exists(),
+            404,
+        );
+
+        $wishlist = $request->user()->wishlists()
+            ->where('product_id', $product->id)
+            ->first();
+
+        if ($wishlist) {
+            $wishlist->delete();
+            $message = 'Product removed from your wishlist.';
+        } else {
+            $request->user()->wishlists()->create(['product_id' => $product->id]);
+            $message = 'Product added to your wishlist.';
+        }
+
+        return back()->with('success', $message);
+    }
+
     public function addresses(){
         return view('customer.addresses');
     }

@@ -26,132 +26,24 @@
                         </p>
                     </div>
                     <div class="row g-4">
-                        <div class="col-md-6 col-lg-6 col-xl-4">
-                            <div class="product-card">
-                                <span class="product-badge product-badge-new">New</span>
-                                <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                                    <i class="far fa-heart" aria-hidden="true"></i>
-                                </button>
-                                <div class="product-media">
-                                    <a href="{{ route('frontend.product-detail') }}" class="product-image-link" aria-label="View Seedless Grapes">
-                                        <img src="{{ asset('img/fruite-item-5.jpg') }}" class="product-image product-image-primary"
-                                            alt="Fresh grapes" />
-                                        <img src="{{ asset('img/best-product-3.jpg') }}" class="product-image product-image-secondary"
-                                            alt="" aria-hidden="true" />
-                                    </a>
-                                    <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag"
-                                            aria-hidden="true"></i> Add to Cart</a>
-                                </div>
-                                <div class="product-body">
-                                    <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">Seedless Grapes</a>
-                                    <div class="product-meta">
-                                        <div class="product-rating">
-                                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                                class="fas fa-star"></i>
-                                        </div>
-                                        <div class="product-price">
-                                            <span class="product-price-current">$5.49</span>
-                                        </div>
-                                    </div>
+                        @forelse ($wishlistItems as $wishlistItem)
+                            <div class="col-md-6 col-lg-6 col-xl-4">
+                                @include('frontend.partials.product-card', ['product' => $wishlistItem->product])
+                            </div>
+                        @empty
+                            <div class="col-12">
+                                <div class="alert alert-light border mb-0">
+                                    Your wishlist is empty.
+                                    <a href="{{ route('frontend.shop') }}" class="alert-link">Browse products</a>
+                                    to find something you love.
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-4">
-                            <div class="product-card">
-                                <span class="product-badge product-badge-new">New</span>
-                                <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                                    <i class="far fa-heart" aria-hidden="true"></i>
-                                </button>
-                                <div class="product-media">
-                                    <a href="{{ route('frontend.product-detail') }}" class="product-image-link" aria-label="View Seedless Grapes">
-                                        <img src="{{ asset('img/fruite-item-5.jpg') }}" class="product-image product-image-primary"
-                                            alt="Fresh grapes" />
-                                        <img src="{{ asset('img/best-product-3.jpg') }}" class="product-image product-image-secondary"
-                                            alt="" aria-hidden="true" />
-                                    </a>
-                                    <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag"
-                                            aria-hidden="true"></i> Add to Cart</a>
-                                </div>
-                                <div class="product-body">
-                                    <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">Seedless Grapes</a>
-                                    <div class="product-meta">
-                                        <div class="product-rating">
-                                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                                class="fas fa-star"></i>
-                                        </div>
-                                        <div class="product-price">
-                                            <span class="product-price-current">$5.49</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        @endforelse
+                        @if ($wishlistItems->hasPages())
+                            <div class="col-12 d-flex justify-content-center mt-4">
+                                {{ $wishlistItems->links() }}
                             </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-4">
-                            <div class="product-card">
-                                <span class="product-badge product-badge-new">New</span>
-                                <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                                    <i class="far fa-heart" aria-hidden="true"></i>
-                                </button>
-                                <div class="product-media">
-                                    <a href="{{ route('frontend.product-detail') }}" class="product-image-link"
-                                        aria-label="View Seedless Grapes">
-                                        <img src="{{ asset('img/fruite-item-5.jpg') }}" class="product-image product-image-primary"
-                                            alt="Fresh grapes" />
-                                        <img src="{{ asset('img/best-product-3.jpg') }}" class="product-image product-image-secondary"
-                                            alt="" aria-hidden="true" />
-                                    </a>
-                                    <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag"
-                                            aria-hidden="true"></i> Add to Cart</a>
-                                </div>
-                                <div class="product-body">
-                                    <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">Seedless Grapes</a>
-                                    <div class="product-meta">
-                                        <div class="product-rating">
-                                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                                class="fas fa-star"></i>
-                                        </div>
-                                        <div class="product-price">
-                                            <span class="product-price-current">$5.49</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-6 col-xl-4">
-                            <div class="product-card">
-                                <span class="product-badge product-badge-new">New</span>
-                                <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-                                    <i class="far fa-heart" aria-hidden="true"></i>
-                                </button>
-                                <div class="product-media">
-                                    <a href="{{ route('frontend.product-detail') }}" class="product-image-link"
-                                        aria-label="View Seedless Grapes">
-                                        <img src="{{ asset('img/fruite-item-5.jpg') }}" class="product-image product-image-primary"
-                                            alt="Fresh grapes" />
-                                        <img src="{{ asset('img/best-product-3.jpg') }}" class="product-image product-image-secondary"
-                                            alt="" aria-hidden="true" />
-                                    </a>
-                                    <a href="{{ route('frontend.cart') }}" class="product-cart-cta"><i class="fa fa-shopping-bag"
-                                            aria-hidden="true"></i> Add to Cart</a>
-                                </div>
-                                <div class="product-body">
-                                    <a href="{{ route('frontend.product-detail') }}" class="stretched-link product-title">Seedless Grapes</a>
-                                    <div class="product-meta">
-                                        <div class="product-rating">
-                                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                                class="fas fa-star"></i><i class="fas fa-star"></i><i
-                                                class="fas fa-star"></i>
-                                        </div>
-                                        <div class="product-price">
-                                            <span class="product-price-current">$5.49</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endif
                     </div>
                 </section>
             </div>

@@ -12,6 +12,7 @@
     $productUrl = route('frontend.product-detail', ['product' => $product->slug]);
     $reviewCount = $product->reviews_count ?? 0;
     $averageRating = (float) ($product->reviews_avg_rating ?? 0);
+    $isWishlisted = (bool) ($product->is_wishlisted ?? false);
 @endphp
 <div class="product-card">
     @if ($hasDiscount)
@@ -25,9 +26,14 @@
             {{ $product->variants_count }} variants
         </span>
     @endif
-    <button type="button" class="wishlist-button" aria-label="Add to wishlist">
-        <i class="far fa-heart" aria-hidden="true"></i>
-    </button>
+    <form method="POST" action="{{ route('customer.wishlist.toggle', $product) }}" data-wishlist-toggle>
+        @csrf
+        <button type="submit" class="wishlist-button {{ $isWishlisted ? 'active' : '' }}"
+            aria-label="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}"
+            title="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}">
+            <i class="{{ $isWishlisted ? 'fas' : 'far' }} fa-heart" aria-hidden="true"></i>
+        </button>
+    </form>
     <div class="product-media">
         <a href="{{ $productUrl }}" class="product-image-link" aria-label="View {{ $product->name }}">
             <img src="{{ $imageUrl }}" class="product-image product-image-primary" alt="{{ $product->name }}" />

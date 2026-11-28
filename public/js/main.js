@@ -242,6 +242,10 @@
         });
 
     $(document).on("click", ".wishlist-button", function (e) {
+        if ($(this).closest("form[data-wishlist-toggle]").length) {
+            return;
+        }
+
         e.preventDefault();
         e.stopPropagation();
         var $button = $(this);

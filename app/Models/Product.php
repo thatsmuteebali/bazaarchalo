@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasEncryptedRouteKey;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -35,6 +36,14 @@ class Product extends Model
     public function variants()   { return $this->hasMany(ProductVariant::class); }
     public function movements()  { return $this->hasMany(InventoryMovement::class); }
     public function reviews()    { return $this->hasMany(ProductReview::class); }
+    public function wishlists()  { return $this->hasMany(Wishlist::class); }
+
+    public function scopeWithWishlistStatus(Builder $query, ?int $userId): Builder
+    {
+        return $query->withExists([
+            'wishlists as is_wishlisted' => fn (Builder $wishlistQuery) => $wishlistQuery->where('user_id', $userId),
+        ]);
+    }
 
     // first image by sort_order (used as thumbnail in the list)
     public function coverImage()

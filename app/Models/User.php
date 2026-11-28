@@ -70,6 +70,11 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(Shop::class, 'seller_id');
     }
 
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     public function collections(): HasMany
     {
         return $this->hasMany(Collection::class, 'seller_id');

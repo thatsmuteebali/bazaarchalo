@@ -118,6 +118,7 @@ Route::group(['middleware' => ['CustomerMiddleware']], function () {
             Route::get('/order-tracking', 'orderTracking')->name('order-tracking');
 
             Route::get('/wishlist', 'wishlist')->name('wishlist');
+            Route::post('/wishlist/{product}/toggle', 'toggleWishlist')->name('wishlist.toggle');
 
             Route::get('/addresses', 'addresses')->name('addresses');
         });
